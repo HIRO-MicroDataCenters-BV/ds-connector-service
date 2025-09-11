@@ -24,43 +24,47 @@ repos:
     hooks:
       - id: mypy
         name: mypy
-        files: ^server/
-        entry: poetry --directory server run mypy
+        files: ^server/.*\.py$
+        entry: poetry --directory server run mypy app
         language: system
         types: [python]
+        pass_filenames: false
 
   - repo: local
     hooks:
       - id: isort
         name: isort
-        files: ^server/
-        entry: poetry --directory server run isort
+        files: ^server/.*\.py$
+        entry: poetry --directory server run isort app
         language: system
         types: [python]
+        pass_filenames: false
 
   - repo: local
     hooks:
       - id: flake8
         name: flake8
-        files: ^server/
-        entry: poetry --directory server run flake8 --config ./server/.flake8
+        files: ^server/.*\.py$
+        entry: poetry --directory server run flake8 app
         language: system
         types: [python]
+        pass_filenames: false
 
   - repo: local
     hooks:
       - id: black
         name: black
-        files: ^server/
-        entry: poetry --directory server run black
+        files: ^server/.*\.py$
+        entry: poetry --directory server run black app
         language: system
         types: [python]
+        pass_filenames: false
 
   - repo: local
     hooks:
       - id: openapi
         name: openapi
-        entry: poetry --directory server run python ./tools/extract_openapi.py app.main:app --app-dir ./server --out ./api/openapi.yaml --app_version_file ./VERSION
+        entry: poetry --directory server run python ../tools/extract_openapi.py app.main:app --app-dir . --out ../api/openapi.yaml --app_version_file ../VERSION
         language: system
         types: [python]
         pass_filenames: false
@@ -70,7 +74,7 @@ repos:
     hooks:
       - id: generate_client
         name: generate client
-        entry: poetry --directory server run python ./tools/client_generator/generate.py ./api/openapi.yaml
+        entry: poetry --directory server run python ../tools/client_generator/generate.py ../api/openapi.yaml
         language: system
         types: [python]
         pass_filenames: false
