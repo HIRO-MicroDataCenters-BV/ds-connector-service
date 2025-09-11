@@ -98,15 +98,16 @@ configuration = template_web_client.Configuration(
 # Enter a context with an instance of the API client
 with template_web_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = template_web_client.DefaultApi(api_client)
+    api_instance = template_web_client.ContractsApi(api_client)
+    body = None # object | 
 
     try:
-        # Example endpoint
-        api_response = api_instance.example_get()
-        print("The response of DefaultApi->example_get:\n")
+        # Validate Contract
+        api_response = api_instance.validate_contract(body)
+        print("The response of ContractsApi->validate_contract:\n")
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling DefaultApi->example_get: %s\n" % e)
+        print("Exception when calling ContractsApi->validate_contract: %s\n" % e)
 
 ```
 
@@ -116,20 +117,20 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultApi* | [**example_get**](docs/DefaultApi.md#example_get) | **GET** / | Example endpoint
-*DefaultApi* | [**metrics_metrics_get**](docs/DefaultApi.md#metrics_metrics_get) | **GET** /metrics | Metrics
-*ItemsApi* | [**items_create**](docs/ItemsApi.md#items_create) | **POST** /item/ | Create an item
-*ItemsApi* | [**items_delete_item**](docs/ItemsApi.md#items_delete_item) | **DELETE** /item/{id}/ | Delete an item
-*ItemsApi* | [**items_read_all**](docs/ItemsApi.md#items_read_all) | **GET** /item/ | Read all items
-*ItemsApi* | [**items_read_item**](docs/ItemsApi.md#items_read_item) | **GET** /item/{id}/ | Read an item
-*ItemsApi* | [**items_update_item**](docs/ItemsApi.md#items_update_item) | **PUT** /item/{id}/ | Update an item
+*ContractsApi* | [**validate_contract**](docs/ContractsApi.md#validate_contract) | **POST** /contracts/validate | Validate Contract
+*DataProductsApi* | [**create_data_product**](docs/DataProductsApi.md#create_data_product) | **POST** /data-products/ | Create Data Product
+*DataProductsApi* | [**delete_data_product**](docs/DataProductsApi.md#delete_data_product) | **DELETE** /data-products/{connector_id}/{data_product_id}/ | Delete Data Product
+*DataProductsApi* | [**get_data_product**](docs/DataProductsApi.md#get_data_product) | **GET** /data-products/{connector_id}/{data_product_id}/ | Get Data Product
+*DataProductsApi* | [**get_data_product_content**](docs/DataProductsApi.md#get_data_product_content) | **GET** /data-products/{connector_id}/{data_product_id}/content | Get Data Product Content
+*DataProductsApi* | [**list_data_products**](docs/DataProductsApi.md#list_data_products) | **GET** /data-products/ | List Data Products
+*HealthApi* | [**health_check**](docs/HealthApi.md#health_check) | **GET** /health-check/ | Health Check
+*MonitoringApi* | [**get_metrics**](docs/MonitoringApi.md#get_metrics) | **GET** /metrics | Metrics
+*TransactionsApi* | [**log_transaction**](docs/TransactionsApi.md#log_transaction) | **POST** /transactions/ | Log Transaction
 
 
 ## Documentation For Models
 
- - [ExampleResponse](docs/ExampleResponse.md)
  - [HTTPValidationError](docs/HTTPValidationError.md)
- - [Item](docs/Item.md)
  - [ValidationError](docs/ValidationError.md)
  - [ValidationErrorLocInner](docs/ValidationErrorLocInner.md)
 

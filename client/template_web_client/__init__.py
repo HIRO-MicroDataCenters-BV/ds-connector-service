@@ -3,9 +3,9 @@
 # flake8: noqa
 
 """
-    Template web service
+    Connector Service API
 
-    This is a template of a web service
+    The Connector Service provides a unified API for accessing Data Products, validating Contracts, and logging Transactions in the NextGen node.
 
     The version of the OpenAPI document: 0.1.0
     Contact: all-hiro@hiro-microdatacenters.nl
@@ -18,8 +18,11 @@
 __version__ = "1.0.0"
 
 # import apis into sdk package
-from template_web_client.api.default_api import DefaultApi
-from template_web_client.api.items_api import ItemsApi
+from template_web_client.api.contracts_api import ContractsApi
+from template_web_client.api.data_products_api import DataProductsApi
+from template_web_client.api.health_api import HealthApi
+from template_web_client.api.monitoring_api import MonitoringApi
+from template_web_client.api.transactions_api import TransactionsApi
 
 # import ApiClient
 from template_web_client.api_response import ApiResponse
@@ -33,8 +36,6 @@ from template_web_client.exceptions import ApiAttributeError
 from template_web_client.exceptions import ApiException
 
 # import models into sdk package
-from template_web_client.models.example_response import ExampleResponse
 from template_web_client.models.http_validation_error import HTTPValidationError
-from template_web_client.models.item import Item
 from template_web_client.models.validation_error import ValidationError
 from template_web_client.models.validation_error_loc_inner import ValidationErrorLocInner
