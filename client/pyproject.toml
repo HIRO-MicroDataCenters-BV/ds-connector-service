@@ -3,14 +3,14 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "template_web_client"
+name = "ds_connector"
 version = "0.1.0"
 description = "Client for Connector Service API"
 authors = ["HIRO-MicroDataCenters <all-hiro@hiro-microdatacenters.nl>"]
 license = "MIT"
 readme = "README.md"
 keywords = ["OpenAPI", "OpenAPI-Generator", "Connector Service API"]
-include = ["template_web_client/py.typed"]
+include = ["ds_connector/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -32,7 +32,7 @@ extension-pkg-whitelist = "pydantic"
 
 [tool.mypy]
 files = [
-  "template_web_client",
+  "ds_connector", # main package
   #"test",  # auto-generated tests
   "tests", # hand-written tests
 ]
