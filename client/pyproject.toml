@@ -3,14 +3,14 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "ds_connector_service"
+name = "ds_connector"
 version = "0.1.0"
 description = "Client for Connector Service API"
 authors = ["HIRO-MicroDataCenters <all-hiro@hiro-microdatacenters.nl>"]
 license = "MIT"
 readme = "README.md"
 keywords = ["OpenAPI", "OpenAPI-Generator", "Connector Service API"]
-include = ["ds_connector_service/py.typed"]
+include = ["ds_connector/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -20,7 +20,7 @@ python-dateutil = ">=2.8.2"
 pydantic = ">=2"
 typing-extensions = ">=4.7.1"
 
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.dev-dependencies]
 tox = "^4.13.0"
 pytest = ">=7.2.1"
 flake8 = ">=4.0.0"
@@ -32,7 +32,7 @@ extension-pkg-whitelist = "pydantic"
 
 [tool.mypy]
 files = [
-  "ds_connector_service", # main package
+  "ds_connector", # main package
   #"test",  # auto-generated tests
   "tests", # hand-written tests
 ]
