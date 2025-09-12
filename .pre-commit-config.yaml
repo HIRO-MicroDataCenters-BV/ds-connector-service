@@ -18,47 +18,43 @@ repos:
   - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.9.0
     hooks:
-    -   id: shellcheck
+      - id: shellcheck
 
   - repo: local
     hooks:
       - id: mypy
         name: mypy
-        files: ^server/.*\.py$
-        entry: poetry --directory server run mypy app
+        files: ^server/
+        entry: poetry --directory server run mypy --config-file server/mypy.ini
         language: system
         types: [python]
-        pass_filenames: false
 
   - repo: local
     hooks:
       - id: isort
         name: isort
-        files: ^server/.*\.py$
-        entry: poetry --directory server run isort app
+        files: ^server/
+        entry: poetry --directory server run isort
         language: system
         types: [python]
-        pass_filenames: false
 
   - repo: local
     hooks:
       - id: flake8
         name: flake8
-        files: ^server/.*\.py$
-        entry: poetry --directory server run flake8 app
+        files: ^server/
+        entry: poetry --directory server run flake8 --config server/.flake8
         language: system
         types: [python]
-        pass_filenames: false
 
   - repo: local
     hooks:
       - id: black
         name: black
-        files: ^server/.*\.py$
-        entry: poetry --directory server run black app
+        files: ^server/
+        entry: poetry --directory server run black
         language: system
         types: [python]
-        pass_filenames: false
 
   - repo: local
     hooks:
