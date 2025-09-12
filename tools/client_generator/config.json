@@ -1,3 +1,5 @@
 {
-  "packageName": "ds_connector_service"
+  "packageName": "ds_connector_service",
+  "projectName": "ds_connector_service",
+  "poetryUseGroupDependencies": true,
 }
