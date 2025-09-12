@@ -1,16 +1,17 @@
-name: Test and build client
+name: Test and build connector
 
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  test_and_build_client:
+  test_and_build_connector:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./client
+        working-directory: ./server
     strategy:
       matrix:
         python-version: ["3.12"]
+
     steps:
       - uses: actions/checkout@v4
 
@@ -25,26 +26,20 @@ jobs:
       - name: Install dependencies
         run: |
           poetry config virtualenvs.in-project true
-          poetry install --no-root
+          poetry install --no-root --no-cache --no-interaction
 
-      - name: Check code
+      - name: Run linters and type checks
         run: |
-          poetry run mypy .
-          poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          poetry run mypy app
+          poetry run flake8 app --count --select=E9,F63,F7,F82 --show-source --statistics
+          poetry run black --check app
+          poetry run isort --check-only app
 
       - name: Run tests
         run: poetry run pytest
 
-      # The version in PyPI must follow the PEP 440 standard.
-      # Semantic versioning is not supported by PyPI.
-      # Therefore, only the release version is published.
-      - name: Build and publish to pypi
+      # Optional: build docker image for connector
+      - name: Build Docker image
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
-          if [[ ${{ github.ref }} =~ ^refs/tags/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "This is a version tag. Build and publish a package."
-            poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
-            poetry build
-            poetry publish
-          else
-            echo "This is not a version tag."
-          fi
+          docker build -t hiro/ds-connector-service:${GITHUB_REF#refs/tags/} .
