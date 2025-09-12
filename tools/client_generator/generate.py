@@ -48,7 +48,7 @@ def generate_openapi(
         "/project",
         "-i",
         file,
-        "--additional-properties=packageName=ds_connector_service,projectName=ds_connector_service"
+        "--additional-properties=packageName=ds_connector_service,projectName=ds_connector_service",
 
     ]
 
