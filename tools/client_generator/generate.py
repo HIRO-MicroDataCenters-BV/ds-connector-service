@@ -48,6 +48,8 @@ def generate_openapi(
         "/project",
         "-i",
         file,
+        "--additional-properties=packageName=ds_connector_service,projectName=ds_connector_service"
+
     ]
 
     if volumes is not None:
