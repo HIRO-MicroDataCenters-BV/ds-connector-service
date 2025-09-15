@@ -9,3 +9,7 @@ setup.py
 test-requirements.txt
 LICENSE
 generator
+pyproject.toml
+setup.cfg
+tox.ini
+
