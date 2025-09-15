@@ -11,6 +11,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.12"]
+
     steps:
       - uses: actions/checkout@v4
 
@@ -25,26 +26,35 @@ jobs:
       - name: Install dependencies
         run: |
           poetry config virtualenvs.in-project true
-          poetry install --no-root
+          poetry lock --check
+          poetry install --no-root --no-interaction --no-ansi
 
       - name: Check code
         run: |
           poetry run mypy .
           poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          poetry run black --check .
+          poetry run isort --check-only .
 
       - name: Run tests
         run: poetry run pytest
 
-      # The version in PyPI must follow the PEP 440 standard.
-      # Semantic versioning is not supported by PyPI.
-      # Therefore, only the release version is published.
-      - name: Build and publish to pypi
+      # --- Publish section ---
+      - name: Publish package
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
-          if [[ ${{ github.ref }} =~ ^refs/tags/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "This is a version tag. Build and publish a package."
-            poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          echo "Detected tag: $TAG_NAME"
+
+          if [[ "$TAG_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "➡ Publishing release $TAG_NAME to PyPI..."
+            export POETRY_PYPI_TOKEN_PYPI="${{ secrets.PYPI_TOKEN }}"
             poetry build
             poetry publish
           else
-            echo "This is not a version tag."
+            echo "➡ Publishing pre-release $TAG_NAME to TestPyPI..."
+            poetry config repositories.testpypi https://test.pypi.org/legacy/
+            export POETRY_PYPI_TOKEN_TESTPYPI="${{ secrets.TEST_PYPI_TOKEN }}"
+            poetry build
+            poetry publish -r testpypi
           fi
