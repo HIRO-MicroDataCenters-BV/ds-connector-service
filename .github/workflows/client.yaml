@@ -32,7 +32,6 @@ jobs:
       - name: Install dependencies
         run: |
           poetry config virtualenvs.in-project true
-          poetry lock --check
           poetry install --no-root --no-interaction --no-ansi
 
       - name: Run linters and type checks
