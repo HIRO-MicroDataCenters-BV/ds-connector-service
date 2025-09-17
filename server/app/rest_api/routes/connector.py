@@ -50,6 +50,7 @@ class ConnectorRoutes(Routable):
     )
     async def get_connector_metadata(self) -> JSONLDResponse:
         """Return connector metadata (region, supported interfaces, etc.)"""
+         
         return JSONLDResponse(
             {
                 "connector_id": "ds-connector-service",
@@ -76,6 +77,11 @@ class ConnectorRoutes(Routable):
     ) -> JSONLDResponse:
         """Return metadata of a data product (size, mimetype, region, etc.)"""
         # Stub: here you’d call boto3 / SQL / REST interface
+        # need to add region, node_labe: ki,hus,uva in the respone at end, so call k8s API to get node selector
+        # need to pass presigned link to ml runner directly
+        # dataproduct name need to add in response 
+        # displayname need to inject "empty"
+        
         return JSONLDResponse(
             {
                 "interface_id": interface_id,
@@ -89,7 +95,7 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/interfaces/{interface_id}/{resource_path:path}/{resource_name}/content",
+        "/{interface_id}/{resource_path:path}/{resource_name}/content",
         operation_id="get_data_product_content",
         name="Get Data Product Content",
         tags=[Tags.Data_products],
@@ -98,6 +104,9 @@ class ConnectorRoutes(Routable):
         self, interface_id: str, resource_path: str, resource_name: str
     ) -> JSONLDResponse:
         """Retrieve data product content (via interface)"""
+        # update endpoint to get the chunks
+        # one more endpoint to get the whole information at time( no chunking getting data)
+        # option 2 - connector acts as gateway
         # Stub: here you’d request pre-signed URL from S3, or query SQL, etc.
         return JSONLDResponse(
             {
