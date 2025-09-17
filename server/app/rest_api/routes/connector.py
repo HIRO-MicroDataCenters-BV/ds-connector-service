@@ -81,6 +81,7 @@ class ConnectorRoutes(Routable):
         # need to pass presigned link to ml runner directly
         # dataproduct name need to add in response 
         # displayname need to inject "empty"
+        # need to inject connector name 
         
         return JSONLDResponse(
             {
@@ -107,6 +108,7 @@ class ConnectorRoutes(Routable):
         # update endpoint to get the chunks
         # one more endpoint to get the whole information at time( no chunking getting data)
         # option 2 - connector acts as gateway
+        # need to add wrapper for data to pass ML runner
         # Stub: here you’d request pre-signed URL from S3, or query SQL, etc.
         return JSONLDResponse(
             {
