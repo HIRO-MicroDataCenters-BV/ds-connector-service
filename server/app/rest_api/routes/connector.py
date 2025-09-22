@@ -1,5 +1,5 @@
 from classy_fastapi import Routable, get
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse, StreamingResponse
 from app.response import JSONLDResponse
 from app.tags import Tags
@@ -29,9 +29,6 @@ class ConnectorRoutes(Routable):
         )
 
     # --- Data product metadata ---
-
-    from fastapi import Query
-    from fastapi.responses import JSONResponse
 
     @get(
         "/metadata/{interface_id}/{resource_path:path}/{resource_name}",
