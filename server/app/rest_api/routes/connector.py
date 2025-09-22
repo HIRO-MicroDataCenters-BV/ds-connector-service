@@ -37,7 +37,11 @@ class ConnectorRoutes(Routable):
         tags=[Tags.Data_products],
         responses={200: {"description": "Data product metadata in DCAT format"}},
     )
-    async def get_data_product_metadata( self,interface_id: str, resource_path: str, resource_name: str,
+    async def get_data_product_metadata(
+        self,
+        interface_id: str,
+        resource_path: str,
+        resource_name: str,
     ) -> JSONResponse:
         """Return metadata of a data product in DCAT format"""
 
@@ -48,7 +52,7 @@ class ConnectorRoutes(Routable):
                 "dcat": "http://www.w3.org/ns/dcat#",
                 "dcterms": "http://purl.org/dc/terms/",
                 "foaf": "http://xmlns.com/foaf/0.1/",
-                "xsd": "http://www.w3.org/2001/XMLSchema#"
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
             },
             "@id": dataset_id,
             "@type": "dcat:Dataset",
@@ -57,7 +61,7 @@ class ConnectorRoutes(Routable):
             "dcterms:description": "Mocked description of the data product",
             "dcterms:publisher": {
                 "@type": "foaf:Organization",
-                "foaf:name": "ds-connector-service"
+                "foaf:name": "ds-connector-service",
             },
             "dcat:keyword": ["ml", "training", "s3"],
             "dcat:distribution": [
@@ -70,7 +74,7 @@ class ConnectorRoutes(Routable):
                     "dcat:mediaType": "text/csv",
                     "dcat:byteSize": 123456,
                 }
-            ]
+            ],
         }
 
         return JSONResponse(content=response, media_type="application/ld+json")
@@ -109,8 +113,14 @@ class ConnectorRoutes(Routable):
         return StreamingResponse(
             iter([b"mock,chunked,data\n"]),
             media_type="text/csv",
-            headers={"Content-Range": f"bytes={start}-{end}" if start and end else "bytes */*"},
-            status_code=status.HTTP_206_PARTIAL_CONTENT if start and end else status.HTTP_200_OK,
+            headers={
+                "Content-Range": f"bytes={start}-{end}"
+                if start and end
+                else "bytes */*"
+            },
+            status_code=status.HTTP_206_PARTIAL_CONTENT
+            if start and end
+            else status.HTTP_200_OK,
         )
 
 
