@@ -70,7 +70,8 @@ class ConnectorRoutes(Routable):
                     "@type": "dcat:Distribution",
                     "dcterms:title": f"Distribution of {resource_name}",
                     "dcat:accessURL": {
-                        "@id": f"http://connector-service/interfaces/{interface_id}/{resource_path}/{resource_name}/content"
+                        "@id": f"http://connector-service/interfaces/"
+                        f"{interface_id}/{resource_path}/{resource_name}/content"
                     },
                     "dcat:mediaType": "text/csv",
                     "dcat:byteSize": 123456,
