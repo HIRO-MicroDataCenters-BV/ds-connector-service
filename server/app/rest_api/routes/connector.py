@@ -1,47 +1,15 @@
-from typing import Any, Dict
-import logging
-
-from classy_fastapi import Routable, delete, get, post
-from fastapi import APIRouter, Body, Query, status
-
+from classy_fastapi import Routable, get
+from fastapi import APIRouter, Query, status
+from fastapi.responses import JSONResponse, StreamingResponse
 from app.response import JSONLDResponse
 from app.tags import Tags
-
-logger = logging.getLogger(__name__)
 
 
 class ConnectorRoutes(Routable):
     def __init__(self):
         super().__init__()
 
-    # ---------------------------
-    # Health & Monitoring
-    # ---------------------------
-
-    @get(
-        "/health-check/",
-        operation_id="health_check",
-        name="Health Check",
-        tags=[Tags.Health],
-    )
-    async def health_check(self) -> JSONLDResponse:
-        """Check if the Connector service is running"""
-        return JSONLDResponse({"status": "healthy"}, status_code=status.HTTP_200_OK)
-
-    @get(
-        "/metrics",
-        operation_id="get_metrics",
-        name="Metrics",
-        tags=[Tags.Monitoring],
-    )
-    async def get_metrics(self) -> str:
-        """Return Prometheus metrics"""
-        return "# Prometheus metrics placeholder"
-
-    # ---------------------------
-    # Connector Metadata
-    # ---------------------------
-
+    # --- Connector metadata ---
     @get(
         "/metadata/connector",
         operation_id="get_connector_metadata",
@@ -49,7 +17,6 @@ class ConnectorRoutes(Routable):
         tags=[Tags.Data_products],
     )
     async def get_connector_metadata(self) -> JSONLDResponse:
-        """Return connector metadata (region, supported interfaces, etc.)"""
         return JSONLDResponse(
             {
                 "connector_id": "ds-connector-service",
@@ -61,51 +28,92 @@ class ConnectorRoutes(Routable):
             status_code=status.HTTP_200_OK,
         )
 
-    # ---------------------------
-    # Data Products (generic path instead of connector_id)
-    # ---------------------------
+    # --- Data product metadata ---
+
+    from fastapi import Query
+    from fastapi.responses import JSONResponse
 
     @get(
-        "/metadata/dataproducts/{interface_id}/{resource_path:path}/{resource_name}",
+        "/metadata/{interface_id}/{resource_path:path}/{resource_name}",
         operation_id="get_data_product_metadata",
         name="Get Data Product Metadata",
         tags=[Tags.Data_products],
+        responses={200: {"description": "Data product metadata in DCAT format"}},
     )
-    async def get_data_product_metadata(
-        self, interface_id: str, resource_path: str, resource_name: str
-    ) -> JSONLDResponse:
-        """Return metadata of a data product (size, mimetype, region, etc.)"""
-        # Stub: here you’d call boto3 / SQL / REST interface
-        return JSONLDResponse(
-            {
-                "interface_id": interface_id,
-                "resource": f"{resource_path}/{resource_name}",
-                "location": f"s3://{resource_path}/{resource_name}",
-                "size_bytes": 123456,
-                "mimetype": "application/csv",
-                "last_modified": "2025-09-16T12:00:00Z",
+    async def get_data_product_metadata( self,interface_id: str, resource_path: str, resource_name: str,
+    ) -> JSONResponse:
+        """Return metadata of a data product in DCAT format"""
+
+        dataset_id = f"s3://{resource_path}/{resource_name}"
+
+        response = {
+            "@context": {
+                "dcat": "http://www.w3.org/ns/dcat#",
+                "dcterms": "http://purl.org/dc/terms/",
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "xsd": "http://www.w3.org/2001/XMLSchema#"
             },
-            status_code=status.HTTP_200_OK,
-        )
+            "@id": dataset_id,
+            "@type": "dcat:Dataset",
+            "dcterms:identifier": resource_name,
+            "dcterms:title": resource_name,
+            "dcterms:description": "Mocked description of the data product",
+            "dcterms:publisher": {
+                "@type": "foaf:Organization",
+                "foaf:name": "ds-connector-service"
+            },
+            "dcat:keyword": ["ml", "training", "s3"],
+            "dcat:distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "dcterms:title": f"Distribution of {resource_name}",
+                    "dcat:accessURL": {
+                        "@id": f"http://connector-service/interfaces/{interface_id}/{resource_path}/{resource_name}/content"
+                    },
+                    "dcat:mediaType": "text/csv",
+                    "dcat:byteSize": 123456,
+                }
+            ]
+        }
+
+        return JSONResponse(content=response, media_type="application/ld+json")
 
     @get(
-        "/interfaces/{interface_id}/{resource_path:path}/{resource_name}/content",
+        "/content/{interface_id}/{resource_path:path}/{resource_name}",
         operation_id="get_data_product_content",
         name="Get Data Product Content",
         tags=[Tags.Data_products],
     )
     async def get_data_product_content(
         self, interface_id: str, resource_path: str, resource_name: str
-    ) -> JSONLDResponse:
-        """Retrieve data product content (via interface)"""
-        # Stub: here you’d request pre-signed URL from S3, or query SQL, etc.
-        return JSONLDResponse(
-            {
-                "interface_id": interface_id,
-                "resource": f"{resource_path}/{resource_name}",
-                "access_url": f"https://presigned-url/{resource_path}/{resource_name}",
-            },
+    ) -> StreamingResponse:
+        return StreamingResponse(
+            iter([b"mock,full,object,content\n1,2,3,4\n"] * 10),
+            media_type="text/csv",
+            headers={"Content-Disposition": f'attachment; filename="{resource_name}"'},
             status_code=status.HTTP_200_OK,
+        )
+
+    # --- Chunked object content ---
+    @get(
+        "/content/{interface_id}/{resource_path:path}/{resource_name}/chunk",
+        operation_id="get_data_product_chunk",
+        name="Get Data Product Chunk",
+        tags=[Tags.Data_products],
+    )
+    async def get_data_product_chunk(
+        self,
+        interface_id: str,
+        resource_path: str,
+        resource_name: str,
+        start: int | None = Query(None),
+        end: int | None = Query(None),
+    ) -> StreamingResponse:
+        return StreamingResponse(
+            iter([b"mock,chunked,data\n"]),
+            media_type="text/csv",
+            headers={"Content-Range": f"bytes={start}-{end}" if start and end else "bytes */*"},
+            status_code=status.HTTP_206_PARTIAL_CONTENT if start and end else status.HTTP_200_OK,
         )
 
 
