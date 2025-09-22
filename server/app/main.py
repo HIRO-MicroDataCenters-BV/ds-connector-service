@@ -26,7 +26,7 @@ class CustomFastAPI(FastAPI):
             license_info={
                 "name": "MIT",
                 "url": "https://github.com/HIRO-MicroDataCenters-BV/"
-                "ds-connector/blob/main/LICENSE",
+                "ds-connector-service/blob/main/LICENSE",
             },
             routes=self.routes,
         )
