@@ -1,5 +1,5 @@
 from classy_fastapi import Routable, get
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Query, status
 from fastapi.responses import JSONResponse, StreamingResponse
 from app.response import JSONLDResponse
 from app.tags import Tags
