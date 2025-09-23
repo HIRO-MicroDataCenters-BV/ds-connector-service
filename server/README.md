@@ -100,7 +100,7 @@ docker build . -t <image_name>:<image_tag>
 docker run <image_name>:<image_tag>
 ```
 
-Upload the Docker image to the repository:
+Upload the Docker image to the repository and if required authenticate with token:
 ```bash
 docker login -u <username>
 docker push <image_name>:<image_tag>
