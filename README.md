@@ -1,17 +1,4 @@
-# Template web-service
-Use this template for developing a web service.
-
-The template includes an example server application in Python with tests, automatically generated OpenAPI file, and an automatically generated client for accessing the server API from third-party applications.
-
-Upon committing and pushing, pre-commit triggers code checks, OpenAPI file generation, and client generation.
-
-Upon pushing the commit to GitHub, workflows are initiated, which:
-- Check the code formatting of the server and client;
-- Execute server and client tests;
-- Create a Docker image of the server, Helm chart, and deploy the application to a Kubernetes cluster.
-- Build the client package and push it to [pypi.org](https://pypi.org/)
-
-Work on the server and client is conducted in their respective directories: server and client, as the server-side and client-side parts have different dependencies, configurations, etc.
+# Connector-Service
 
 ## Requirements
 Python 3.10+
