@@ -144,7 +144,8 @@ class ConnectorRoutes(Routable):
                                     "@type": "dcat:Distribution",
                                     "dcterms:title": "Churn CSV distribution",
                                     "dcat:accessURL": {
-                                        "@id": "http://connector-service/content/dataproducts/1/"
+                                        "@id": "http://connector-service/content/"
+                                        "dataproducts/1/"
                                         "datasets/customers/churn.csv"
                                     },
                                     "dcat:mediaType": "text/csv",
