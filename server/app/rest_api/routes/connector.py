@@ -58,7 +58,8 @@ class DCATDataset(BaseModel):
                 "@type": "dcat:Dataset",
                 "dcterms:identifier": "dataset.csv",
                 "dcterms:title": "dataset.csv",
-                "dcterms:description": "Dataset description following DCAT specification",
+                "dcterms:description": "Dataset description following "
+                "DCAT specification",
                 "dcterms:publisher": {
                     "@type": "foaf:Organization",
                     "foaf:name": "ds-connector-service",
@@ -69,7 +70,8 @@ class DCATDataset(BaseModel):
                         "@type": "dcat:Distribution",
                         "dcterms:title": "Distribution of dataset.csv",
                         "dcat:accessURL": {
-                            "@id": "http://connector-service/interfaces/s3/bucket/path/dataset.csv/content"
+                            "@id": "http://connector-service/interfaces/s3"
+                            "/bucket/path/dataset.csv/content"
                         },
                         "dcat:mediaType": "text/csv",
                         "dcat:byteSize": 123456,
@@ -125,7 +127,7 @@ class ConnectorRoutes(Routable):
                             "@context": {
                                 "dcat": "http://www.w3.org/ns/dcat#",
                                 "dcterms": "http://purl.org/dc/terms/",
-                                "foaf": "http://xmlns.com/foaf/0.1/"
+                                "foaf": "http://xmlns.com/foaf/0.1/",
                             },
                             "@id": "s3://datasets/customers/churn.csv",
                             "@type": "dcat:Dataset",
@@ -134,7 +136,7 @@ class ConnectorRoutes(Routable):
                             "dcterms:description": "Dataset for churn prediction",
                             "dcterms:publisher": {
                                 "@type": "foaf:Organization",
-                                "foaf:name": "ds-connector-service"
+                                "foaf:name": "ds-connector-service",
                             },
                             "dcat:keyword": ["ml", "training", "s3"],
                             "dcat:distribution": [
@@ -142,18 +144,19 @@ class ConnectorRoutes(Routable):
                                     "@type": "dcat:Distribution",
                                     "dcterms:title": "Churn CSV distribution",
                                     "dcat:accessURL": {
-                                        "@id": "http://connector-service/content/dataproducts/1/datasets/customers/churn.csv"
+                                        "@id": "http://connector-service/content/dataproducts/1/"
+                                        "datasets/customers/churn.csv"
                                     },
                                     "dcat:mediaType": "text/csv",
-                                    "dcat:byteSize": 1048576
+                                    "dcat:byteSize": 1048576,
                                 }
-                            ]
+                            ],
                         }
                     }
-                }
+                },
             },
             404: {"description": "Data product not found"},
-            500: {"description": "Internal server error"}
+            500: {"description": "Internal server error"},
         },
     )
     async def get_data_product_metadata(
@@ -162,7 +165,8 @@ class ConnectorRoutes(Routable):
         resource_path: str,
         resource_name: str,
     ) -> JSONResponse:
-        """Return metadata of a data product in DCAT format compliant with W3C DCAT specification"""
+        """Return metadata of a data product in DCAT format
+        compliant with W3C DCAT specification"""
 
         dataset_id = f"s3://{resource_path}/{resource_name}"
 
@@ -170,7 +174,7 @@ class ConnectorRoutes(Routable):
             "@context": {
                 "dcat": "http://www.w3.org/ns/dcat#",
                 "dcterms": "http://purl.org/dc/terms/",
-                "foaf": "http://xmlns.com/foaf/0.1/"
+                "foaf": "http://xmlns.com/foaf/0.1/",
             },
             "@id": dataset_id,
             "@type": "dcat:Dataset",
@@ -179,7 +183,7 @@ class ConnectorRoutes(Routable):
             "dcterms:description": "Mocked description of the data product",
             "dcterms:publisher": {
                 "@type": "foaf:Organization",
-                "foaf:name": "ds-connector-service"
+                "foaf:name": "ds-connector-service",
             },
             "dcat:keyword": ["s3"],
             "dcat:distribution": [
@@ -187,12 +191,13 @@ class ConnectorRoutes(Routable):
                     "@type": "dcat:Distribution",
                     "dcterms:title": f"Distribution of {resource_name}",
                     "dcat:accessURL": {
-                        "@id": f"http://connector-service/content/dataproducts/{interface_id}/{resource_path}/{resource_name}"
+                        "@id": f"http://connector-service/content/dataproducts/"
+                        f"{interface_id}/{resource_path}/{resource_name}"
                     },
                     "dcat:mediaType": "text/csv",
-                    "dcat:byteSize": 123456
+                    "dcat:byteSize": 123456,
                 }
-            ]
+            ],
         }
 
         return JSONResponse(content=response, media_type="application/ld+json")
@@ -205,9 +210,11 @@ class ConnectorRoutes(Routable):
         responses={
             200: {
                 "description": "Full data product content",
-                "content": {"text/csv": {"example": "mock,full,object,content\n1,2,3,4\n"}}
+                "content": {
+                    "text/csv": {"example": "mock,full,object,content\n1,2,3,4\n"}
+                },
             },
-            404: {"description": "Data product not found"}
+            404: {"description": "Data product not found"},
         },
     )
     async def get_data_product_content(
@@ -233,12 +240,12 @@ class ConnectorRoutes(Routable):
                 "headers": {
                     "Content-Range": {
                         "description": "Range of bytes returned",
-                        "schema": {"type": "string", "example": "bytes=0-1023"}
+                        "schema": {"type": "string", "example": "bytes=0-1023"},
                     }
-                }
+                },
             },
             404: {"description": "Data product not found"},
-            416: {"description": "Range not satisfiable"}
+            416: {"description": "Range not satisfiable"},
         },
     )
     async def get_data_product_chunk(
@@ -246,8 +253,8 @@ class ConnectorRoutes(Routable):
         interface_id: str,
         resource_path: str,
         resource_name: str,
-        start: Optional[int] = Query(None, description="Start byte position for chunk"),
-        end: Optional[int] = Query(None, description="End byte position for chunk"),
+        start: Optional[int] = Query(None, description="Start byte position"),
+        end: Optional[int] = Query(None, description="End byte position"),
     ) -> StreamingResponse:
         return StreamingResponse(
             iter([b"mock,chunked,data\n"]),
