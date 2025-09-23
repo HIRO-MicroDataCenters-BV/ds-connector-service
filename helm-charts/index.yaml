@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  server:
+  - apiVersion: v2
+    appVersion: 0.1.0-dev.74.methods-signatur.b4f0a05c
+    created: "2025-09-23T12:18:35.311606081Z"
+    description: Web server
+    digest: 0561728e1062409bc9516c2a089f703876f00e93f14f4d82f6378e248ffd2db5
+    name: server
+    type: application
+    urls:
+    - https://HIRO-MicroDataCenters-BV.github.io/ds-connector-service/helm-charts/server-0.1.0-dev.74.methods-signatur.b4f0a05c.tgz
+    version: 0.1.0-dev.74.methods-signatur.b4f0a05c
+generated: "2025-09-23T12:18:35.311153236Z"
