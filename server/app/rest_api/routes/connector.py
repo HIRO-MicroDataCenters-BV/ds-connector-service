@@ -3,11 +3,10 @@ from typing import List, Optional
 from classy_fastapi import Routable, get
 from fastapi import APIRouter, Query, status
 from fastapi.responses import JSONResponse, StreamingResponse
-from pydantic import BaseModel, Field
 
 from app.response import JSONLDResponse
+from app.schemas import connector as schemas
 from app.tags import Tags
-from app import schemas
 
 
 class ConnectorRoutes(Routable):
@@ -19,7 +18,7 @@ class ConnectorRoutes(Routable):
         operation_id="get_connector_metadata",
         name="Get Connector Metadata",
         tags=[Tags.Data_products],
-        response_model=ConnectorMetadata,
+        response_model=schemas.ConnectorMetadata,
     )
     async def get_connector_metadata(self) -> JSONLDResponse:
         return JSONLDResponse(
