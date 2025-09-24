@@ -11,11 +11,13 @@ class ConnectorMetadata(BaseModel):
     status: str
     version: str
 
+
 class DataProductDistribution(BaseModel):
     title: str
     access_url: str
     media_type: str
     byte_size: int
+
 
 class DataProduct(BaseModel):
     id: str
@@ -23,7 +25,9 @@ class DataProduct(BaseModel):
     identifier: str
     title: str
     description: str
-    publisher: Dict[str, Any] # e.g., {"type": "organization", "name": "ds-connector-service"}
+    publisher: Dict[
+        str, Any
+    ]  # e.g., {"type": "organization", "name": "ds-connector-service"}
     keyword: List[str] = []
     distribution: List[DataProductDistribution] = []
     region: str
