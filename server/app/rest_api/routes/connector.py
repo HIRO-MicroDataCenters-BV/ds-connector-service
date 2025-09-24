@@ -4,7 +4,6 @@ from classy_fastapi import Routable, get
 from fastapi import APIRouter, Query, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from app.response import JSONLDResponse
 from app.schemas import connector as schemas
 from app.tags import Tags
 
@@ -20,9 +19,9 @@ class ConnectorRoutes(Routable):
         tags=[Tags.Data_products],
         response_model=schemas.ConnectorMetadata,
     )
-    async def get_connector_metadata(self) -> JSONLDResponse:
-        return JSONLDResponse(
-            {
+    async def get_connector_metadata(self) -> JSONResponse:
+        return JSONResponse(
+            content={
                 "connector_id": "ds-connector-service",
                 "region": "eu-central-1",
                 "supported_interfaces": ["s3", "rest", "sql"],
@@ -34,116 +33,49 @@ class ConnectorRoutes(Routable):
 
     @get(
         "/metadata/{interface_id}/{resource_path:path}/{resource_name}",
-        operation_id="get_data_product_metadata",
+        operation_id="get_dataproduct_metadata",
         name="Get Data Product Metadata",
         tags=[Tags.Data_products],
-        response_model=schemas.DCATDataset,
-        responses={
-            200: {
-                "description": "Data product metadata in DCAT format",
-                "content": {
-                    "application/ld+json": {
-                        "example": {
-                            "@context": {
-                                "dcat": "http://www.w3.org/ns/dcat#",
-                                "dcterms": "http://purl.org/dc/terms/",
-                                "foaf": "http://xmlns.com/foaf/0.1/",
-                            },
-                            "@id": "s3://datasets/customers/churn.csv",
-                            "@type": "dcat:Dataset",
-                            "dcterms:identifier": "churn.csv",
-                            "dcterms:title": "Customer  Dataset",
-                            "dcterms:description": "Dataset for churn prediction",
-                            "dcterms:publisher": {
-                                "@type": "foaf:Organization",
-                                "foaf:name": "ds-connector-service",
-                            },
-                            "dcat:keyword": ["ml", "training", "s3"],
-                            "dcat:distribution": [
-                                {
-                                    "@type": "dcat:Distribution",
-                                    "dcterms:title": "Churn CSV distribution",
-                                    "dcat:accessURL": {
-                                        "@id": "http://connector-service/content/"
-                                        "dataproducts/1/"
-                                        "datasets/customers/churn.csv"
-                                    },
-                                    "dcat:mediaType": "text/csv",
-                                    "dcat:byteSize": 1048576,
-                                }
-                            ],
-                        }
-                    }
-                },
-            },
-            404: {"description": "Data product not found"},
-            500: {"description": "Internal server error"},
-        },
+        response_model=schemas.DataProduct,
     )
-    async def get_data_product_metadata(
+    async def get_dataproduct_metadata(
         self,
         interface_id: str,
         resource_path: str,
         resource_name: str,
     ) -> JSONResponse:
-        """Return metadata of a data product in DCAT format
-        compliant with W3C DCAT specification"""
-
-        dataset_id = f"s3://{resource_path}/{resource_name}"
-
-        response = {
-            "@context": {
-                "dcat": "http://www.w3.org/ns/dcat#",
-                "dcterms": "http://purl.org/dc/terms/",
-                "foaf": "http://xmlns.com/foaf/0.1/",
-            },
-            "@id": dataset_id,
-            "@type": "dcat:Dataset",
-            "dcterms:identifier": resource_name,
-            "dcterms:title": resource_name,
-            "dcterms:description": "Mocked description of the data product",
-            "dcterms:publisher": {
-                "@type": "foaf:Organization",
-                "foaf:name": "ds-connector-service",
-            },
-            "dcat:keyword": ["s3"],
-            "dcat:distribution": [
-                {
-                    "@type": "dcat:Distribution",
-                    "dcterms:title": f"Distribution of {resource_name}",
-                    "dcat:accessURL": {
-                        "@id": f"http://connector-service/content/dataproducts/"
-                        f"{interface_id}/{resource_path}/{resource_name}"
-                    },
-                    "dcat:mediaType": "text/csv",
-                    "dcat:byteSize": 123456,
-                }
+        """Return metadata of a single data product (plain JSON)."""
+        product = schemas.DataProduct(
+            id=f"s3://{resource_path}/{resource_name}",
+            identifier=resource_name,
+            title=resource_name,
+            description=f"Description for {resource_name}",
+            publisher={"type": "organization", "name": "ds-connector-service"},
+            keyword=["s3"],
+            distribution=[
+                schemas.DataProductDistribution(
+                    title=f"Distribution of {resource_name}",
+                    access_url=f"http://connector-service/content/dataproducts/{interface_id}/{resource_path}/{resource_name}",
+                    media_type="text/csv",
+                    byte_size=123456,
+                )
             ],
-            "region": "ki",
-        }
-
-        return JSONResponse(content=response, media_type="application/ld+json")
+            region="ki",  # or "hus" depending on your logic
+        )
+        return JSONResponse(content=product.dict(), status_code=status.HTTP_200_OK)
 
     @get(
         "/content/{interface_id}/{resource_path:path}/{resource_name}",
-        operation_id="get_data_product_content",
+        operation_id="get_dataproduct_content",
         name="Get Data Product Content",
         tags=[Tags.Data_products],
-        responses={
-            200: {
-                "description": "Full data product content",
-                "content": {
-                    "text/csv": {"example": "mock,full,object,content\n1,2,3,4\n"}
-                },
-            },
-            404: {"description": "Data product not found"},
-        },
     )
-    async def get_data_product_content(
+    async def get_dataproduct_content(
         self, interface_id: str, resource_path: str, resource_name: str
     ) -> StreamingResponse:
+        """Return the full dataset content (CSV)."""
         return StreamingResponse(
-            iter([b"mock,full,object,content\n1,2,3,4\n"] * 10),
+            iter([b"full,object,content\n1,2,3,4\n"] * 10),
             media_type="text/csv",
             headers={"Content-Disposition": f'attachment; filename="{resource_name}"'},
             status_code=status.HTTP_200_OK,
@@ -151,14 +83,14 @@ class ConnectorRoutes(Routable):
 
     @get(
         "/content/{interface_id}/{resource_path:path}/{resource_name}/chunk",
-        operation_id="get_data_product_chunk",
+        operation_id="get_dataproduct_chunk",
         name="Get Data Product Chunk",
         tags=[Tags.Data_products],
         responses={
             200: {"description": "Full chunk when no range specified"},
             206: {
                 "description": "Partial content chunk",
-                "content": {"text/csv": {"example": "mock,chunked,data\n"}},
+                "content": {"text/csv": {"example": "partial,data\n"}},
                 "headers": {
                     "Content-Range": {
                         "description": "Range of bytes returned",
@@ -170,7 +102,7 @@ class ConnectorRoutes(Routable):
             416: {"description": "Range not satisfiable"},
         },
     )
-    async def get_data_product_chunk(
+    async def get_dataproduct_chunk(
         self,
         interface_id: str,
         resource_path: str,
@@ -178,66 +110,43 @@ class ConnectorRoutes(Routable):
         start: Optional[int] = Query(None, description="Start byte position"),
         end: Optional[int] = Query(None, description="End byte position"),
     ) -> StreamingResponse:
+        """Return a dataset chunk (partial CSV content)."""
         return StreamingResponse(
-            iter([b"mock,chunked,data\n"]),
+            iter([b"partial,data\n"]),
             media_type="text/csv",
             headers={
                 "Content-Range": f"bytes={start}-{end}"
-                if start and end
+                if start is not None and end is not None
                 else "bytes */*"
             },
-            status_code=status.HTTP_206_PARTIAL_CONTENT
-            if start and end
-            else status.HTTP_200_OK,
+            status_code=(
+                status.HTTP_206_PARTIAL_CONTENT
+                if start is not None and end is not None
+                else status.HTTP_200_OK
+            ),
         )
 
     @get(
         "/metadata/dataproducts",
-        operation_id="list_data_products",
+        operation_id="list_dataproducts",
         name="List Data Products",
         tags=[Tags.Data_products],
         response_model=List[schemas.DataProductSummary],
-        responses={
-            200: {
-                "description": "List of data products with pagination",
-                "content": {
-                    "application/json": {
-                        "example": [
-                            {
-                                "id": "s3://datasets/customers/churn.csv",
-                                "name": "churn.csv",
-                                "description": "Customer churn dataset",
-                            },
-                            {
-                                "id": "s3://datasets/sales/sales.csv",
-                                "name": "sales.csv",
-                                "description": "Sales dataset",
-                            },
-                        ]
-                    }
-                },
-            },
-        },
     )
-    async def list_data_products(
+    async def list_dataproducts(
         self,
         page: int = Query(1, ge=1, description="Page number"),
-        page_size: int = Query(
-            10, ge=1, le=100, description="Number of items per page"
-        ),
+        page_size: int = Query(10, ge=1, le=100, description="Items per page"),
     ) -> JSONResponse:
-        """Return a paginated list of data products"""
-
-        # Mocked dataset list
+        """Return a paginated list of data products."""
         all_data_products = [
             {
                 "id": f"s3://datasets/{i}/data_{i}.csv",
                 "name": f"data_{i}.csv",
                 "description": f"Description for data_{i}",
             }
-            for i in range(1, 51)  # total 50 data products
+            for i in range(1, 51)
         ]
-
         start_index = (page - 1) * page_size
         end_index = start_index + page_size
         paginated_data_products = all_data_products[start_index:end_index]
@@ -247,7 +156,7 @@ class ConnectorRoutes(Routable):
                 "page": page,
                 "page_size": page_size,
                 "total": len(all_data_products),
-                "data_products": paginated_data_products,
+                "dataproducts": paginated_data_products,
             },
             status_code=status.HTTP_200_OK,
         )
