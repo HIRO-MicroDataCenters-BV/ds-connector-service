@@ -1,6 +1,7 @@
 """Schemas for data connector and data product metadata."""
 
 from typing import Any, Dict, List
+
 from pydantic import BaseModel, Field
 
 
