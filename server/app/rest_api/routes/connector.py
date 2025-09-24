@@ -1,4 +1,4 @@
-from typing import List, Optional, Any
+from typing import List, Optional
 
 from classy_fastapi import Routable, get
 from fastapi import APIRouter, Query, status
