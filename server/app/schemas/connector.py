@@ -1,6 +1,6 @@
 """Schemas for data connector and data product metadata."""
 
-from typing import List
+from typing import Dict, List, Any
 from pydantic import BaseModel, Field
 
 
@@ -23,7 +23,13 @@ class DataProduct(BaseModel):
     identifier: str
     title: str
     description: str
-    publisher: dict  # e.g., {"type": "organization", "name": "ds-connector-service"}
+    publisher: Dict[str, Any] # e.g., {"type": "organization", "name": "ds-connector-service"}
     keyword: List[str] = []
     distribution: List[DataProductDistribution] = []
     region: str
+
+
+class DataProductSummary(BaseModel):
+    id: str
+    name: str
+    description: str
