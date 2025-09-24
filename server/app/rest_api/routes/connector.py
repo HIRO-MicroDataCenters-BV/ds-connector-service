@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from classy_fastapi import Routable, get
 from fastapi import APIRouter, Query, status
@@ -7,6 +7,12 @@ from pydantic import BaseModel, Field
 
 from app.response import JSONLDResponse
 from app.tags import Tags
+
+
+class DataProductSummary(BaseModel):
+    id: str
+    name: str
+    description: str
 
 
 class DCATContext(BaseModel):
@@ -268,6 +274,67 @@ class ConnectorRoutes(Routable):
             status_code=status.HTTP_206_PARTIAL_CONTENT
             if start and end
             else status.HTTP_200_OK,
+        )
+
+    @get(
+        "/metadata/dataproducts",
+        operation_id="list_data_products",
+        name="List Data Products",
+        tags=[Tags.Data_products],
+        response_model=List[DataProductSummary],
+        responses={
+            200: {
+                "description": "List of data products with pagination",
+                "content": {
+                    "application/json": {
+                        "example": [
+                            {
+                                "id": "s3://datasets/customers/churn.csv",
+                                "name": "churn.csv",
+                                "description": "Customer churn dataset",
+                            },
+                            {
+                                "id": "s3://datasets/sales/sales.csv",
+                                "name": "sales.csv",
+                                "description": "Sales dataset",
+                            },
+                        ]
+                    }
+                },
+            },
+        },
+    )
+    async def list_data_products(
+        self,
+        page: int = Query(1, ge=1, description="Page number"),
+        page_size: int = Query(
+            10, ge=1, le=100, description="Number of items per page"
+        ),
+    ) -> JSONResponse:
+        """Return a paginated list of data products"""
+
+        # Mocked dataset list
+        all_data_products = [
+            {
+                "id": f"s3://datasets/{i}/data_{i}.csv",
+                "name": f"data_{i}.csv",
+                "description": f"Description for data_{i}",
+            }
+            for i in range(1, 51)  # total 50 data products
+        ]
+
+        start_index = (page - 1) * page_size
+        end_index = start_index + page_size
+        paginated_data_products = all_data_products[start_index:end_index]
+
+        return JSONResponse(
+            content={
+                "page": page,
+                "page_size": page_size,
+                "total": len(all_data_products),
+                "data_products": paginated_data_products,
+            },
+            status_code=status.HTTP_200_OK,
         )
 
 
