@@ -55,7 +55,8 @@ class ConnectorRoutes(Routable):
             distribution=[
                 schemas.DataProductDistribution(
                     title=f"Distribution of {resource_name}",
-                    access_url=f"http://connector-service/content/dataproducts/{interface_id}/{resource_path}/{resource_name}",
+                    access_url=f"http://connector-service/content/dataproducts/"
+                    f"{interface_id}/{resource_path}/{resource_name}",
                     media_type="text/csv",
                     byte_size=123456,
                 )
