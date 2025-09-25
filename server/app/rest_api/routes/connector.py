@@ -160,7 +160,6 @@ class ConnectorRoutes(Routable):
                         packaging_format="zip",
                     )
                 ],
-                region="ki",  # or "hus"
             )
             for i in range(1, 51)
         ]
