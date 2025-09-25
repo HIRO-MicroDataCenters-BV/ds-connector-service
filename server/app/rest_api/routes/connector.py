@@ -147,8 +147,10 @@ class ConnectorRoutes(Routable):
                     schemas.DataProductDistribution(
                         title=f"Distribution {i}",
                         description=f"Distribution for data product {i}",
-                        access_url=f"http://connector-service/content/dataproducts/{i}/data_{i}.csv",
-                        download_url=f"http://connector-service/content/dataproducts/{i}/data_{i}.csv/download",
+                        access_url=f"http://connector-service/content/dataproducts"
+                        f"/{i}/data_{i}.csv",
+                        download_url=f"http://connector-service/content/dataproducts"
+                        f"/{i}/data_{i}.csv/download",
                         media_type="text/csv",
                         byte_size=123456,
                         format="CSV",
