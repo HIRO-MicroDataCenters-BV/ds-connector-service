@@ -1,3 +1,13 @@
 {
-  "packageName": "template_web_client"
+  "packageName": "ds_connector_service",
+  "projectName": "ds_connector_service",
+  "generateSourceCodeOnly": true,
+  "ignoreFileOverride": ".openapi-generator-ignore",
+  "outputDir": "/project",
+  "packageVersion": "0.1.0",
+  "generateTests": false,
+  "generateApiDocs": true,
+  "generateModelDocs": true,
+  "generateApiTests": false,
+  "generateModelTests": false
 }

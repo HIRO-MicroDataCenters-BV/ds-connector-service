@@ -48,6 +48,7 @@ def generate_openapi(
         "/project",
         "-i",
         file,
+        "--additional-properties=packageName=ds_connector_service,projectName=ds_connector_service",
     ]
 
     if volumes is not None:
@@ -60,11 +61,31 @@ def generate_openapi(
     subprocess.run([*docker_args, *generator_args], stdout=subprocess.PIPE, check=True)
 
 
+def fix_pyproject() -> None:
+    """Ensure pyproject.toml uses the new Poetry 2.x dev-dependencies format."""
+    pyproject_path = os.path.join(CLIENT_DIR, "pyproject.toml")
+    if not os.path.exists(pyproject_path):
+        return
+
+    with open(pyproject_path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    if "[tool.poetry.dev-dependencies]" in content:
+        content = content.replace(
+            "[tool.poetry.dev-dependencies]",
+            "[tool.poetry.group.dev.dependencies]",
+        )
+        with open(pyproject_path, "w", encoding="utf-8") as f:
+            f.write(content)
+        print("✅ Fixed pyproject.toml to use [tool.poetry.group.dev.dependencies]")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate python client")
     parser.add_argument("file", help="input OpenAPI specification file path or URL")
-    parser.add_argument("--asyncio", dest="asyncio", action="store_true",
-                        help="generate async code")
+    parser.add_argument(
+        "--asyncio", dest="asyncio", action="store_true", help="generate async code"
+    )
     args = parser.parse_args()
 
     file = str(args.file).strip()
@@ -91,6 +112,7 @@ def main() -> None:
         sys.exit(1)
 
     print("Successfully finished")
+    fix_pyproject()
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from prometheus_fastapi_instrumentator import Instrumentator
 
-from . import example, items
+from .rest_api.routes.connector import router as connector_router
 
 
 class CustomFastAPI(FastAPI):
@@ -12,17 +12,21 @@ class CustomFastAPI(FastAPI):
         if self.openapi_schema:
             return self.openapi_schema
         openapi_schema = get_openapi(
-            title="Template web service",
-            version="0.0.0",
-            description="This is a template of a web service",
+            title="Connector Service API",
+            version="0.1.0",
+            description=(
+                "The Connector Service provides a unified"
+                " API for accessing Data Products, "
+                "validating Contracts, and logging Transactions in the NextGen node."
+            ),
             contact={
                 "name": "HIRO-MicroDataCenters",
                 "email": "all-hiro@hiro-microdatacenters.nl",
             },
             license_info={
                 "name": "MIT",
-                "url": "https://github.com/HIRO-MicroDataCenters-BV"
-                "/template-python/blob/main/LICENSE",
+                "url": "https://github.com/HIRO-MicroDataCenters-BV/"
+                "ds-connector-service/blob/main/LICENSE",
             },
             routes=self.routes,
         )
@@ -32,9 +36,5 @@ class CustomFastAPI(FastAPI):
 
 app = CustomFastAPI()
 
-
 Instrumentator().instrument(app).expose(app)
-
-
-app.include_router(example.router)
-app.include_router(items.routes.router)
+app.include_router(connector_router)
