@@ -33,37 +33,35 @@ class ConnectorRoutes(Routable):
 
     @get(
         "/metadata/{interface_id}/{resource_path:path}/{resource_name}",
-        operation_id="get_dataproduct_metadata",
-        name="Get Data Product Metadata",
+        operation_id="get_dataproduct_distribution",
+        name="Get Data Product Distribution",
         tags=[Tags.Data_products],
-        response_model=schemas.DataProduct,
     )
-    async def get_dataproduct_metadata(
-        self,
-        interface_id: str,
-        resource_path: str,
-        resource_name: str,
+    async def get_dataproduct_distribution(
+        interface_id: str, resource_path: str, resource_name: str
     ) -> JSONResponse:
-        """Return metadata of a single data product (plain JSON)."""
-        product = schemas.DataProduct(
-            id=f"s3://{resource_path}/{resource_name}",
-            identifier=resource_name,
-            title=resource_name,
-            description=f"Description for {resource_name}",
-            publisher={"type": "organization", "name": "ds-connector-service"},
-            keyword=["s3"],
-            distribution=[
-                schemas.DataProductDistribution(
-                    title=f"Distribution of {resource_name}",
-                    access_url=f"http://connector-service/content/dataproducts/"
-                    f"{interface_id}/{resource_path}/{resource_name}",
-                    media_type="text/csv",
-                    byte_size=123456,
-                )
-            ],
-            region="ki",  # or "hus" depending on your logic
+        """Return DCAT distribution metadata for a data product along with region."""
+        distribution = [
+            schemas.DataProductDistribution(
+                title=f"Distribution of {resource_name}",
+                description=f"Distribution for {resource_name}",
+                access_url=f"http://connector-service/content/dataproducts/"
+                f"{interface_id}/{resource_path}/{resource_name}",
+                download_url=f"http://connector-service/content/dataproducts/"
+                f"{interface_id}/{resource_path}/{resource_name}/download",
+                media_type="text/csv",
+                byte_size=123456,
+                format="CSV",
+                license="https://example.com/license/xyz",
+                access_rights="public",
+                release_date="2025-03-13",
+                packaging_format="zip",
+            )
+        ]
+        return JSONResponse(
+            content={"region": "ki", "distribution": [d.dict() for d in distribution]},
+            status_code=status.HTTP_200_OK,
         )
-        return JSONResponse(content=product.dict(), status_code=status.HTTP_200_OK)
 
     @get(
         "/content/{interface_id}/{resource_path:path}/{resource_name}",
@@ -132,22 +130,38 @@ class ConnectorRoutes(Routable):
         operation_id="list_dataproducts",
         name="List Data Products",
         tags=[Tags.Data_products],
-        response_model=List[schemas.DataProductSummary],
+        response_model=List[schemas.DataProductItem],
     )
-    async def list_dataproducts(
-        self,
+    async def list_data_products(
         page: int = Query(1, ge=1, description="Page number"),
-        page_size: int = Query(10, ge=1, le=100, description="Items per page"),
+        page_size: int = Query(
+            10, ge=1, le=100, description="Number of items per page"
+        ),
     ) -> JSONResponse:
-        """Return a paginated list of data products."""
+        """Return a paginated list of data product distributions with region."""
+
         all_data_products = [
-            {
-                "id": f"s3://datasets/{i}/data_{i}.csv",
-                "name": f"data_{i}.csv",
-                "description": f"Description for data_{i}",
-            }
+            schemas.DataProductItem(
+                distribution=[
+                    schemas.DataProductDistribution(
+                        title=f"Distribution {i}",
+                        description=f"Distribution for data product {i}",
+                        access_url=f"http://connector-service/content/dataproducts/{i}/data_{i}.csv",
+                        download_url=f"http://connector-service/content/dataproducts/{i}/data_{i}.csv/download",
+                        media_type="text/csv",
+                        byte_size=123456,
+                        format="CSV",
+                        license="https://example.com/license/xyz",
+                        access_rights="public",
+                        release_date="2025-03-13",
+                        packaging_format="zip",
+                    )
+                ],
+                region="ki",  # or "hus"
+            )
             for i in range(1, 51)
         ]
+
         start_index = (page - 1) * page_size
         end_index = start_index + page_size
         paginated_data_products = all_data_products[start_index:end_index]
@@ -157,7 +171,7 @@ class ConnectorRoutes(Routable):
                 "page": page,
                 "page_size": page_size,
                 "total": len(all_data_products),
-                "dataproducts": paginated_data_products,
+                "data_products": [d.dict() for d in paginated_data_products],
             },
             status_code=status.HTTP_200_OK,
         )
