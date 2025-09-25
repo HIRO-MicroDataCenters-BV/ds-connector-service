@@ -29,4 +29,3 @@ class DataProductDistribution(BaseModel):
 
 class DataProductItem(BaseModel):
     distribution: List[DataProductDistribution]
-    region: str
