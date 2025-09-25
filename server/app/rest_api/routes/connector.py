@@ -33,12 +33,12 @@ class ConnectorRoutes(Routable):
 
     @get(
         "/metadata/{interface_id}/{resource_path:path}/{resource_name}",
-        operation_id="get_dataproduct_distribution",
+        operation_id="get_dataproduct_metadata",
         name="Get Data Product Distribution",
         tags=[Tags.Data_products],
     )
-    async def get_dataproduct_distribution(
-        interface_id: str, resource_path: str, resource_name: str
+    async def get_dataproduct_metadata(
+        self, interface_id: str, resource_path: str, resource_name: str
     ) -> JSONResponse:
         """Return DCAT distribution metadata for a data product along with region."""
         distribution = [
@@ -132,7 +132,8 @@ class ConnectorRoutes(Routable):
         tags=[Tags.Data_products],
         response_model=List[schemas.DataProductItem],
     )
-    async def list_data_products(
+    async def list_dataproducts(
+        self,
         page: int = Query(1, ge=1, description="Page number"),
         page_size: int = Query(
             10, ge=1, le=100, description="Number of items per page"
