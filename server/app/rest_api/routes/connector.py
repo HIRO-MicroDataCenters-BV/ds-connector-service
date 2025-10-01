@@ -3,9 +3,18 @@ from typing import List, Optional
 from classy_fastapi import Routable, get
 from fastapi import APIRouter, Query, status
 from fastapi.responses import JSONResponse, StreamingResponse
-
-from app.schemas import connector as schemas
+from app.core import usecases
+from app.core.clients.client_factory import ClientFactory
+from ..serializers import DataProductDistribution, DataProductItem, ConnectorMetadata
 from app.tags import Tags
+from app.core.clients.factory_instance import client_factory
+from app.core.source_type import SourceType
+
+
+def get_usecases(interface_id: str) -> usecases.DataproductUseCase:
+    # In real implementation, this would fetch a client from ClientFactory
+    client = client_factory.get_client_by_name(interface_id)
+    return usecases.DataproductUseCase(client)
 
 
 class ConnectorRoutes(Routable):
@@ -17,14 +26,14 @@ class ConnectorRoutes(Routable):
         operation_id="get_connector_metadata",
         name="Get Connector Metadata",
         tags=[Tags.Data_products],
-        response_model=schemas.ConnectorMetadata,
+        response_model=ConnectorMetadata,
     )
     async def get_connector_metadata(self) -> JSONResponse:
         return JSONResponse(
             content={
                 "connector_id": "ds-connector-service",
                 "region": "eu-central-1",
-                "supported_interfaces": ["s3", "rest", "sql"],
+                "supported_interfaces": ["s3", "rest", "file"],
                 "status": "healthy",
                 "version": "0.1.0",
             },
@@ -38,28 +47,19 @@ class ConnectorRoutes(Routable):
         tags=[Tags.Data_products],
     )
     async def get_dataproduct_metadata(
-        self, interface_id: str, resource_path: str, resource_name: str
+        self,
+        interface_id: str,
+        resource_path: str,
+        resource_name: str,
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> JSONResponse:
         """Return DCAT distribution metadata for a data product along with region."""
-        distribution = [
-            schemas.DataProductDistribution(
-                title=f"Distribution of {resource_name}",
-                description=f"Distribution for {resource_name}",
-                access_url=f"http://connector-service/content/dataproducts/"
-                f"{interface_id}/{resource_path}/{resource_name}",
-                download_url=f"http://connector-service/content/dataproducts/"
-                f"{interface_id}/{resource_path}/{resource_name}/download",
-                media_type="text/csv",
-                byte_size=123456,
-                format="CSV",
-                license="https://example.com/license/xyz",
-                access_rights="public",
-                release_date="2025-03-13",
-                packaging_format="zip",
-            )
-        ]
+
+        dataproduct_metadata = usecases.get_dataproduct_metadata(
+            resource_path, resource_name
+        )
         return JSONResponse(
-            content={"region": "ki", "distribution": [d.dict() for d in distribution]},
+            content={"region": "ki", "distribution": dataproduct_metadata.dict()},
             status_code=status.HTTP_200_OK,
         )
 
@@ -114,9 +114,11 @@ class ConnectorRoutes(Routable):
             iter([b"partial,data\n"]),
             media_type="text/csv",
             headers={
-                "Content-Range": f"bytes={start}-{end}"
-                if start is not None and end is not None
-                else "bytes */*"
+                "Content-Range": (
+                    f"bytes={start}-{end}"
+                    if start is not None and end is not None
+                    else "bytes */*"
+                )
             },
             status_code=(
                 status.HTTP_206_PARTIAL_CONTENT
@@ -126,54 +128,29 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/metadata/dataproducts",
+        "/metadata/{interface_id}/{resource_path}/dataproducts",
         operation_id="list_dataproducts",
         name="List Data Products",
         tags=[Tags.Data_products],
-        response_model=List[schemas.DataProductItem],
+        response_model=List[DataProductItem],
     )
     async def list_dataproducts(
         self,
-        page: int = Query(1, ge=1, description="Page number"),
-        page_size: int = Query(
-            10, ge=1, le=100, description="Number of items per page"
-        ),
+        interface_id: str,
+        resource_path: str,
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+        # page: int = Query(1, ge=1, description="Page number"),
+        # page_size: int = Query(10, ge=1, le=100, description="Number of items per page"),
     ) -> JSONResponse:
         """Return a paginated list of data product distributions with region."""
 
-        all_data_products = [
-            schemas.DataProductItem(
-                distribution=[
-                    schemas.DataProductDistribution(
-                        title=f"Distribution {i}",
-                        description=f"Distribution for data product {i}",
-                        access_url=f"http://connector-service/content/dataproducts"
-                        f"/{i}/data_{i}.csv",
-                        download_url=f"http://connector-service/content/dataproducts"
-                        f"/{i}/data_{i}.csv/download",
-                        media_type="text/csv",
-                        byte_size=123456,
-                        format="CSV",
-                        license="https://example.com/license/xyz",
-                        access_rights="public",
-                        release_date="2025-03-13",
-                        packaging_format="zip",
-                    )
-                ],
-            )
-            for i in range(1, 51)
-        ]
+        all_dataproducts_metadata = usecases.list_dataproducts(resource_path)
 
-        start_index = (page - 1) * page_size
-        end_index = start_index + page_size
-        paginated_data_products = all_data_products[start_index:end_index]
-
+        ## TODO Implement pagination logic here if needed
         return JSONResponse(
             content={
-                "page": page,
-                "page_size": page_size,
-                "total": len(all_data_products),
-                "data_products": [d.dict() for d in paginated_data_products],
+                "region": "ki",
+                "data_products": [d.dict() for d in all_dataproducts_metadata],
             },
             status_code=status.HTTP_200_OK,
         )

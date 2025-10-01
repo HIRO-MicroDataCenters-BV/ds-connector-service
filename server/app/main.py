@@ -5,7 +5,8 @@ from fastapi.openapi.utils import get_openapi
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from .rest_api.routes.connector import router as connector_router
-
+from app.core.clients.factory_instance import client_factory
+from app.core.source_type import SourceType
 
 class CustomFastAPI(FastAPI):
     def openapi(self) -> Dict[str, Any]:
@@ -35,6 +36,8 @@ class CustomFastAPI(FastAPI):
 
 
 app = CustomFastAPI()
+
+client_factory.list_registered_clients()  # Initialize and log registered clients
 
 Instrumentator().instrument(app).expose(app)
 app.include_router(connector_router)
