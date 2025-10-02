@@ -133,19 +133,28 @@ class FileSystemDataClient(BaseReadDataClient):
     async def _collect_files_recursively(self, root_path: str, parent: str = "", max_files: int = 20) -> list[tuple[str, str]]:
         """Recursively collect files up to max_files limit"""
         files = []
-        if await aiofiles.os.path.exists(root_path):
-            async for entry in aiofiles.os.scandir(root_path):
-                entry_rel_path = f"{parent}/{entry.name}" if parent else entry.name
-                if entry.is_file():
-                    files.append((entry_rel_path, entry.path))
-                    if len(files) >= max_files:
-                        return files
-                elif entry.is_dir():
-                    sub_files = await self._collect_files_recursively(entry.path, entry_rel_path, max_files - len(files))
-                    files.extend(sub_files)
-                    if len(files) >= max_files:
-                        return files
-        return files    
+        # If root_path is not absolute, join with self.base_path
+        root_path_obj = Path(root_path)
+        if not root_path_obj.is_absolute():
+            root_path_obj = (self.base_path / root_path_obj).resolve()
+        else:
+            root_path_obj = root_path_obj.resolve()
+        if not root_path_obj.exists():
+            return files
+        loop = asyncio.get_event_loop()
+        entries = await loop.run_in_executor(None, lambda: list(root_path_obj.iterdir()))
+        for entry in entries:
+            entry_rel_path = f"{parent}/{entry.name}" if parent else entry.name
+            if entry.is_file():
+                files.append((entry_rel_path, str(entry.resolve())))
+                if len(files) >= max_files:
+                    return files
+            elif entry.is_dir():
+                sub_files = await self._collect_files_recursively(str(entry), entry_rel_path, max_files - len(files))
+                files.extend(sub_files)
+                if len(files) >= max_files:
+                    return files
+        return files
    
     async def stream_content(
         self, 
@@ -257,8 +266,8 @@ class FileSystemDataClient(BaseReadDataClient):
             
             if not await aiofiles.ospath.isfile(file_path):
                 raise HTTPException(status_code=400, detail="Path is not a file")
-            
-            # Get file stats
+
+            # Get file stats using os.stat in executor
             loop = asyncio.get_event_loop()
             file_stat = await loop.run_in_executor(None, os.stat, file_path)
             
@@ -310,8 +319,10 @@ class FileSystemDataClient(BaseReadDataClient):
         try:
             products = []
             resource_files = await self._collect_files_recursively(resource_path, max_files=MAX_FILES_TO_LIST)
+            logger.info(f"Collected {len(resource_files)} files from path: {resource_path}")
+            loop = asyncio.get_event_loop()
             for file_name, file_path in resource_files:
-                file_stat = await aiofiles.os.stat(file_path)
+                file_stat = await loop.run_in_executor(None, os.stat, file_path)
                 suffix = Path(file_path).suffix.lower()
                 content_type = CONTENT_TYPE_MAP.get(suffix, 'application/octet-stream')
                 checksum = ""

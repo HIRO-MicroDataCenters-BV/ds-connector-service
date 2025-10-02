@@ -1,3 +1,4 @@
+import logging
 from typing import List, Optional
 
 from classy_fastapi import Routable, get
@@ -9,6 +10,8 @@ from ..serializers import DataProductDistribution, DataProductItem, ConnectorMet
 from app.tags import Tags
 from app.core.clients.factory_instance import client_factory
 from app.core.source_type import SourceType
+
+logger = logging.getLogger(__name__)
 
 
 def get_usecases(interface_id: str) -> usecases.DataproductUseCase:
@@ -54,6 +57,7 @@ class ConnectorRoutes(Routable):
         usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> JSONResponse:
         """Return Metadata for a data product along with region."""
+        logger.info(f"Getting metadata for a single data product for interface: {interface_id}")
 
         dataproduct_metadata = await usecases.get_dataproduct_metadata(
             resource_path, resource_name
@@ -128,7 +132,7 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/metadata/{interface_id}/{resource_path}/dataproducts",
+        "/metadata-list/{interface_id}/{resource_path:path}",
         operation_id="list_dataproducts",
         name="List Data Products",
         tags=[Tags.Data_products],
@@ -143,8 +147,8 @@ class ConnectorRoutes(Routable):
         # page_size: int = Query(10, ge=1, le=100, description="Number of items per page"),
     ) -> JSONResponse:
         """Return a paginated list of data product distributions with region."""
-
-        all_dataproducts_metadata = usecases.list_dataproducts(resource_path)
+        logger.info(f"Listing data products for interface: {interface_id}")
+        all_dataproducts_metadata = await usecases.list_dataproducts(resource_path)
 
         ## TODO Implement pagination logic here if needed
         return JSONResponse(
