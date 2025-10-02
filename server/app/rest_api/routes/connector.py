@@ -1,22 +1,24 @@
-import logging
 from typing import List, Optional
 
+import logging
+
 from classy_fastapi import Routable, get
-from fastapi import APIRouter, Query, status, Depends
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import JSONResponse, StreamingResponse
+
 from app.core import usecases
-from app.core.clients.client_factory import ClientFactory
-from ..serializers import DataProductDistribution, DataProductItem, ConnectorMetadata
-from app.tags import Tags
+from app.core.clients.base import BaseReadDataClient
 from app.core.clients.factory_instance import client_factory
-from app.core.source_type import SourceType
+from app.tags import Tags
+
+from ..serializers import ConnectorMetadata, DataProductItem
 
 logger = logging.getLogger(__name__)
 
 
 def get_usecases(interface_id: str) -> usecases.DataproductUseCase:
     # In real implementation, this would fetch a client from ClientFactory
-    client = client_factory.get_client_by_name(interface_id)
+    client: BaseReadDataClient = client_factory.get_client_by_name(interface_id)
     return usecases.DataproductUseCase(client)
 
 
@@ -57,7 +59,9 @@ class ConnectorRoutes(Routable):
         usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> JSONResponse:
         """Return Metadata for a data product along with region."""
-        logger.info(f"Getting metadata for a single data product for interface: {interface_id}")
+        logger.info(
+            f"Getting metadata for a single data product for interface: {interface_id}"
+        )
 
         dataproduct_metadata = await usecases.get_dataproduct_metadata(
             resource_path, resource_name
@@ -143,14 +147,12 @@ class ConnectorRoutes(Routable):
         interface_id: str,
         resource_path: str,
         usecases: usecases.DataproductUseCase = Depends(get_usecases),
-        # page: int = Query(1, ge=1, description="Page number"),
-        # page_size: int = Query(10, ge=1, le=100, description="Number of items per page"),
     ) -> JSONResponse:
         """Return a paginated list of data product distributions with region."""
         logger.info(f"Listing data products for interface: {interface_id}")
         all_dataproducts_metadata = await usecases.list_dataproducts(resource_path)
 
-        ## TODO Implement pagination logic here if needed
+        # TODO Implement pagination logic here if needed
         return JSONResponse(
             content={
                 "region": "ki",
@@ -158,6 +160,23 @@ class ConnectorRoutes(Routable):
             },
             status_code=status.HTTP_200_OK,
         )
+
+    @get(
+        "/health/{interface_id}",
+        operation_id="health_check",
+        name="Health Check",
+        tags=[Tags.Data_products],
+    )
+    async def health_check(
+        self,
+        interface_id: str,
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+    ) -> JSONResponse:
+        try:
+            health = await usecases.health_check()
+            return JSONResponse(content=health, status_code=status.HTTP_200_OK)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
 
 
 router = APIRouter()
