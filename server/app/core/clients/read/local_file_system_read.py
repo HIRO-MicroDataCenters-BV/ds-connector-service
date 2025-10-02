@@ -10,6 +10,7 @@ from fastapi import HTTPException
 from ....rest_api.serializers import DataProductDistribution
 import hashlib
 import aiofiles
+import aiofiles.ospath
 import asyncio
 from datetime import datetime
 from app.settings import get_settings
@@ -21,12 +22,12 @@ settings = get_settings()
 CHUNK_SIZE = settings.CHUNK_SIZE
 MAX_FILE_SIZE = settings.MAX_FILE_SIZE
 MAX_FILES_TO_LIST = settings.MAX_FILES_TO_LIST
-
+FS_BASE_PATH = settings.FS_BASE_PATH
 
 ## TODO: use custome exceptions instead of HTTPException
 class FileSystemDataClient(BaseReadDataClient):
     """Client for local file system data sources"""    
-    def __init__(self, base_path: str = None, allowed_paths: Optional[List[str]] = None):
+    def __init__(self, base_path: Optional[str] = None, allowed_paths: Optional[List[str]] = None):
         """
         Initialize file system client
         
@@ -34,7 +35,7 @@ class FileSystemDataClient(BaseReadDataClient):
             base_path: Base directory path for file operations
             allowed_paths: List of allowed directory paths for security
         """
-        self.base_path = Path(base_path or os.getenv("FS_BASE_PATH", "/data")).resolve()
+        self.base_path = Path(base_path or FS_BASE_PATH).resolve()
         self.client_name = "FileSystem"
 
             # Ensure base path exists
@@ -243,20 +244,25 @@ class FileSystemDataClient(BaseReadDataClient):
         resource_name: str
     ) -> DataProductDistribution:
         """Get file metadata"""
+        print("Getting metadata...")
+        print("Resource path:", resource_path)
+        print("Resource name:", resource_name)
         file_path = self._resolve_file_path(resource_path, resource_name)
+        print("Resolved file path:", file_path)
         
         logger.info(f"Getting file metadata: {file_path}")
         
         try:
             ## Check if file exists and is readable
-            if not await aiofiles.os.path.exists(file_path):
+            if not await aiofiles.ospath.exists(file_path):
                 raise HTTPException(status_code=404, detail="Resource not found")
             
-            if not await aiofiles.os.path.isfile(file_path):
+            if not await aiofiles.ospath.isfile(file_path):
                 raise HTTPException(status_code=400, detail="Path is not a file")
             
             # Get file stats
-            file_stat = await aiofiles.os.stat(file_path)
+            loop = asyncio.get_event_loop()
+            file_stat = await loop.run_in_executor(None, os.stat, file_path)
             
             # Determine content type based on extension
             suffix = file_path.suffix.lower()
@@ -290,7 +296,7 @@ class FileSystemDataClient(BaseReadDataClient):
                 rights=None
             )
             
-            logger.info(f"File metadata retrieved: {metadata.content_length} bytes, {content_type}")
+            logger.info(f"File metadata retrieved: {metadata.byte_size} bytes, {content_type}")
             return metadata
             
         except PermissionError:

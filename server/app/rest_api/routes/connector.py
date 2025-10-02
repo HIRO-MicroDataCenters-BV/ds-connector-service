@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from classy_fastapi import Routable, get
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Query, status, Depends
 from fastapi.responses import JSONResponse, StreamingResponse
 from app.core import usecases
 from app.core.clients.client_factory import ClientFactory
@@ -53,9 +53,9 @@ class ConnectorRoutes(Routable):
         resource_name: str,
         usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> JSONResponse:
-        """Return DCAT distribution metadata for a data product along with region."""
+        """Return Metadata for a data product along with region."""
 
-        dataproduct_metadata = usecases.get_dataproduct_metadata(
+        dataproduct_metadata = await usecases.get_dataproduct_metadata(
             resource_path, resource_name
         )
         return JSONResponse(
