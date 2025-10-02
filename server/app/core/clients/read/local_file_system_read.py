@@ -244,13 +244,11 @@ class FileSystemDataClient(BaseReadDataClient):
         resource_name: str
     ) -> DataProductDistribution:
         """Get file metadata"""
-        print("Getting metadata...")
-        print("Resource path:", resource_path)
-        print("Resource name:", resource_name)
+        logger.info(f"Getting metadata...")
+        logger.info(f"Resource path: {resource_path}")
+        logger.info(f"Resource name: {resource_name}")
         file_path = self._resolve_file_path(resource_path, resource_name)
-        print("Resolved file path:", file_path)
-        
-        logger.info(f"Getting file metadata: {file_path}")
+        logger.info(f"Resolved file path: {file_path}")
         
         try:
             ## Check if file exists and is readable

@@ -4,9 +4,12 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from prometheus_fastapi_instrumentator import Instrumentator
 
+from app.logging_config import setup_logging
 from .rest_api.routes.connector import router as connector_router
 from app.core.clients.factory_instance import client_factory
 from app.core.source_type import SourceType
+from fastapi.middleware.cors import CORSMiddleware
+
 
 class CustomFastAPI(FastAPI):
     def openapi(self) -> Dict[str, Any]:
@@ -34,8 +37,17 @@ class CustomFastAPI(FastAPI):
         self.openapi_schema = openapi_schema
         return self.openapi_schema
 
+setup_logging()
+
 
 app = CustomFastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 client_factory.list_registered_clients()  # Initialize and log registered clients
 
