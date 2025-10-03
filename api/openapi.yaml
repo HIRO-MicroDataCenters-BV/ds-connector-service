@@ -76,6 +76,72 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /content/{interface_id}/{resource_path}/{resource_name}/chunk:
+    get:
+      tags:
+      - Data Products
+      summary: Get Data Product Chunk
+      description: Return a dataset chunk (partial CSV content).
+      operationId: get_dataproduct_chunk
+      parameters:
+      - name: interface_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interface Id
+      - name: resource_path
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Path
+      - name: resource_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Name
+      - name: range_header
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: HTTP Range header for partial content requests
+          title: Range Header
+        description: HTTP Range header for partial content requests
+        example: bytes=0-1023
+      responses:
+        '200':
+          description: Full chunk when no range specified
+          content:
+            application/json:
+              schema: {}
+        '206':
+          description: Partial content chunk
+          content:
+            text/csv:
+              example: 'partial,data
+
+                '
+          headers:
+            Content-Range:
+              description: Range of bytes returned
+              schema:
+                type: string
+                example: bytes=0-1023
+        '404':
+          description: Data product not found
+        '416':
+          description: Range not satisfiable
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /content/{interface_id}/{resource_path}/{resource_name}:
     get:
       tags:
@@ -108,81 +174,6 @@ paths:
           content:
             application/json:
               schema: {}
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /content/{interface_id}/{resource_path}/{resource_name}/chunk:
-    get:
-      tags:
-      - Data Products
-      summary: Get Data Product Chunk
-      description: Return a dataset chunk (partial CSV content).
-      operationId: get_dataproduct_chunk
-      parameters:
-      - name: interface_id
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Interface Id
-      - name: resource_path
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Resource Path
-      - name: resource_name
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Resource Name
-      - name: start
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          description: Start byte position
-          title: Start
-        description: Start byte position
-      - name: end
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          description: End byte position
-          title: End
-        description: End byte position
-      responses:
-        '200':
-          description: Full chunk when no range specified
-          content:
-            application/json:
-              schema: {}
-        '206':
-          description: Partial content chunk
-          content:
-            text/csv:
-              example: 'partial,data
-
-                '
-          headers:
-            Content-Range:
-              description: Range of bytes returned
-              schema:
-                type: string
-                example: bytes=0-1023
-        '404':
-          description: Data product not found
-        '416':
-          description: Range not satisfiable
         '422':
           description: Validation Error
           content:
@@ -230,9 +221,7 @@ paths:
       tags:
       - Data Products
       summary: Health Check
-      description: 'partial(func, *args, **keywords) - new function with partial application
-
-        of the given arguments and keywords.'
+      description: Perform health check on the specified interface.
       operationId: health_check
       parameters:
       - name: interface_id

@@ -19,7 +19,6 @@ ds_connector_service/docs/DataProductsApi.md
 ds_connector_service/docs/DefaultApi.md
 ds_connector_service/docs/Description.md
 ds_connector_service/docs/DownloadUrl.md
-ds_connector_service/docs/End.md
 ds_connector_service/docs/Format.md
 ds_connector_service/docs/HTTPValidationError.md
 ds_connector_service/docs/HasPolicy.md
@@ -28,8 +27,8 @@ ds_connector_service/docs/License.md
 ds_connector_service/docs/MediaType.md
 ds_connector_service/docs/Modified.md
 ds_connector_service/docs/PackageFormat.md
+ds_connector_service/docs/RangeHeader.md
 ds_connector_service/docs/Rights.md
-ds_connector_service/docs/Start.md
 ds_connector_service/docs/Title.md
 ds_connector_service/docs/ValidationError.md
 ds_connector_service/docs/ValidationErrorLocInner.md
@@ -47,7 +46,6 @@ ds_connector_service/models/data_product_distribution.py
 ds_connector_service/models/data_product_item.py
 ds_connector_service/models/description.py
 ds_connector_service/models/download_url.py
-ds_connector_service/models/end.py
 ds_connector_service/models/format.py
 ds_connector_service/models/has_policy.py
 ds_connector_service/models/http_validation_error.py
@@ -56,8 +54,8 @@ ds_connector_service/models/license.py
 ds_connector_service/models/media_type.py
 ds_connector_service/models/modified.py
 ds_connector_service/models/package_format.py
+ds_connector_service/models/range_header.py
 ds_connector_service/models/rights.py
-ds_connector_service/models/start.py
 ds_connector_service/models/title.py
 ds_connector_service/models/validation_error.py
 ds_connector_service/models/validation_error_loc_inner.py

@@ -289,8 +289,7 @@ class DataProductsApi:
         interface_id: StrictStr,
         var_resource_path: StrictStr,
         resource_name: StrictStr,
-        start: Annotated[Optional[Any], Field(description="Start byte position")] = None,
-        end: Annotated[Optional[Any], Field(description="End byte position")] = None,
+        range_header: Annotated[Optional[Any], Field(description="HTTP Range header for partial content requests")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -314,10 +313,8 @@ class DataProductsApi:
         :type var_resource_path: str
         :param resource_name: (required)
         :type resource_name: str
-        :param start: Start byte position
-        :type start: Start
-        :param end: End byte position
-        :type end: End
+        :param range_header: HTTP Range header for partial content requests
+        :type range_header: RangeHeader
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -344,8 +341,7 @@ class DataProductsApi:
             interface_id=interface_id,
             var_resource_path=var_resource_path,
             resource_name=resource_name,
-            start=start,
-            end=end,
+            range_header=range_header,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -376,8 +372,7 @@ class DataProductsApi:
         interface_id: StrictStr,
         var_resource_path: StrictStr,
         resource_name: StrictStr,
-        start: Annotated[Optional[Any], Field(description="Start byte position")] = None,
-        end: Annotated[Optional[Any], Field(description="End byte position")] = None,
+        range_header: Annotated[Optional[Any], Field(description="HTTP Range header for partial content requests")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -401,10 +396,8 @@ class DataProductsApi:
         :type var_resource_path: str
         :param resource_name: (required)
         :type resource_name: str
-        :param start: Start byte position
-        :type start: Start
-        :param end: End byte position
-        :type end: End
+        :param range_header: HTTP Range header for partial content requests
+        :type range_header: RangeHeader
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -431,8 +424,7 @@ class DataProductsApi:
             interface_id=interface_id,
             var_resource_path=var_resource_path,
             resource_name=resource_name,
-            start=start,
-            end=end,
+            range_header=range_header,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -463,8 +455,7 @@ class DataProductsApi:
         interface_id: StrictStr,
         var_resource_path: StrictStr,
         resource_name: StrictStr,
-        start: Annotated[Optional[Any], Field(description="Start byte position")] = None,
-        end: Annotated[Optional[Any], Field(description="End byte position")] = None,
+        range_header: Annotated[Optional[Any], Field(description="HTTP Range header for partial content requests")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -488,10 +479,8 @@ class DataProductsApi:
         :type var_resource_path: str
         :param resource_name: (required)
         :type resource_name: str
-        :param start: Start byte position
-        :type start: Start
-        :param end: End byte position
-        :type end: End
+        :param range_header: HTTP Range header for partial content requests
+        :type range_header: RangeHeader
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -518,8 +507,7 @@ class DataProductsApi:
             interface_id=interface_id,
             var_resource_path=var_resource_path,
             resource_name=resource_name,
-            start=start,
-            end=end,
+            range_header=range_header,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -545,8 +533,7 @@ class DataProductsApi:
         interface_id,
         var_resource_path,
         resource_name,
-        start,
-        end,
+        range_header,
         _request_auth,
         _content_type,
         _headers,
@@ -573,13 +560,9 @@ class DataProductsApi:
         if resource_name is not None:
             _path_params['resource_name'] = resource_name
         # process the query parameters
-        if start is not None:
+        if range_header is not None:
             
-            _query_params.append(('start', start))
-            
-        if end is not None:
-            
-            _query_params.append(('end', end))
+            _query_params.append(('range_header', range_header))
             
         # process the header parameters
         # process the form parameters
@@ -1216,7 +1199,7 @@ class DataProductsApi:
     ) -> object:
         """Health Check
 
-        partial(func, *args, **keywords) - new function with partial application of the given arguments and keywords.
+        Perform health check on the specified interface.
 
         :param interface_id: (required)
         :type interface_id: str
@@ -1284,7 +1267,7 @@ class DataProductsApi:
     ) -> ApiResponse[object]:
         """Health Check
 
-        partial(func, *args, **keywords) - new function with partial application of the given arguments and keywords.
+        Perform health check on the specified interface.
 
         :param interface_id: (required)
         :type interface_id: str
@@ -1352,7 +1335,7 @@ class DataProductsApi:
     ) -> RESTResponseType:
         """Health Check
 
-        partial(func, *args, **keywords) - new function with partial application of the given arguments and keywords.
+        Perform health check on the specified interface.
 
         :param interface_id: (required)
         :type interface_id: str

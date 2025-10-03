@@ -113,6 +113,11 @@ class FileSystemDataClient(BaseReadDataClient):
 
         Args:
             range_header: HTTP Range header value
+                Examples:
+                - "bytes=0-499" -> (0, 499) - First 500 bytes
+                - "bytes=500-999" -> (500, 999) - Next 500 bytes
+                - "bytes=1000-" -> (1000, None) - From byte 1000 to end
+                - "bytes=-500" -> Not supported by this parser
 
         Returns:
             Tuple of (start_byte, end_byte) or None if invalid
@@ -174,7 +179,6 @@ class FileSystemDataClient(BaseReadDataClient):
 
     async def stream_content(
         self,
-        interface_id: str,
         resource_path: str,
         resource_name: str,
         range_header: Optional[str] = None,
@@ -233,16 +237,16 @@ class FileSystemDataClient(BaseReadDataClient):
                     # Seek to start position
                     await file.seek(start_byte)
 
-                    # Calculate bytes to read
-                    if end_byte is not None and start_byte is not None:
-                        bytes_to_read = end_byte - start_byte + 1
+                    # Calculate bytes to read for range request
+                    bytes_to_read = end_byte - start_byte + 1
                     bytes_read = 0
 
                     logger.info(
-                        f"Streaming range: {bytes_to_read} bytes from {start_byte}"
+                        f"""Streaming range: {bytes_to_read}
+                        bytes from {start_byte} to {end_byte}"""
                     )
 
-                    # Stream the range
+                    # Stream the range in chunks
                     while bytes_read < bytes_to_read:
                         chunk_size = min(CHUNK_SIZE, bytes_to_read - bytes_read)
                         chunk = await file.read(chunk_size)
@@ -254,8 +258,8 @@ class FileSystemDataClient(BaseReadDataClient):
                         total_bytes += len(chunk)
                         yield chunk
                 else:
-                    # Stream entire file
-                    logger.info("Streaming entire file")
+                    # Stream entire file in chunks
+                    logger.info("Streaming entire file in chunks")
                     while True:
                         chunk = await file.read(CHUNK_SIZE)
                         if not chunk:

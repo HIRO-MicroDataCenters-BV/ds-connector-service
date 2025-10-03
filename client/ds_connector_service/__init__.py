@@ -45,7 +45,6 @@ from ds_connector_service.models.data_product_distribution import DataProductDis
 from ds_connector_service.models.data_product_item import DataProductItem
 from ds_connector_service.models.description import Description
 from ds_connector_service.models.download_url import DownloadUrl
-from ds_connector_service.models.end import End
 from ds_connector_service.models.format import Format
 from ds_connector_service.models.http_validation_error import HTTPValidationError
 from ds_connector_service.models.has_policy import HasPolicy
@@ -54,8 +53,8 @@ from ds_connector_service.models.license import License
 from ds_connector_service.models.media_type import MediaType
 from ds_connector_service.models.modified import Modified
 from ds_connector_service.models.package_format import PackageFormat
+from ds_connector_service.models.range_header import RangeHeader
 from ds_connector_service.models.rights import Rights
-from ds_connector_service.models.start import Start
 from ds_connector_service.models.title import Title
 from ds_connector_service.models.validation_error import ValidationError
 from ds_connector_service.models.validation_error_loc_inner import ValidationErrorLocInner

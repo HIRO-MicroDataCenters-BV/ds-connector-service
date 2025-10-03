@@ -12,7 +12,6 @@ class BaseReadDataClient(ABC):
     @abstractmethod
     async def stream_content(
         self,
-        interface_id: str,
         resource_path: str,
         resource_name: str,
         range_header: Optional[str] = None,
@@ -20,7 +19,6 @@ class BaseReadDataClient(ABC):
         """
         Stream resource content with optional range support
         Args:
-            interface_id: Interface identifier
             resource_path: Path to the resource
             resource_name: Name of the resource
             range_header: HTTP Range header value (e.g., "bytes=0-1023")

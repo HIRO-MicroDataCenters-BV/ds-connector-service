@@ -77,7 +77,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_dataproduct_chunk**
-> object get_dataproduct_chunk(interface_id, var_resource_path, resource_name, start=start, end=end)
+> object get_dataproduct_chunk(interface_id, var_resource_path, resource_name, range_header=range_header)
 
 Get Data Product Chunk
 
@@ -105,12 +105,11 @@ with ds_connector_service.ApiClient(configuration) as api_client:
     interface_id = 'interface_id_example' # str | 
     var_resource_path = 'var_resource_path_example' # str | 
     resource_name = 'resource_name_example' # str | 
-    start = ds_connector_service.Start() # Start | Start byte position (optional)
-    end = ds_connector_service.End() # End | End byte position (optional)
+    range_header = ds_connector_service.RangeHeader() # RangeHeader | HTTP Range header for partial content requests (optional)
 
     try:
         # Get Data Product Chunk
-        api_response = api_instance.get_dataproduct_chunk(interface_id, var_resource_path, resource_name, start=start, end=end)
+        api_response = api_instance.get_dataproduct_chunk(interface_id, var_resource_path, resource_name, range_header=range_header)
         print("The response of DataProductsApi->get_dataproduct_chunk:\n")
         pprint(api_response)
     except Exception as e:
@@ -127,8 +126,7 @@ Name | Type | Description  | Notes
  **interface_id** | **str**|  | 
  **var_resource_path** | **str**|  | 
  **resource_name** | **str**|  | 
- **start** | [**Start**](.md)| Start byte position | [optional] 
- **end** | [**End**](.md)| End byte position | [optional] 
+ **range_header** | [**RangeHeader**](.md)| HTTP Range header for partial content requests | [optional] 
 
 ### Return type
 
@@ -304,7 +302,7 @@ No authorization required
 
 Health Check
 
-partial(func, *args, **keywords) - new function with partial application of the given arguments and keywords.
+Perform health check on the specified interface.
 
 ### Example
 

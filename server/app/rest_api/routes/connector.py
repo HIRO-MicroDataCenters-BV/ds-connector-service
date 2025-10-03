@@ -72,35 +72,6 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/content/{interface_id}/{resource_path:path}/{resource_name}",
-        operation_id="get_dataproduct_content",
-        name="Get Data Product Content",
-        tags=[Tags.Data_products],
-    )
-    async def get_dataproduct_content(
-        self,
-        interface_id: str,
-        resource_path: str,
-        resource_name: str,
-        usecases: usecases.DataproductUseCase = Depends(get_usecases),
-    ) -> StreamingResponse:
-        """Return the full dataset content."""
-
-        # Get metadata to determine correct media type
-        metadata = await usecases.get_dataproduct_metadata(resource_path, resource_name)
-
-        full_content = await usecases.read_dataproduct_distribution_content(
-            resource_path, resource_name
-        )
-
-        return StreamingResponse(
-            iter([full_content]),
-            media_type=metadata.media_type or "application/octet-stream",
-            headers={"Content-Disposition": f'attachment; filename="{resource_name}"'},
-            status_code=status.HTTP_200_OK,
-        )
-
-    @get(
         "/content/{interface_id}/{resource_path:path}/{resource_name}/chunk",
         operation_id="get_dataproduct_chunk",
         name="Get Data Product Chunk",
@@ -126,25 +97,69 @@ class ConnectorRoutes(Routable):
         interface_id: str,
         resource_path: str,
         resource_name: str,
-        start: Optional[int] = Query(None, description="Start byte position"),
-        end: Optional[int] = Query(None, description="End byte position"),
+        range_header: Optional[str] = Query(
+            None,
+            description="HTTP Range header for partial content requests",
+            example="bytes=0-1023",
+        ),
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> StreamingResponse:
         """Return a dataset chunk (partial CSV content)."""
+
+        # Get metadata to determine correct media type
+        metadata = await usecases.get_dataproduct_metadata(resource_path, resource_name)
+
+        # Stream content with range support
+        content_generator = usecases.client.stream_content(
+            resource_path, resource_name, range_header
+        )
+
+        # Determine response headers and status
+        headers = {}
+        status_code = status.HTTP_200_OK
+
+        if range_header:
+            # For range requests, we should return 206 Partial Content
+            headers["Content-Range"] = f"{range_header}/*"
+            status_code = status.HTTP_206_PARTIAL_CONTENT
+        else:
+            # Full file streaming - show download link in Swagger
+            headers["Content-Disposition"] = f'attachment; filename="{resource_name}"'
+
         return StreamingResponse(
-            iter([b"partial,data\n"]),
-            media_type="text/csv",
-            headers={
-                "Content-Range": (
-                    f"bytes={start}-{end}"
-                    if start is not None and end is not None
-                    else "bytes */*"
-                )
-            },
-            status_code=(
-                status.HTTP_206_PARTIAL_CONTENT
-                if start is not None and end is not None
-                else status.HTTP_200_OK
-            ),
+            content_generator,
+            media_type=metadata.media_type or "application/octet-stream",
+            headers=headers,
+            status_code=status_code,
+        )
+
+    @get(
+        "/content/{interface_id}/{resource_path:path}/{resource_name}",
+        operation_id="get_dataproduct_content",
+        name="Get Data Product Content",
+        tags=[Tags.Data_products],
+    )
+    async def get_dataproduct_content(
+        self,
+        interface_id: str,
+        resource_path: str,
+        resource_name: str,
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+    ) -> StreamingResponse:
+        """Return the full dataset content."""
+        logger.info("Getting full data product content as a single response")
+        # Get metadata to determine correct media type
+        metadata = await usecases.get_dataproduct_metadata(resource_path, resource_name)
+
+        full_content = await usecases.read_dataproduct_distribution_content(
+            resource_path, resource_name
+        )
+
+        return StreamingResponse(
+            iter([full_content]),
+            media_type=metadata.media_type or "application/octet-stream",
+            headers={"Content-Disposition": f'attachment; filename="{resource_name}"'},
+            status_code=status.HTTP_200_OK,
         )
 
     @get(
@@ -184,6 +199,8 @@ class ConnectorRoutes(Routable):
         interface_id: str,
         usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> JSONResponse:
+        """Perform health check on the specified interface."""
+        logger.info(f"Performing health check for interface: {interface_id}")
         try:
             health = await usecases.health_check()
             return JSONResponse(content=health, status_code=status.HTTP_200_OK)

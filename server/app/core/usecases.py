@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, AsyncGenerator, Dict, List, Optional
 
 from abc import ABC
 
@@ -35,3 +35,14 @@ class DataproductUseCase(Iusecases):
         self, resource_path: str, resource_name: str
     ) -> bytes:
         return await self.client.read_file_content(resource_path, resource_name)
+
+    async def stream_dataproduct_distribution_content(
+        self,
+        resource_path: str,
+        resource_name: str,
+        range_header: Optional[str] = None,
+    ) -> AsyncGenerator[bytes, None]:
+        async for chunk in self.client.stream_content(
+            resource_path, resource_name, range_header
+        ):
+            yield chunk
