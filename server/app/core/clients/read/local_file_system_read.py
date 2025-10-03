@@ -272,6 +272,58 @@ class FileSystemDataClient(BaseReadDataClient):
             logger.error(f"File system error: {file_path} - {str(e)}")
             raise HTTPException(status_code=500, detail=f"File system error: {str(e)}")
 
+    async def read_file_content(
+        self,
+        resource_path: str,
+        resource_name: str,
+    ) -> bytes:
+        """
+        Read the entire file content at once into memory
+
+        Args:
+            resource_path: Path to the resource
+            resource_name: Name of the resource file
+
+        Returns:
+            bytes: Complete file content
+
+        Raises:
+            HTTPException: If file not found, too large, or access denied
+        """
+        file_path = self._resolve_file_path(resource_path, resource_name)
+
+        logger.info(f"Reading entire file: {file_path}")
+
+        # Check if file exists and is readable
+        if not await aiofiles.ospath.exists(file_path):
+            logger.error(f"File not found: {file_path}")
+            raise HTTPException(status_code=404, detail="Resource not found")
+
+        if not await aiofiles.ospath.isfile(file_path):
+            logger.error(f"Path is not a file: {file_path}")
+            raise HTTPException(status_code=400, detail="Path is not a file")
+
+        try:
+            # Check file size
+            loop = asyncio.get_event_loop()
+            file_stat = await loop.run_in_executor(None, os.stat, file_path)
+            if file_stat.st_size > MAX_FILE_SIZE:
+                raise HTTPException(status_code=413, detail="File too large")
+
+            # Read entire file content
+            async with aiofiles.open(file_path, "rb") as file:
+                content = await file.read()
+
+            logger.info(f"File read completed: {len(content)} bytes")
+            return content
+
+        except PermissionError:
+            logger.error(f"Permission denied: {file_path}")
+            raise HTTPException(status_code=403, detail="Permission denied")
+        except OSError as e:
+            logger.error(f"File system error: {file_path} - {str(e)}")
+            raise HTTPException(status_code=500, detail=f"File system error: {str(e)}")
+
     async def get_metadata(
         self, resource_path: str, resource_name: str
     ) -> DataProductDistribution:

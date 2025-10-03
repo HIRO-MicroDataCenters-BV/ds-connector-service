@@ -30,3 +30,8 @@ class DataproductUseCase(Iusecases):
 
     async def health_check(self) -> Dict[str, Any]:
         return await self.client.health_check()
+
+    async def read_dataproduct_distribution_content(
+        self, resource_path: str, resource_name: str
+    ) -> bytes:
+        return await self.client.read_file_content(resource_path, resource_name)

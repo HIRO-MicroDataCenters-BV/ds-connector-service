@@ -81,7 +81,7 @@ paths:
       tags:
       - Data Products
       summary: Get Data Product Content
-      description: Return the full dataset content (CSV).
+      description: Return the full dataset content.
       operationId: get_dataproduct_content
       parameters:
       - name: interface_id

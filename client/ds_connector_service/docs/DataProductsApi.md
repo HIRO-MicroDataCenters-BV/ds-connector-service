@@ -160,7 +160,7 @@ No authorization required
 
 Get Data Product Content
 
-Return the full dataset content (CSV).
+Return the full dataset content.
 
 ### Example
 

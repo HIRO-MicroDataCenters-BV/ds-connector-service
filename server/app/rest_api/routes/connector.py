@@ -78,12 +78,24 @@ class ConnectorRoutes(Routable):
         tags=[Tags.Data_products],
     )
     async def get_dataproduct_content(
-        self, interface_id: str, resource_path: str, resource_name: str
+        self,
+        interface_id: str,
+        resource_path: str,
+        resource_name: str,
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> StreamingResponse:
-        """Return the full dataset content (CSV)."""
+        """Return the full dataset content."""
+
+        # Get metadata to determine correct media type
+        metadata = await usecases.get_dataproduct_metadata(resource_path, resource_name)
+
+        full_content = await usecases.read_dataproduct_distribution_content(
+            resource_path, resource_name
+        )
+
         return StreamingResponse(
-            iter([b"full,object,content\n1,2,3,4\n"] * 10),
-            media_type="text/csv",
+            iter([full_content]),
+            media_type=metadata.media_type or "application/octet-stream",
             headers={"Content-Disposition": f'attachment; filename="{resource_name}"'},
             status_code=status.HTTP_200_OK,
         )

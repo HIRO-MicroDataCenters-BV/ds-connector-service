@@ -638,7 +638,7 @@ class DataProductsApi:
     ) -> object:
         """Get Data Product Content
 
-        Return the full dataset content (CSV).
+        Return the full dataset content.
 
         :param interface_id: (required)
         :type interface_id: str
@@ -714,7 +714,7 @@ class DataProductsApi:
     ) -> ApiResponse[object]:
         """Get Data Product Content
 
-        Return the full dataset content (CSV).
+        Return the full dataset content.
 
         :param interface_id: (required)
         :type interface_id: str
@@ -790,7 +790,7 @@ class DataProductsApi:
     ) -> RESTResponseType:
         """Get Data Product Content
 
-        Return the full dataset content (CSV).
+        Return the full dataset content.
 
         :param interface_id: (required)
         :type interface_id: str

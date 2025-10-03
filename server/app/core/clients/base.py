@@ -78,3 +78,24 @@ class BaseReadDataClient(ABC):
             Dict containing health status information
         """
         ...
+
+    @abstractmethod
+    async def read_file_content(
+        self,
+        resource_path: str,
+        resource_name: str,
+    ) -> bytes:
+        """
+        Read the entire file content at once into memory
+
+        Args:
+            resource_path: Path to the resource
+            resource_name: Name of the resource file
+
+        Returns:
+            bytes: Full content of the file
+
+        Raises:
+            HTTPException: On client-specific errors
+        """
+        ...
