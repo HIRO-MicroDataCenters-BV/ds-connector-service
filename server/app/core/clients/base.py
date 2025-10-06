@@ -32,7 +32,7 @@ class BaseReadDataClient(ABC):
         # Required to make this an async generator (unreachable)
 
     @abstractmethod
-    async def get_metadata(
+    async def get_distribution_metadata(
         self, resource_path: str, resource_name: str
     ) -> DataProductDistribution:
         """

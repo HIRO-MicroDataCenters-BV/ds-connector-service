@@ -46,28 +46,28 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/dataproduct-metadata/{interface_id}/{resource_path:path}/{resource_name}",
-        operation_id="get_dataproduct_metadata",
-        name="Get Data Product Distribution",
+        "/distribution-metadata/{interface_id}/{resource_path:path}/{resource_name}",
+        operation_id="get_distribution_metadata",
+        name="Get Distribution Metadata",
         tags=[Tags.Data_products],
     )
-    async def get_dataproduct_metadata(
+    async def get_distribution_metadata(
         self,
         interface_id: str,
         resource_path: str,
         resource_name: str,
         usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> JSONResponse:
-        """Return Metadata for a data product along with region."""
+        """Return Metadata for a distribution along with region."""
         logger.info(
-            f"Getting metadata for a single data product for interface: {interface_id}"
+            f"Getting metadata for a single distribution for interface: {interface_id}"
         )
 
-        dataproduct_metadata = await usecases.get_dataproduct_metadata(
+        distribution_metadata = await usecases.get_distribution_metadata(
             resource_path, resource_name
         )
         return JSONResponse(
-            content={"region": "ki", "distribution": dataproduct_metadata.dict()},
+            content={"region": "ki", "distribution": distribution_metadata.dict()},
             status_code=status.HTTP_200_OK,
         )
 
@@ -108,7 +108,9 @@ class ConnectorRoutes(Routable):
         """Return a dataset chunk (partial CSV content)."""
 
         # Get metadata to determine correct media type
-        metadata = await usecases.get_dataproduct_metadata(resource_path, resource_name)
+        metadata = await usecases.get_distribution_metadata(
+            resource_path, resource_name
+        )
 
         # Stream content with range support
         content_generator = usecases.client.stream_content(
@@ -150,7 +152,9 @@ class ConnectorRoutes(Routable):
         """Return the full dataset content."""
         logger.info("Getting full data product content as a single response")
         # Get metadata to determine correct media type
-        metadata = await usecases.get_dataproduct_metadata(resource_path, resource_name)
+        metadata = await usecases.get_distribution_metadata(
+            resource_path, resource_name
+        )
 
         full_content = await usecases.read_dataproduct_distribution_content(
             resource_path, resource_name

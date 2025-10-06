@@ -38,13 +38,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConnectorMetadata'
-  /dataproduct-metadata/{interface_id}/{resource_path}/{resource_name}:
+  /distribution-metadata/{interface_id}/{resource_path}/{resource_name}:
     get:
       tags:
       - Data Products
-      summary: Get Data Product Distribution
-      description: Return Metadata for a data product along with region.
-      operationId: get_dataproduct_metadata
+      summary: Get Distribution Metadata
+      description: Return Metadata for a distribution along with region.
+      operationId: get_distribution_metadata
       parameters:
       - name: interface_id
         in: path

@@ -64,7 +64,7 @@ Class | Method | HTTP request | Description
 *DataProductsApi* | [**get_connector_metadata**](ds_connector_service/docs/DataProductsApi.md#get_connector_metadata) | **GET** /connector-metadata | Get Connector Metadata
 *DataProductsApi* | [**get_dataproduct_chunk**](ds_connector_service/docs/DataProductsApi.md#get_dataproduct_chunk) | **GET** /distribution-content/{interface_id}/{resource_path}/{resource_name}/chunk | Get Data Product Chunk
 *DataProductsApi* | [**get_dataproduct_content**](ds_connector_service/docs/DataProductsApi.md#get_dataproduct_content) | **GET** /distribution-content/{interface_id}/{resource_path}/{resource_name} | Get Data Product Content
-*DataProductsApi* | [**get_dataproduct_metadata**](ds_connector_service/docs/DataProductsApi.md#get_dataproduct_metadata) | **GET** /dataproduct-metadata/{interface_id}/{resource_path}/{resource_name} | Get Data Product Distribution
+*DataProductsApi* | [**get_distribution_metadata**](ds_connector_service/docs/DataProductsApi.md#get_distribution_metadata) | **GET** /distribution-metadata/{interface_id}/{resource_path}/{resource_name} | Get Distribution Metadata
 *DataProductsApi* | [**health_check**](ds_connector_service/docs/DataProductsApi.md#health_check) | **GET** /interface-health/{interface_id} | Health Check
 *DataProductsApi* | [**list_dataproduct_distributions**](ds_connector_service/docs/DataProductsApi.md#list_dataproduct_distributions) | **GET** /dataproduct-distributions/{interface_id}/{resource_path} | List Data Product Distributions
 *DataProductsApi* | [**list_dataproducts**](ds_connector_service/docs/DataProductsApi.md#list_dataproducts) | **GET** /dataproducts/{interface_id} | List Data Products

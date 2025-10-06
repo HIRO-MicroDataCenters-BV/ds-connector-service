@@ -891,7 +891,7 @@ class DataProductsApi:
 
 
     @validate_call
-    def get_dataproduct_metadata(
+    def get_distribution_metadata(
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
@@ -909,9 +909,9 @@ class DataProductsApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> object:
-        """Get Data Product Distribution
+        """Get Distribution Metadata
 
-        Return Metadata for a data product along with region.
+        Return Metadata for a distribution along with region.
 
         :param interface_id: (required)
         :type interface_id: str
@@ -941,7 +941,7 @@ class DataProductsApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_dataproduct_metadata_serialize(
+        _param = self._get_distribution_metadata_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
             resource_name=resource_name,
@@ -967,7 +967,7 @@ class DataProductsApi:
 
 
     @validate_call
-    def get_dataproduct_metadata_with_http_info(
+    def get_distribution_metadata_with_http_info(
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
@@ -985,9 +985,9 @@ class DataProductsApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> ApiResponse[object]:
-        """Get Data Product Distribution
+        """Get Distribution Metadata
 
-        Return Metadata for a data product along with region.
+        Return Metadata for a distribution along with region.
 
         :param interface_id: (required)
         :type interface_id: str
@@ -1017,7 +1017,7 @@ class DataProductsApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_dataproduct_metadata_serialize(
+        _param = self._get_distribution_metadata_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
             resource_name=resource_name,
@@ -1043,7 +1043,7 @@ class DataProductsApi:
 
 
     @validate_call
-    def get_dataproduct_metadata_without_preload_content(
+    def get_distribution_metadata_without_preload_content(
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
@@ -1061,9 +1061,9 @@ class DataProductsApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> RESTResponseType:
-        """Get Data Product Distribution
+        """Get Distribution Metadata
 
-        Return Metadata for a data product along with region.
+        Return Metadata for a distribution along with region.
 
         :param interface_id: (required)
         :type interface_id: str
@@ -1093,7 +1093,7 @@ class DataProductsApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_dataproduct_metadata_serialize(
+        _param = self._get_distribution_metadata_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
             resource_name=resource_name,
@@ -1114,7 +1114,7 @@ class DataProductsApi:
         return response_data.response
 
 
-    def _get_dataproduct_metadata_serialize(
+    def _get_distribution_metadata_serialize(
         self,
         interface_id,
         var_resource_path,
@@ -1164,7 +1164,7 @@ class DataProductsApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/dataproduct-metadata/{interface_id}/{resource_path}/{resource_name}',
+            resource_path='/distribution-metadata/{interface_id}/{resource_path}/{resource_name}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

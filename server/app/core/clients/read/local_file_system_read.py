@@ -328,7 +328,7 @@ class FileSystemDataClient(BaseReadDataClient):
             logger.error(f"File system error: {file_path} - {str(e)}")
             raise HTTPException(status_code=500, detail=f"File system error: {str(e)}")
 
-    async def get_metadata(
+    async def get_distribution_metadata(
         self, resource_path: str, resource_name: str
     ) -> DataProductDistribution:
         """Get file metadata"""

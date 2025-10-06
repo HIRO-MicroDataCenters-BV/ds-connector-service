@@ -18,10 +18,10 @@ class DataproductUseCase(Iusecases):
     def __init__(self, client):
         super().__init__(client)
 
-    async def get_dataproduct_metadata(
+    async def get_distribution_metadata(
         self, resource_path: str, resource_name: str
     ) -> DataProductDistribution:
-        return await self.client.get_metadata(resource_path, resource_name)
+        return await self.client.get_distribution_metadata(resource_path, resource_name)
 
     async def list_dataproduct_distributions(
         self, resource_path: str

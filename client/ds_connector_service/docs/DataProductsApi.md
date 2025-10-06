@@ -7,7 +7,7 @@ Method | HTTP request | Description
 [**get_connector_metadata**](DataProductsApi.md#get_connector_metadata) | **GET** /connector-metadata | Get Connector Metadata
 [**get_dataproduct_chunk**](DataProductsApi.md#get_dataproduct_chunk) | **GET** /distribution-content/{interface_id}/{resource_path}/{resource_name}/chunk | Get Data Product Chunk
 [**get_dataproduct_content**](DataProductsApi.md#get_dataproduct_content) | **GET** /distribution-content/{interface_id}/{resource_path}/{resource_name} | Get Data Product Content
-[**get_dataproduct_metadata**](DataProductsApi.md#get_dataproduct_metadata) | **GET** /dataproduct-metadata/{interface_id}/{resource_path}/{resource_name} | Get Data Product Distribution
+[**get_distribution_metadata**](DataProductsApi.md#get_distribution_metadata) | **GET** /distribution-metadata/{interface_id}/{resource_path}/{resource_name} | Get Distribution Metadata
 [**health_check**](DataProductsApi.md#health_check) | **GET** /interface-health/{interface_id} | Health Check
 [**list_dataproduct_distributions**](DataProductsApi.md#list_dataproduct_distributions) | **GET** /dataproduct-distributions/{interface_id}/{resource_path} | List Data Product Distributions
 [**list_dataproducts**](DataProductsApi.md#list_dataproducts) | **GET** /dataproducts/{interface_id} | List Data Products
@@ -226,12 +226,12 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **get_dataproduct_metadata**
-> object get_dataproduct_metadata(interface_id, var_resource_path, resource_name)
+# **get_distribution_metadata**
+> object get_distribution_metadata(interface_id, var_resource_path, resource_name)
 
-Get Data Product Distribution
+Get Distribution Metadata
 
-Return Metadata for a data product along with region.
+Return Metadata for a distribution along with region.
 
 ### Example
 
@@ -257,12 +257,12 @@ with ds_connector_service.ApiClient(configuration) as api_client:
     resource_name = 'resource_name_example' # str | 
 
     try:
-        # Get Data Product Distribution
-        api_response = api_instance.get_dataproduct_metadata(interface_id, var_resource_path, resource_name)
-        print("The response of DataProductsApi->get_dataproduct_metadata:\n")
+        # Get Distribution Metadata
+        api_response = api_instance.get_distribution_metadata(interface_id, var_resource_path, resource_name)
+        print("The response of DataProductsApi->get_distribution_metadata:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling DataProductsApi->get_dataproduct_metadata: %s\n" % e)
+        print("Exception when calling DataProductsApi->get_distribution_metadata: %s\n" % e)
 ```
 
 
