@@ -22,7 +22,7 @@ paths:
           content:
             application/json:
               schema: {}
-  /metadata/connector:
+  /connector-metadata:
     get:
       tags:
       - Data Products
@@ -38,7 +38,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConnectorMetadata'
-  /metadata/{interface_id}/{resource_path}/{resource_name}:
+  /dataproduct-metadata/{interface_id}/{resource_path}/{resource_name}:
     get:
       tags:
       - Data Products
@@ -76,7 +76,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /content/{interface_id}/{resource_path}/{resource_name}/chunk:
+  /distribution-content/{interface_id}/{resource_path}/{resource_name}/chunk:
     get:
       tags:
       - Data Products
@@ -142,7 +142,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /content/{interface_id}/{resource_path}/{resource_name}:
+  /distribution-content/{interface_id}/{resource_path}/{resource_name}:
     get:
       tags:
       - Data Products
@@ -180,13 +180,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /metadata-list/{interface_id}/{resource_path}:
+  /dataproduct-distributions/{interface_id}/{resource_path}:
     get:
       tags:
       - Data Products
-      summary: List Data Products
+      summary: List Data Product Distributions
       description: Return a paginated list of data product distributions with region.
-      operationId: list_dataproducts
+      operationId: list_dataproduct_distributions
       parameters:
       - name: interface_id
         in: path
@@ -209,6 +209,36 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DataProductItem'
+                title: Response List Dataproduct Distributions
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /dataproducts/{interface_id}:
+    get:
+      tags:
+      - Data Products
+      summary: List Data Products
+      description: List available data products from the base path.
+      operationId: list_dataproducts
+      parameters:
+      - name: interface_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interface Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
                 title: Response List Dataproducts
         '422':
           description: Validation Error
@@ -216,7 +246,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /health/{interface_id}:
+  /interface-health/{interface_id}:
     get:
       tags:
       - Data Products

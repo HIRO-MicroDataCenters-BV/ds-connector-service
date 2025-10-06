@@ -51,7 +51,7 @@ class BaseReadDataClient(ABC):
         ...
 
     @abstractmethod
-    async def list_data_products(
+    async def list_dataproduct_distributions(
         self, resource_path: str
     ) -> List[DataProductDistribution]:
         """
@@ -92,6 +92,19 @@ class BaseReadDataClient(ABC):
 
         Returns:
             bytes: Full content of the file
+
+        Raises:
+            HTTPException: On client-specific errors
+        """
+        ...
+
+    @abstractmethod
+    async def list_dataproducts(self) -> List[str]:
+        """
+        List available data products
+
+        Returns:
+            List of available data product names
 
         Raises:
             HTTPException: On client-specific errors

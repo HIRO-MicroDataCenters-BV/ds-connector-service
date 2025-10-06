@@ -4,12 +4,13 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**get_connector_metadata**](DataProductsApi.md#get_connector_metadata) | **GET** /metadata/connector | Get Connector Metadata
-[**get_dataproduct_chunk**](DataProductsApi.md#get_dataproduct_chunk) | **GET** /content/{interface_id}/{resource_path}/{resource_name}/chunk | Get Data Product Chunk
-[**get_dataproduct_content**](DataProductsApi.md#get_dataproduct_content) | **GET** /content/{interface_id}/{resource_path}/{resource_name} | Get Data Product Content
-[**get_dataproduct_metadata**](DataProductsApi.md#get_dataproduct_metadata) | **GET** /metadata/{interface_id}/{resource_path}/{resource_name} | Get Data Product Distribution
-[**health_check**](DataProductsApi.md#health_check) | **GET** /health/{interface_id} | Health Check
-[**list_dataproducts**](DataProductsApi.md#list_dataproducts) | **GET** /metadata-list/{interface_id}/{resource_path} | List Data Products
+[**get_connector_metadata**](DataProductsApi.md#get_connector_metadata) | **GET** /connector-metadata | Get Connector Metadata
+[**get_dataproduct_chunk**](DataProductsApi.md#get_dataproduct_chunk) | **GET** /distribution-content/{interface_id}/{resource_path}/{resource_name}/chunk | Get Data Product Chunk
+[**get_dataproduct_content**](DataProductsApi.md#get_dataproduct_content) | **GET** /distribution-content/{interface_id}/{resource_path}/{resource_name} | Get Data Product Content
+[**get_dataproduct_metadata**](DataProductsApi.md#get_dataproduct_metadata) | **GET** /dataproduct-metadata/{interface_id}/{resource_path}/{resource_name} | Get Data Product Distribution
+[**health_check**](DataProductsApi.md#health_check) | **GET** /interface-health/{interface_id} | Health Check
+[**list_dataproduct_distributions**](DataProductsApi.md#list_dataproduct_distributions) | **GET** /dataproduct-distributions/{interface_id}/{resource_path} | List Data Product Distributions
+[**list_dataproducts**](DataProductsApi.md#list_dataproducts) | **GET** /dataproducts/{interface_id} | List Data Products
 
 
 # **get_connector_metadata**
@@ -365,10 +366,10 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **list_dataproducts**
-> List[DataProductItem] list_dataproducts(interface_id, var_resource_path)
+# **list_dataproduct_distributions**
+> List[DataProductItem] list_dataproduct_distributions(interface_id, var_resource_path)
 
-List Data Products
+List Data Product Distributions
 
 Return a paginated list of data product distributions with region.
 
@@ -396,12 +397,12 @@ with ds_connector_service.ApiClient(configuration) as api_client:
     var_resource_path = 'var_resource_path_example' # str | 
 
     try:
-        # List Data Products
-        api_response = api_instance.list_dataproducts(interface_id, var_resource_path)
-        print("The response of DataProductsApi->list_dataproducts:\n")
+        # List Data Product Distributions
+        api_response = api_instance.list_dataproduct_distributions(interface_id, var_resource_path)
+        print("The response of DataProductsApi->list_dataproduct_distributions:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling DataProductsApi->list_dataproducts: %s\n" % e)
+        print("Exception when calling DataProductsApi->list_dataproduct_distributions: %s\n" % e)
 ```
 
 
@@ -417,6 +418,74 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**List[DataProductItem]**](DataProductItem.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_dataproducts**
+> List[str] list_dataproducts(interface_id)
+
+List Data Products
+
+List available data products from the base path.
+
+### Example
+
+
+```python
+import ds_connector_service
+from ds_connector_service.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ds_connector_service.Configuration(
+    host = "http://localhost"
+)
+
+
+# Enter a context with an instance of the API client
+with ds_connector_service.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = ds_connector_service.DataProductsApi(api_client)
+    interface_id = 'interface_id_example' # str | 
+
+    try:
+        # List Data Products
+        api_response = api_instance.list_dataproducts(interface_id)
+        print("The response of DataProductsApi->list_dataproducts:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataProductsApi->list_dataproducts: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **interface_id** | **str**|  | 
+
+### Return type
+
+**List[str]**
 
 ### Authorization
 

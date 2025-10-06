@@ -27,7 +27,7 @@ class ConnectorRoutes(Routable):
         super().__init__()
 
     @get(
-        "/metadata/connector",
+        "/connector-metadata",
         operation_id="get_connector_metadata",
         name="Get Connector Metadata",
         tags=[Tags.Data_products],
@@ -46,7 +46,7 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/metadata/{interface_id}/{resource_path:path}/{resource_name}",
+        "/dataproduct-metadata/{interface_id}/{resource_path:path}/{resource_name}",
         operation_id="get_dataproduct_metadata",
         name="Get Data Product Distribution",
         tags=[Tags.Data_products],
@@ -72,7 +72,8 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/content/{interface_id}/{resource_path:path}/{resource_name}/chunk",
+        "/distribution-content/{interface_id}/"
+        "{resource_path:path}/{resource_name}/chunk",
         operation_id="get_dataproduct_chunk",
         name="Get Data Product Chunk",
         tags=[Tags.Data_products],
@@ -134,7 +135,7 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/content/{interface_id}/{resource_path:path}/{resource_name}",
+        "/distribution-content/{interface_id}/{resource_path:path}/{resource_name}",
         operation_id="get_dataproduct_content",
         name="Get Data Product Content",
         tags=[Tags.Data_products],
@@ -163,13 +164,13 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/metadata-list/{interface_id}/{resource_path:path}",
-        operation_id="list_dataproducts",
-        name="List Data Products",
+        "/dataproduct-distributions/{interface_id}/{resource_path:path}",
+        operation_id="list_dataproduct_distributions",
+        name="List Data Product Distributions",
         tags=[Tags.Data_products],
         response_model=List[DataProductItem],
     )
-    async def list_dataproducts(
+    async def list_dataproduct_distributions(
         self,
         interface_id: str,
         resource_path: str,
@@ -177,7 +178,9 @@ class ConnectorRoutes(Routable):
     ) -> JSONResponse:
         """Return a paginated list of data product distributions with region."""
         logger.info(f"Listing data products for interface: {interface_id}")
-        all_dataproducts_metadata = await usecases.list_dataproducts(resource_path)
+        all_dataproducts_metadata = await usecases.list_dataproduct_distributions(
+            resource_path
+        )
 
         # TODO Implement pagination logic here if needed
         return JSONResponse(
@@ -189,7 +192,27 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/health/{interface_id}",
+        "/dataproducts/{interface_id}",
+        operation_id="list_dataproducts",
+        name="List Data Products",
+        tags=[Tags.Data_products],
+        response_model=List[str],
+    )
+    async def list_dataproducts(
+        self,
+        interface_id: str,
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+    ) -> JSONResponse:
+        """List available data products from the base path."""
+        logger.info(f"Listing data products for interface: {interface_id}")
+        dataproducts = await usecases.list_dataproducts()
+        return JSONResponse(
+            content={"dataproducts": dataproducts},
+            status_code=status.HTTP_200_OK,
+        )
+
+    @get(
+        "/interface-health/{interface_id}",
         operation_id="health_check",
         name="Health Check",
         tags=[Tags.Data_products],

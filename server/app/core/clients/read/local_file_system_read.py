@@ -395,11 +395,13 @@ class FileSystemDataClient(BaseReadDataClient):
             logger.error(f"File system metadata error: {file_path} - {str(e)}")
             raise HTTPException(status_code=500, detail=f"File system error: {str(e)}")
 
-    async def list_data_products(
+    async def list_dataproduct_distributions(
         self, resource_path: str
     ) -> List[DataProductDistribution]:
-        """List data products from file system structure"""
-        logger.info(f"Listing file system data products from: {resource_path}")
+        """List data product distributions from file system structure"""
+        logger.info(
+            f"Listing file system data product distributions from: {resource_path}"
+        )
         try:
             products = []
             resource_files = await self._collect_files_recursively(
@@ -440,6 +442,56 @@ class FileSystemDataClient(BaseReadDataClient):
             return products
         except Exception as e:
             logger.error(f"File system list data products error: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"File system error: {str(e)}")
+
+    async def list_dataproducts(self) -> List[str]:
+        """
+        List only the first-level subdirectories within the base_path
+
+        Returns:
+            List[str]: List of subdirectory names (first level only) from base_path
+
+        Raises:
+            HTTPException: If base_path is not accessible or not a directory
+        """
+        logger.info(f"Listing subdirectories in base_path: {self.base_path}")
+
+        try:
+            # Use base_path directly
+            resolved_path = self.base_path
+
+            # Check if directory exists
+            if not await aiofiles.ospath.exists(resolved_path):
+                logger.error(f"Base directory not found: {resolved_path}")
+                raise HTTPException(status_code=404, detail="Base directory not found")
+
+            if not await aiofiles.ospath.isdir(resolved_path):
+                logger.error(f"Base path is not a directory: {resolved_path}")
+                raise HTTPException(
+                    status_code=400, detail="Base path is not a directory"
+                )
+
+            # List only first-level subdirectories
+            subdirectories = []
+            loop = asyncio.get_event_loop()
+            entries = await loop.run_in_executor(
+                None, lambda: list(resolved_path.iterdir())
+            )
+
+            for entry in entries:
+                if entry.is_dir():
+                    subdirectories.append(entry.name)
+
+            # Sort for consistent output
+            subdirectories.sort()
+
+            logger.info(f"Found {len(subdirectories)} subdirectories in base_path")
+            return subdirectories
+
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error listing subdirectories: {str(e)}")
             raise HTTPException(status_code=500, detail=f"File system error: {str(e)}")
 
     async def health_check(self) -> Dict[str, Any]:

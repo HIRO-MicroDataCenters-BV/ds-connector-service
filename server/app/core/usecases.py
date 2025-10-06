@@ -23,10 +23,10 @@ class DataproductUseCase(Iusecases):
     ) -> DataProductDistribution:
         return await self.client.get_metadata(resource_path, resource_name)
 
-    async def list_dataproducts(
+    async def list_dataproduct_distributions(
         self, resource_path: str
     ) -> List[DataProductDistribution]:
-        return await self.client.list_data_products(resource_path)
+        return await self.client.list_dataproduct_distributions(resource_path)
 
     async def health_check(self) -> Dict[str, Any]:
         return await self.client.health_check()
@@ -46,3 +46,7 @@ class DataproductUseCase(Iusecases):
             resource_path, resource_name, range_header
         ):
             yield chunk
+
+    async def list_dataproducts(self) -> List[str]:
+        """List available data products (subdirectories from base path)."""
+        return await self.client.list_dataproducts()
