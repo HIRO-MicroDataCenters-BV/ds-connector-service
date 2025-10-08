@@ -365,7 +365,7 @@ class FileSystemDataClient(BaseReadDataClient):
             metadata = DataProductDistribution(
                 title=resource_name,
                 description=f"File resource {resource_name}",
-                access_url=str(file_path),
+                access_url=f"file://{resource_path}",
                 byte_size=file_stat.st_size,
                 media_type=content_type,
                 checksum=checksum,
