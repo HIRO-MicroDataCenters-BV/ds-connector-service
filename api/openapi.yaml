@@ -38,7 +38,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConnectorMetadata'
-  /distribution-metadata/{interface_id}/{resource_path}/{resource_name}:
+  /distribution-metadata/{interface_id}/{resource_path}:
     get:
       tags:
       - Data Products
@@ -58,12 +58,6 @@ paths:
         schema:
           type: string
           title: Resource Path
-      - name: resource_name
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Resource Name
       responses:
         '200':
           description: Successful Response
@@ -76,7 +70,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /distribution-content/{interface_id}/{resource_path}/{resource_name}/chunk:
+  /distribution-content/{interface_id}/{resource_path}/chunk:
     get:
       tags:
       - Data Products
@@ -96,12 +90,6 @@ paths:
         schema:
           type: string
           title: Resource Path
-      - name: resource_name
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Resource Name
       - name: range_header
         in: query
         required: false
@@ -142,7 +130,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /distribution-content/{interface_id}/{resource_path}/{resource_name}:
+  /distribution-content/{interface_id}/{resource_path}:
     get:
       tags:
       - Data Products
@@ -162,12 +150,6 @@ paths:
         schema:
           type: string
           title: Resource Path
-      - name: resource_name
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Resource Name
       responses:
         '200':
           description: Successful Response
@@ -180,7 +162,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /dataproduct-distributions/{interface_id}/{resource_path}:
+  /dataproduct-distributions/{interface_id}/{directory_resource_path}:
     get:
       tags:
       - Data Products
@@ -194,12 +176,12 @@ paths:
         schema:
           type: string
           title: Interface Id
-      - name: resource_path
+      - name: directory_resource_path
         in: path
         required: true
         schema:
           type: string
-          title: Resource Path
+          title: Directory Resource Path
       responses:
         '200':
           description: Successful Response

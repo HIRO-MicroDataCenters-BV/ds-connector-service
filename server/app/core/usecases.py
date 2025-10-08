@@ -19,32 +19,27 @@ class DataproductUseCase(Iusecases):
         super().__init__(client)
 
     async def get_distribution_metadata(
-        self, resource_path: str, resource_name: str
+        self, resource_path: str
     ) -> DataProductDistribution:
-        return await self.client.get_distribution_metadata(resource_path, resource_name)
+        return await self.client.get_distribution_metadata(resource_path)
 
     async def list_dataproduct_distributions(
-        self, resource_path: str
+        self, directory_resource_path: str
     ) -> List[DataProductDistribution]:
-        return await self.client.list_dataproduct_distributions(resource_path)
+        return await self.client.list_dataproduct_distributions(directory_resource_path)
 
     async def health_check(self) -> Dict[str, Any]:
         return await self.client.health_check()
 
-    async def read_dataproduct_distribution_content(
-        self, resource_path: str, resource_name: str
-    ) -> bytes:
-        return await self.client.read_file_content(resource_path, resource_name)
+    async def read_dataproduct_distribution_content(self, resource_path: str) -> bytes:
+        return await self.client.read_file_content(resource_path)
 
     async def stream_dataproduct_distribution_content(
         self,
         resource_path: str,
-        resource_name: str,
         range_header: Optional[str] = None,
     ) -> AsyncGenerator[bytes, None]:
-        async for chunk in self.client.stream_content(
-            resource_path, resource_name, range_header
-        ):
+        async for chunk in self.client.stream_content(resource_path, range_header):
             yield chunk
 
     async def list_dataproducts(self) -> List[str]:

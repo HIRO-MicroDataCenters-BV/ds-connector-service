@@ -288,7 +288,6 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        resource_name: StrictStr,
         range_header: Annotated[Optional[Any], Field(description="HTTP Range header for partial content requests")] = None,
         _request_timeout: Union[
             None,
@@ -311,8 +310,6 @@ class DataProductsApi:
         :type interface_id: str
         :param var_resource_path: (required)
         :type var_resource_path: str
-        :param resource_name: (required)
-        :type resource_name: str
         :param range_header: HTTP Range header for partial content requests
         :type range_header: RangeHeader
         :param _request_timeout: timeout setting for this request. If one
@@ -340,7 +337,6 @@ class DataProductsApi:
         _param = self._get_dataproduct_chunk_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
-            resource_name=resource_name,
             range_header=range_header,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -371,7 +367,6 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        resource_name: StrictStr,
         range_header: Annotated[Optional[Any], Field(description="HTTP Range header for partial content requests")] = None,
         _request_timeout: Union[
             None,
@@ -394,8 +389,6 @@ class DataProductsApi:
         :type interface_id: str
         :param var_resource_path: (required)
         :type var_resource_path: str
-        :param resource_name: (required)
-        :type resource_name: str
         :param range_header: HTTP Range header for partial content requests
         :type range_header: RangeHeader
         :param _request_timeout: timeout setting for this request. If one
@@ -423,7 +416,6 @@ class DataProductsApi:
         _param = self._get_dataproduct_chunk_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
-            resource_name=resource_name,
             range_header=range_header,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -454,7 +446,6 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        resource_name: StrictStr,
         range_header: Annotated[Optional[Any], Field(description="HTTP Range header for partial content requests")] = None,
         _request_timeout: Union[
             None,
@@ -477,8 +468,6 @@ class DataProductsApi:
         :type interface_id: str
         :param var_resource_path: (required)
         :type var_resource_path: str
-        :param resource_name: (required)
-        :type resource_name: str
         :param range_header: HTTP Range header for partial content requests
         :type range_header: RangeHeader
         :param _request_timeout: timeout setting for this request. If one
@@ -506,7 +495,6 @@ class DataProductsApi:
         _param = self._get_dataproduct_chunk_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
-            resource_name=resource_name,
             range_header=range_header,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -532,7 +520,6 @@ class DataProductsApi:
         self,
         interface_id,
         var_resource_path,
-        resource_name,
         range_header,
         _request_auth,
         _content_type,
@@ -557,8 +544,6 @@ class DataProductsApi:
             _path_params['interface_id'] = interface_id
         if var_resource_path is not None:
             _path_params['resource_path'] = var_resource_path
-        if resource_name is not None:
-            _path_params['resource_name'] = resource_name
         # process the query parameters
         if range_header is not None:
             
@@ -584,7 +569,7 @@ class DataProductsApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/distribution-content/{interface_id}/{resource_path}/{resource_name}/chunk',
+            resource_path='/distribution-content/{interface_id}/{resource_path}/chunk',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -605,7 +590,6 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        resource_name: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -627,8 +611,6 @@ class DataProductsApi:
         :type interface_id: str
         :param var_resource_path: (required)
         :type var_resource_path: str
-        :param resource_name: (required)
-        :type resource_name: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -654,7 +636,6 @@ class DataProductsApi:
         _param = self._get_dataproduct_content_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
-            resource_name=resource_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -681,7 +662,6 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        resource_name: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -703,8 +683,6 @@ class DataProductsApi:
         :type interface_id: str
         :param var_resource_path: (required)
         :type var_resource_path: str
-        :param resource_name: (required)
-        :type resource_name: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -730,7 +708,6 @@ class DataProductsApi:
         _param = self._get_dataproduct_content_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
-            resource_name=resource_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -757,7 +734,6 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        resource_name: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -779,8 +755,6 @@ class DataProductsApi:
         :type interface_id: str
         :param var_resource_path: (required)
         :type var_resource_path: str
-        :param resource_name: (required)
-        :type resource_name: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -806,7 +780,6 @@ class DataProductsApi:
         _param = self._get_dataproduct_content_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
-            resource_name=resource_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -828,7 +801,6 @@ class DataProductsApi:
         self,
         interface_id,
         var_resource_path,
-        resource_name,
         _request_auth,
         _content_type,
         _headers,
@@ -852,8 +824,6 @@ class DataProductsApi:
             _path_params['interface_id'] = interface_id
         if var_resource_path is not None:
             _path_params['resource_path'] = var_resource_path
-        if resource_name is not None:
-            _path_params['resource_name'] = resource_name
         # process the query parameters
         # process the header parameters
         # process the form parameters
@@ -874,7 +844,7 @@ class DataProductsApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/distribution-content/{interface_id}/{resource_path}/{resource_name}',
+            resource_path='/distribution-content/{interface_id}/{resource_path}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -895,7 +865,6 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        resource_name: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -917,8 +886,6 @@ class DataProductsApi:
         :type interface_id: str
         :param var_resource_path: (required)
         :type var_resource_path: str
-        :param resource_name: (required)
-        :type resource_name: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -944,7 +911,6 @@ class DataProductsApi:
         _param = self._get_distribution_metadata_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
-            resource_name=resource_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -971,7 +937,6 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        resource_name: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -993,8 +958,6 @@ class DataProductsApi:
         :type interface_id: str
         :param var_resource_path: (required)
         :type var_resource_path: str
-        :param resource_name: (required)
-        :type resource_name: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1020,7 +983,6 @@ class DataProductsApi:
         _param = self._get_distribution_metadata_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
-            resource_name=resource_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1047,7 +1009,6 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        resource_name: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1069,8 +1030,6 @@ class DataProductsApi:
         :type interface_id: str
         :param var_resource_path: (required)
         :type var_resource_path: str
-        :param resource_name: (required)
-        :type resource_name: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1096,7 +1055,6 @@ class DataProductsApi:
         _param = self._get_distribution_metadata_serialize(
             interface_id=interface_id,
             var_resource_path=var_resource_path,
-            resource_name=resource_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1118,7 +1076,6 @@ class DataProductsApi:
         self,
         interface_id,
         var_resource_path,
-        resource_name,
         _request_auth,
         _content_type,
         _headers,
@@ -1142,8 +1099,6 @@ class DataProductsApi:
             _path_params['interface_id'] = interface_id
         if var_resource_path is not None:
             _path_params['resource_path'] = var_resource_path
-        if resource_name is not None:
-            _path_params['resource_name'] = resource_name
         # process the query parameters
         # process the header parameters
         # process the form parameters
@@ -1164,7 +1119,7 @@ class DataProductsApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/distribution-metadata/{interface_id}/{resource_path}/{resource_name}',
+            resource_path='/distribution-metadata/{interface_id}/{resource_path}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -1444,7 +1399,7 @@ class DataProductsApi:
     def list_dataproduct_distributions(
         self,
         interface_id: StrictStr,
-        var_resource_path: StrictStr,
+        directory_resource_path: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1464,8 +1419,8 @@ class DataProductsApi:
 
         :param interface_id: (required)
         :type interface_id: str
-        :param var_resource_path: (required)
-        :type var_resource_path: str
+        :param directory_resource_path: (required)
+        :type directory_resource_path: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1490,7 +1445,7 @@ class DataProductsApi:
 
         _param = self._list_dataproduct_distributions_serialize(
             interface_id=interface_id,
-            var_resource_path=var_resource_path,
+            directory_resource_path=directory_resource_path,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1516,7 +1471,7 @@ class DataProductsApi:
     def list_dataproduct_distributions_with_http_info(
         self,
         interface_id: StrictStr,
-        var_resource_path: StrictStr,
+        directory_resource_path: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1536,8 +1491,8 @@ class DataProductsApi:
 
         :param interface_id: (required)
         :type interface_id: str
-        :param var_resource_path: (required)
-        :type var_resource_path: str
+        :param directory_resource_path: (required)
+        :type directory_resource_path: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1562,7 +1517,7 @@ class DataProductsApi:
 
         _param = self._list_dataproduct_distributions_serialize(
             interface_id=interface_id,
-            var_resource_path=var_resource_path,
+            directory_resource_path=directory_resource_path,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1588,7 +1543,7 @@ class DataProductsApi:
     def list_dataproduct_distributions_without_preload_content(
         self,
         interface_id: StrictStr,
-        var_resource_path: StrictStr,
+        directory_resource_path: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1608,8 +1563,8 @@ class DataProductsApi:
 
         :param interface_id: (required)
         :type interface_id: str
-        :param var_resource_path: (required)
-        :type var_resource_path: str
+        :param directory_resource_path: (required)
+        :type directory_resource_path: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1634,7 +1589,7 @@ class DataProductsApi:
 
         _param = self._list_dataproduct_distributions_serialize(
             interface_id=interface_id,
-            var_resource_path=var_resource_path,
+            directory_resource_path=directory_resource_path,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1655,7 +1610,7 @@ class DataProductsApi:
     def _list_dataproduct_distributions_serialize(
         self,
         interface_id,
-        var_resource_path,
+        directory_resource_path,
         _request_auth,
         _content_type,
         _headers,
@@ -1677,8 +1632,8 @@ class DataProductsApi:
         # process the path parameters
         if interface_id is not None:
             _path_params['interface_id'] = interface_id
-        if var_resource_path is not None:
-            _path_params['resource_path'] = var_resource_path
+        if directory_resource_path is not None:
+            _path_params['directory_resource_path'] = directory_resource_path
         # process the query parameters
         # process the header parameters
         # process the form parameters
@@ -1699,7 +1654,7 @@ class DataProductsApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/dataproduct-distributions/{interface_id}/{resource_path}',
+            resource_path='/dataproduct-distributions/{interface_id}/{directory_resource_path}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

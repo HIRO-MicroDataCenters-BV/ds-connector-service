@@ -13,14 +13,12 @@ class BaseReadDataClient(ABC):
     async def stream_content(
         self,
         resource_path: str,
-        resource_name: str,
         range_header: Optional[str] = None,
     ) -> AsyncGenerator[bytes, None]:
         """
         Stream resource content with optional range support
         Args:
-            resource_path: Path to the resource
-            resource_name: Name of the resource
+            resource_path: Full path to the resource file
             range_header: HTTP Range header value (e.g., "bytes=0-1023")
         Yields:
             bytes: Chunks of resource data
@@ -33,14 +31,13 @@ class BaseReadDataClient(ABC):
 
     @abstractmethod
     async def get_distribution_metadata(
-        self, resource_path: str, resource_name: str
+        self, resource_path: str
     ) -> DataProductDistribution:
         """
         Get resource metadata without transferring content
 
         Args:
-            resource_path: Path to the resource
-            resource_name: Name of the resource
+            resource_path: Full path to the resource file
 
         Returns:
             ResourceMetadata: Standardized metadata object
@@ -81,14 +78,12 @@ class BaseReadDataClient(ABC):
     async def read_file_content(
         self,
         resource_path: str,
-        resource_name: str,
     ) -> bytes:
         """
         Read the entire file content at once into memory
 
         Args:
-            resource_path: Path to the resource
-            resource_name: Name of the resource file
+            resource_path: Full path to the resource file
 
         Returns:
             bytes: Full content of the file

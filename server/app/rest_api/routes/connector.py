@@ -46,7 +46,7 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/distribution-metadata/{interface_id}/{resource_path:path}/{resource_name}",
+        "/distribution-metadata/{interface_id}/{resource_path:path}",
         operation_id="get_distribution_metadata",
         name="Get Distribution Metadata",
         tags=[Tags.Data_products],
@@ -55,7 +55,6 @@ class ConnectorRoutes(Routable):
         self,
         interface_id: str,
         resource_path: str,
-        resource_name: str,
         usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> JSONResponse:
         """Return Metadata for a distribution along with region."""
@@ -64,7 +63,7 @@ class ConnectorRoutes(Routable):
         )
 
         distribution_metadata = await usecases.get_distribution_metadata(
-            resource_path, resource_name
+            resource_path=resource_path
         )
         return JSONResponse(
             content={"region": "ki", "distribution": distribution_metadata.dict()},
@@ -72,8 +71,7 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/distribution-content/{interface_id}/"
-        "{resource_path:path}/{resource_name}/chunk",
+        "/distribution-content/{interface_id}/" "{resource_path:path}/chunk",
         operation_id="get_dataproduct_chunk",
         name="Get Data Product Chunk",
         tags=[Tags.Data_products],
@@ -97,7 +95,6 @@ class ConnectorRoutes(Routable):
         self,
         interface_id: str,
         resource_path: str,
-        resource_name: str,
         range_header: Optional[str] = Query(
             None,
             description="HTTP Range header for partial content requests",
@@ -108,13 +105,11 @@ class ConnectorRoutes(Routable):
         """Return a dataset chunk (partial CSV content)."""
 
         # Get metadata to determine correct media type
-        metadata = await usecases.get_distribution_metadata(
-            resource_path, resource_name
-        )
+        metadata = await usecases.get_distribution_metadata(resource_path=resource_path)
 
         # Stream content with range support
-        content_generator = usecases.client.stream_content(
-            resource_path, resource_name, range_header
+        content_generator = usecases.stream_dataproduct_distribution_content(
+            resource_path=resource_path, range_header=range_header
         )
 
         # Determine response headers and status
@@ -127,7 +122,7 @@ class ConnectorRoutes(Routable):
             status_code = status.HTTP_206_PARTIAL_CONTENT
         else:
             # Full file streaming - show download link in Swagger
-            headers["Content-Disposition"] = f'attachment; filename="{resource_name}"'
+            headers["Content-Disposition"] = f'attachment; filename="{metadata.title}"'
 
         return StreamingResponse(
             content_generator,
@@ -137,7 +132,7 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/distribution-content/{interface_id}/{resource_path:path}/{resource_name}",
+        "/distribution-content/{interface_id}/{resource_path:path}",
         operation_id="get_dataproduct_content",
         name="Get Data Product Content",
         tags=[Tags.Data_products],
@@ -146,29 +141,26 @@ class ConnectorRoutes(Routable):
         self,
         interface_id: str,
         resource_path: str,
-        resource_name: str,
         usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> StreamingResponse:
         """Return the full dataset content."""
         logger.info("Getting full data product content as a single response")
         # Get metadata to determine correct media type
-        metadata = await usecases.get_distribution_metadata(
-            resource_path, resource_name
-        )
+        metadata = await usecases.get_distribution_metadata(resource_path=resource_path)
 
         full_content = await usecases.read_dataproduct_distribution_content(
-            resource_path, resource_name
+            resource_path=resource_path
         )
 
         return StreamingResponse(
             iter([full_content]),
             media_type=metadata.media_type or "application/octet-stream",
-            headers={"Content-Disposition": f'attachment; filename="{resource_name}"'},
+            headers={"Content-Disposition": f'attachment; filename="{metadata.title}"'},
             status_code=status.HTTP_200_OK,
         )
 
     @get(
-        "/dataproduct-distributions/{interface_id}/{resource_path:path}",
+        "/dataproduct-distributions/{interface_id}/{directory_resource_path:path}",
         operation_id="list_dataproduct_distributions",
         name="List Data Product Distributions",
         tags=[Tags.Data_products],
@@ -177,13 +169,13 @@ class ConnectorRoutes(Routable):
     async def list_dataproduct_distributions(
         self,
         interface_id: str,
-        resource_path: str,
+        directory_resource_path: str,
         usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> JSONResponse:
         """Return a paginated list of data product distributions with region."""
         logger.info(f"Listing data products for interface: {interface_id}")
         all_dataproducts_metadata = await usecases.list_dataproduct_distributions(
-            resource_path
+            directory_resource_path
         )
 
         # TODO Implement pagination logic here if needed

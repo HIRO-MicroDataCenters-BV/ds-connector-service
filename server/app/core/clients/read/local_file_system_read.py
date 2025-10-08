@@ -59,24 +59,24 @@ class FileSystemDataClient(BaseReadDataClient):
         logger.info(f"Initialized File System client with base_path: {self.base_path}")
         logger.info(f"Allowed paths: {[str(p) for p in self.allowed_paths]}")
 
-    def _resolve_file_path(self, resource_path: str, resource_name: str) -> Path:
+    def _resolve_file_path(self, resource_path: str) -> Path:
         """
-        Resolve and validate file path from components
+        Resolve and validate file path from resource path
 
         Args:
-            resource_path: Path to the resource
-            resource_name: Name of the resource
+            resource_path: Full path to the resource file
         Returns:
             Path: Resolved file path
         Raises:
             HTTPException: If path is invalid or not allowed
         """
-        # Build file path: base_path/resource_path/resource_name
+        # Build file path: base_path/resource_path
         clean_path = resource_path.strip("/")
         if clean_path:
-            file_path = self.base_path / clean_path / resource_name
+            file_path = self.base_path / clean_path
         else:
-            file_path = self.base_path / resource_name
+            # If empty path, use base_path directly
+            file_path = self.base_path
 
         try:
             resolved_path = file_path.resolve()
@@ -180,11 +180,10 @@ class FileSystemDataClient(BaseReadDataClient):
     async def stream_content(
         self,
         resource_path: str,
-        resource_name: str,
         range_header: Optional[str] = None,
     ) -> AsyncGenerator[bytes, None]:
         """Stream file content with optional range support"""
-        file_path = self._resolve_file_path(resource_path, resource_name)
+        file_path = self._resolve_file_path(resource_path)
 
         logger.info(f"Streaming file: {file_path} with range: {range_header}")
 
@@ -279,14 +278,12 @@ class FileSystemDataClient(BaseReadDataClient):
     async def read_file_content(
         self,
         resource_path: str,
-        resource_name: str,
     ) -> bytes:
         """
         Read the entire file content at once into memory
 
         Args:
-            resource_path: Path to the resource
-            resource_name: Name of the resource file
+            resource_path: Full path to the resource file
 
         Returns:
             bytes: Complete file content
@@ -294,7 +291,7 @@ class FileSystemDataClient(BaseReadDataClient):
         Raises:
             HTTPException: If file not found, too large, or access denied
         """
-        file_path = self._resolve_file_path(resource_path, resource_name)
+        file_path = self._resolve_file_path(resource_path)
 
         logger.info(f"Reading entire file: {file_path}")
 
@@ -329,12 +326,11 @@ class FileSystemDataClient(BaseReadDataClient):
             raise HTTPException(status_code=500, detail=f"File system error: {str(e)}")
 
     async def get_distribution_metadata(
-        self, resource_path: str, resource_name: str
+        self, resource_path: str
     ) -> DataProductDistribution:
         """Get file metadata"""
         logger.info(f"Resource path: {resource_path}")
-        logger.info(f"Resource name: {resource_name}")
-        file_path = self._resolve_file_path(resource_path, resource_name)
+        file_path = self._resolve_file_path(resource_path)
         logger.info(f"Resolved file path: {file_path}")
 
         try:
@@ -362,6 +358,9 @@ class FileSystemDataClient(BaseReadDataClient):
                 checksum = await loop.run_in_executor(
                     None, self._calculate_file_checksum, file_path
                 )
+
+            # Extract filename from path for title and description
+            resource_name = file_path.name
 
             metadata = DataProductDistribution(
                 title=resource_name,
@@ -396,19 +395,21 @@ class FileSystemDataClient(BaseReadDataClient):
             raise HTTPException(status_code=500, detail=f"File system error: {str(e)}")
 
     async def list_dataproduct_distributions(
-        self, resource_path: str
+        self, directory_resource_path: str
     ) -> List[DataProductDistribution]:
         """List data product distributions from file system structure"""
         logger.info(
-            f"Listing file system data product distributions from: {resource_path}"
+            f"""Listing file system data product
+            distributions from: {directory_resource_path}"""
         )
         try:
             products = []
             resource_files = await self._collect_files_recursively(
-                resource_path, max_files=MAX_FILES_TO_LIST
+                directory_resource_path, max_files=MAX_FILES_TO_LIST
             )
             logger.info(
-                f"Collected {len(resource_files)} files from path: {resource_path}"
+                f"""Collected {len(resource_files)}
+                files from path: {directory_resource_path}"""
             )
             loop = asyncio.get_event_loop()
             for file_name, file_path in resource_files:
