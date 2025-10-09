@@ -34,9 +34,7 @@ types-aiofiles = "^24.1.0.20250822"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4"
-pytest-mock = "^3.12.0"
-httpx = "^0.26"
-tox = "^4.13.0"
+pytest-asyncio = "^0.21.0"
 
 [tool.isort]
 # https://github.com/timothycrosley/isort/
@@ -60,6 +58,7 @@ color = true
 pretty = true
 show_traceback = true
 color_output = true
+plugins = ["pydantic.mypy"]
 exclude = [
   '.git',
   '__pycache__',
@@ -88,15 +87,38 @@ warn_unused_configs = true
 warn_unused_ignores = true
 
 [tool.pytest.ini_options]
-# https://docs.pytest.org/en/6.2.x/customize.html#pyproject-toml
+# Test discovery
+testpaths = ["app"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
 # Directories that are not visited by pytest collector:
-norecursedirs =["hooks", "*.egg", ".eggs", "dist", "build", "docs", ".tox", ".git", "__pycache__"]
-doctest_optionflags = ["NUMBER", "NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL"]
+norecursedirs = ["hooks", "*.egg", ".eggs", "dist", "build", "docs", ".tox", ".git", "__pycache__"]
 
 # Extra options:
 addopts = [
   "--strict-markers",
   "--tb=short",
-  "--doctest-modules",
-  "--doctest-continue-on-failure",
+  "--verbose",
+  "--color=yes",
+  "--durations=10"
+]
+
+# Markers
+markers = [
+  "unit: Unit tests",
+  "integration: Integration tests",
+  "slow: Slow running tests",
+  "filesystem: Tests that require filesystem access",
+  "api: API endpoint tests"
+]
+
+# Async test support
+asyncio_mode = "auto"
+
+# Filter warnings
+filterwarnings = [
+  "ignore::DeprecationWarning",
+  "ignore::PendingDeprecationWarning"
 ]
