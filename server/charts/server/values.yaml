@@ -86,7 +86,7 @@ nodeSelector: {}
 tolerations: []
 
 ingress:
-  enabled: false
+  enabled: true
   host: nextgen.hiro-develop.nl
 
 ## Update this according to the desired node
@@ -95,4 +95,4 @@ nodeSelector:
 
 ## To control the metics on development
 metrics:
-  enabled: false
+  enabled: true
