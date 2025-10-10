@@ -31,14 +31,23 @@ container:
 
 livenessProbe:
   httpGet:
-    path: /health-check/
-    port: 7000
-  initialDelaySeconds: 10
+    path: /health-check
+    port: http
+    scheme: HTTP
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
 readinessProbe:
   httpGet:
-    path: /health-check/
-    port: 7000
-  initialDelaySeconds: 10
+    path: /health-check
+    port: http
+    scheme: HTTP
+  initialDelaySeconds: 20
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+  failureThreshold: 3
 
 
 service:
