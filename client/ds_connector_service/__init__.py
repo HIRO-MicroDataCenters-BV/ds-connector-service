@@ -19,6 +19,7 @@ __version__ = "0.1.0"
 
 # import apis into sdk package
 from ds_connector_service.api.data_products_api import DataProductsApi
+from ds_connector_service.api.health_api import HealthApi
 from ds_connector_service.api.default_api import DefaultApi
 
 # import ApiClient
@@ -48,6 +49,7 @@ from ds_connector_service.models.download_url import DownloadUrl
 from ds_connector_service.models.format import Format
 from ds_connector_service.models.http_validation_error import HTTPValidationError
 from ds_connector_service.models.has_policy import HasPolicy
+from ds_connector_service.models.health_check import HealthCheck
 from ds_connector_service.models.issued import Issued
 from ds_connector_service.models.license import License
 from ds_connector_service.models.media_type import MediaType

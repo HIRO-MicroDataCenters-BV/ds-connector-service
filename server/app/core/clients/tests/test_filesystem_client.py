@@ -54,30 +54,36 @@ class TestFileSystemDataClient:
     @pytest.fixture
     def client(self, temp_dir):
         """Create a FileSystemDataClient instance for testing."""
-        return FileSystemDataClient(base_path=str(temp_dir))
+        # Mock the FS_BASE_PATH setting to use our temp directory
+        patch_path = "app.core.clients.read.local_file_system_read.FS_BASE_PATH"
+        with patch(patch_path, str(temp_dir)):
+            return FileSystemDataClient(base_path=str(temp_dir))
 
     def test_init_with_existing_path(self, temp_dir):
         """Test initialization with existing base path."""
-        client = FileSystemDataClient(base_path=str(temp_dir))
-        assert client.base_path == temp_dir.resolve()
-        assert client.client_name == "FileSystem"
-        assert client.allowed_paths == [temp_dir.resolve()]
+        with patch("app.core.clients.read.local_file_system_read.FS_BASE_PATH", None):
+            client = FileSystemDataClient(base_path=str(temp_dir))
+            assert client.base_path == temp_dir.resolve()
+            assert client.client_name == "FileSystem"
+            assert client.allowed_paths == [temp_dir.resolve()]
 
     def test_init_with_nonexistent_path(self):
         """Test initialization with non-existent base path."""
-        with pytest.raises(FileNotFoundError):
-            FileSystemDataClient(base_path="/nonexistent/path")
+        with patch("app.core.clients.read.local_file_system_read.FS_BASE_PATH", None):
+            with pytest.raises(FileNotFoundError):
+                FileSystemDataClient(base_path="/nonexistent/path")
 
     def test_init_with_allowed_paths(self, temp_dir):
         """Test initialization with allowed paths."""
         allowed_path = temp_dir / "allowed"
         allowed_path.mkdir()
 
-        client = FileSystemDataClient(
-            base_path=str(temp_dir), allowed_paths=[str(allowed_path)]
-        )
-        assert len(client.allowed_paths) == 1
-        assert client.allowed_paths[0] == allowed_path.resolve()
+        with patch("app.core.clients.read.local_file_system_read.FS_BASE_PATH", None):
+            client = FileSystemDataClient(
+                base_path=str(temp_dir), allowed_paths=[str(allowed_path)]
+            )
+            assert len(client.allowed_paths) == 1
+            assert client.allowed_paths[0] == allowed_path.resolve()
 
     def test_resolve_file_path_valid(self, client, temp_dir):
         """Test path resolution with valid paths."""
@@ -107,15 +113,16 @@ class TestFileSystemDataClient:
         allowed_dir = temp_dir / "allowed"
         allowed_dir.mkdir()
 
-        client = FileSystemDataClient(
-            base_path=str(temp_dir), allowed_paths=[str(allowed_dir)]
-        )
+        with patch("app.core.clients.read.local_file_system_read.FS_BASE_PATH", None):
+            client = FileSystemDataClient(
+                base_path=str(temp_dir), allowed_paths=[str(allowed_dir)]
+            )
 
-        # Try to access file outside allowed path
-        with pytest.raises(HTTPException) as exc_info:
-            client._resolve_file_path("../outside.txt")
+            # Try to access file outside allowed path
+            with pytest.raises(HTTPException) as exc_info:
+                client._resolve_file_path("../outside.txt")
 
-        assert exc_info.value.status_code == 403
+            assert exc_info.value.status_code == 403
 
     @patch("aiofiles.ospath.exists")
     @patch("aiofiles.ospath.isfile")
@@ -316,8 +323,10 @@ class TestFileSystemDataClient:
     async def test_health_check_unhealthy(self):
         """Test health check when filesystem is not accessible."""
         # Create client with non-existent path (but don't let init fail)
+        patch_path = "app.core.clients.read.local_file_system_read.FS_BASE_PATH"
         with patch("pathlib.Path.exists", return_value=True):
-            client = FileSystemDataClient(base_path="/tmp/test")
+            with patch(patch_path, None):
+                client = FileSystemDataClient(base_path="/tmp/test")
 
         # Now make the path non-existent for health check
         with patch("aiofiles.ospath.exists", return_value=False):

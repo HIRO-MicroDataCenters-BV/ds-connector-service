@@ -42,7 +42,9 @@ class FileSystemDataClient(BaseReadDataClient):
             base_path: Base directory path for file operations
             allowed_paths: List of allowed directory paths for security
         """
-        self.base_path = Path(base_path or FS_BASE_PATH).resolve()
+        self.base_path = Path(
+            FS_BASE_PATH if FS_BASE_PATH else base_path if base_path else "."
+        ).resolve()
         self.client_name = "FileSystem"
 
         # Ensure base path exists

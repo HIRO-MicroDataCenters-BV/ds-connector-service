@@ -18,7 +18,8 @@ class TestConnectorRoutes:
     @pytest.fixture
     def client(self):
         """Create FastAPI test client."""
-        return TestClient(app)
+        with TestClient(app) as client:
+            yield client
 
     @pytest.fixture
     def sample_distribution(self):

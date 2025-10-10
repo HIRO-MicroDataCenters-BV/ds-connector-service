@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     MAX_FILES_TO_LIST: int = (
         10  # Limit for number of files to list in directory listings
     )
-    FS_BASE_PATH: str = "/data"  # Base path for file system operations
+    FS_BASE_PATH: str = "./data"  # Base path for file system operations
 
     model_config = SettingsConfigDict(
         env_file=".env",

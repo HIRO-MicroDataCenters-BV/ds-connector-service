@@ -68,6 +68,7 @@ Class | Method | HTTP request | Description
 *DataProductsApi* | [**health_check**](ds_connector_service/docs/DataProductsApi.md#health_check) | **GET** /interface-health/{interface_id} | Health Check
 *DataProductsApi* | [**list_dataproduct_distributions**](ds_connector_service/docs/DataProductsApi.md#list_dataproduct_distributions) | **GET** /dataproduct-distributions/{interface_id}/{directory_resource_path} | List Data Product Distributions
 *DataProductsApi* | [**list_dataproducts**](ds_connector_service/docs/DataProductsApi.md#list_dataproducts) | **GET** /dataproducts/{interface_id} | List Data Products
+*HealthApi* | [**service_health_check**](ds_connector_service/docs/HealthApi.md#service_health_check) | **GET** /health-check | Health check
 *DefaultApi* | [**metrics_metrics_get**](ds_connector_service/docs/DefaultApi.md#metrics_metrics_get) | **GET** /metrics | Metrics
 
 
@@ -88,6 +89,7 @@ Class | Method | HTTP request | Description
  - [Format](ds_connector_service/docs/Format.md)
  - [HTTPValidationError](ds_connector_service/docs/HTTPValidationError.md)
  - [HasPolicy](ds_connector_service/docs/HasPolicy.md)
+ - [HealthCheck](ds_connector_service/docs/HealthCheck.md)
  - [Issued](ds_connector_service/docs/Issued.md)
  - [License](ds_connector_service/docs/License.md)
  - [MediaType](ds_connector_service/docs/MediaType.md)

@@ -2,7 +2,11 @@
 
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+
+class HealthCheck(BaseModel):
+    status: str = Field(examples=["OK"])
 
 
 class ConnectorMetadata(BaseModel):
@@ -15,6 +19,7 @@ class ConnectorMetadata(BaseModel):
 
 class DataProductDistribution(BaseModel):
     """Standardized metadata for resources across different sources"""
+
     access_service: Optional[str] = None
     access_url: Optional[str] = None
     byte_size: Optional[int] = None

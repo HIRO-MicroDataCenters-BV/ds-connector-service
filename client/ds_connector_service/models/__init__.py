@@ -30,6 +30,7 @@ from ds_connector_service.models.download_url import DownloadUrl
 from ds_connector_service.models.format import Format
 from ds_connector_service.models.http_validation_error import HTTPValidationError
 from ds_connector_service.models.has_policy import HasPolicy
+from ds_connector_service.models.health_check import HealthCheck
 from ds_connector_service.models.issued import Issued
 from ds_connector_service.models.license import License
 from ds_connector_service.models.media_type import MediaType

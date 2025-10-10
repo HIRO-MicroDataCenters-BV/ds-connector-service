@@ -2,6 +2,7 @@ ds_connector_service/__init__.py
 ds_connector_service/api/__init__.py
 ds_connector_service/api/data_products_api.py
 ds_connector_service/api/default_api.py
+ds_connector_service/api/health_api.py
 ds_connector_service/api_client.py
 ds_connector_service/api_response.py
 ds_connector_service/configuration.py
@@ -22,6 +23,8 @@ ds_connector_service/docs/DownloadUrl.md
 ds_connector_service/docs/Format.md
 ds_connector_service/docs/HTTPValidationError.md
 ds_connector_service/docs/HasPolicy.md
+ds_connector_service/docs/HealthApi.md
+ds_connector_service/docs/HealthCheck.md
 ds_connector_service/docs/Issued.md
 ds_connector_service/docs/License.md
 ds_connector_service/docs/MediaType.md
@@ -48,6 +51,7 @@ ds_connector_service/models/description.py
 ds_connector_service/models/download_url.py
 ds_connector_service/models/format.py
 ds_connector_service/models/has_policy.py
+ds_connector_service/models/health_check.py
 ds_connector_service/models/http_validation_error.py
 ds_connector_service/models/issued.py
 ds_connector_service/models/license.py

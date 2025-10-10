@@ -1,13 +1,17 @@
+# Chart values for ds-search
 replicaCount: 1
 
 image:
   repository: ""
   tag: ""
   pullPolicy: IfNotPresent
+  pullSecret: ""
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+# Optional: override the namespace; defaults to release namespace
+namespace: uva
+
+nameOverride: "ds-connector"
+fullnameOverride: "ds-connector"
 
 serviceAccount:
   create: true
@@ -19,20 +23,67 @@ podAnnotations: {}
 podLabels: {}
 
 podSecurityContext: {}
-
 securityContext: {}
 
-service:
-  type: ClusterIP
-  port: 80
-
-resources: {}
+container:
+  command: ["uvicorn"]
+  args: ["app.main:app", "--host", "0.0.0.0", "--port", "7000"]
 
 livenessProbe:
   httpGet:
-    path: /
-    port: http
+    path: /health-check/
+    port: 7000
+  initialDelaySeconds: 10
 readinessProbe:
   httpGet:
-    path: /
-    port: http
+    path: /health-check/
+    port: 7000
+  initialDelaySeconds: 10
+
+
+service:
+  type: ClusterIP
+  port: 7000
+
+env:
+  - name: CHUNK_SIZE
+    value: "8192" # 8KB chunks
+  - name: MAX_FILE_SIZE
+    value: "10737418240"  # 10GB
+  - name: MAX_FILES_TO_LIST
+    value: "10"  # Limit for number of files to list in directory listings
+  - name: FS_BASE_PATH
+    value: "/data" # Base path for file system operations
+  - name : LOG_LEVEL
+    value: "INFO"
+
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "250m"
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
+
+persistence:
+  storageClass: "standard"
+  size: 10Gi
+
+deploymentMode: deployment
+
+
+# Optional nodeSelector & tolerations
+nodeSelector: {}
+tolerations: []
+
+ingress:
+  enabled: false
+  host: nextgen.hiro-develop.nl
+
+## Update this according to the desired node
+nodeSelector:
+  role: uva
+
+## To control the metics on development
+metrics:
+  enabled: false
