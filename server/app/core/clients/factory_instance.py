@@ -4,6 +4,6 @@ from app.core.source_type import SourceType
 
 client_factory = ClientFactory()
 client_factory.register_client(
-    SourceType.FILE, FileSystemDataClient(base_path="./data")
+    SourceType.FILE, FileSystemDataClient()  # Let it use settings/env variables
 )
 # Register other clients here as needed
