@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   ds-connector:
   - apiVersion: v2
+    appVersion: 0.1.0-dev.134.develop-clients.62e1968e
+    created: "2025-10-14T16:18:17.784331036Z"
+    description: Web server
+    digest: e5ab9912f4b5bc0752da338cecde30c2e66cc7a90ab143d1978c877cc226892c
+    name: ds-connector
+    type: application
+    urls:
+    - https://HIRO-MicroDataCenters-BV.github.io/ds-connector-service/helm-charts/ds-connector-0.1.0-dev.134.develop-clients.62e1968e.tgz
+    version: 0.1.0-dev.134.develop-clients.62e1968e
+  - apiVersion: v2
     appVersion: 0.1.0-dev.131.fix-versioning.7092f915
     created: "2025-10-14T15:48:42.465430057Z"
     description: Web server
@@ -282,4 +292,4 @@ entries:
     urls:
     - https://HIRO-MicroDataCenters-BV.github.io/ds-connector-service/helm-charts/server-0.1.0-dev.74.methods-signatur.b4f0a05c.tgz
     version: 0.1.0-dev.74.methods-signatur.b4f0a05c
-generated: "2025-10-14T15:48:42.464831039Z"
+generated: "2025-10-14T16:18:17.783711955Z"
