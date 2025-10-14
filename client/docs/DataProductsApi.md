@@ -1,65 +1,64 @@
-# template_web_client.DataProductsApi
+# ds_connector_service.DataProductsApi
 
 All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**create_data_product**](DataProductsApi.md#create_data_product) | **POST** /data-products/ | Create Data Product
-[**delete_data_product**](DataProductsApi.md#delete_data_product) | **DELETE** /data-products/{connector_id}/{data_product_id}/ | Delete Data Product
-[**get_data_product**](DataProductsApi.md#get_data_product) | **GET** /data-products/{connector_id}/{data_product_id}/ | Get Data Product
-[**get_data_product_content**](DataProductsApi.md#get_data_product_content) | **GET** /data-products/{connector_id}/{data_product_id}/content | Get Data Product Content
-[**list_data_products**](DataProductsApi.md#list_data_products) | **GET** /data-products/ | List Data Products
+[**get_connector_metadata**](DataProductsApi.md#get_connector_metadata) | **GET** /connector-metadata | Get Connector Metadata
+[**get_dataproduct_chunk**](DataProductsApi.md#get_dataproduct_chunk) | **GET** /distribution-content/{interface_id}/{resource_path}/chunk | Get Data Product Chunk
+[**get_dataproduct_content**](DataProductsApi.md#get_dataproduct_content) | **GET** /distribution-content/{interface_id}/{resource_path} | Get Data Product Content
+[**get_distribution_metadata**](DataProductsApi.md#get_distribution_metadata) | **GET** /distribution-metadata/{interface_id}/{resource_path} | Get Distribution Metadata
+[**health_check**](DataProductsApi.md#health_check) | **GET** /interface-health/{interface_id} | Health Check
+[**list_dataproduct_distributions**](DataProductsApi.md#list_dataproduct_distributions) | **GET** /dataproduct-distributions/{interface_id}/{directory_resource_path} | List Data Product Distributions
+[**list_dataproducts**](DataProductsApi.md#list_dataproducts) | **GET** /dataproducts/{interface_id} | List Data Products
 
 
-# **create_data_product**
-> object create_data_product(body)
+# **get_connector_metadata**
+> ConnectorMetadata get_connector_metadata()
 
-Create Data Product
+Get Connector Metadata
 
-Register a new data product (metadata only)
+partial(func, *args, **keywords) - new function with partial application of the given arguments and keywords.
 
 ### Example
 
 
 ```python
-import template_web_client
-from template_web_client.rest import ApiException
+import ds_connector_service
+from ds_connector_service.models.connector_metadata import ConnectorMetadata
+from ds_connector_service.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = template_web_client.Configuration(
+configuration = ds_connector_service.Configuration(
     host = "http://localhost"
 )
 
 
 # Enter a context with an instance of the API client
-with template_web_client.ApiClient(configuration) as api_client:
+with ds_connector_service.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = template_web_client.DataProductsApi(api_client)
-    body = None # object | 
+    api_instance = ds_connector_service.DataProductsApi(api_client)
 
     try:
-        # Create Data Product
-        api_response = api_instance.create_data_product(body)
-        print("The response of DataProductsApi->create_data_product:\n")
+        # Get Connector Metadata
+        api_response = api_instance.get_connector_metadata()
+        print("The response of DataProductsApi->get_connector_metadata:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling DataProductsApi->create_data_product: %s\n" % e)
+        print("Exception when calling DataProductsApi->get_connector_metadata: %s\n" % e)
 ```
 
 
 
 ### Parameters
 
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | **object**|  | 
+This endpoint does not need any parameter.
 
 ### Return type
 
-**object**
+[**ConnectorMetadata**](ConnectorMetadata.md)
 
 ### Authorization
 
@@ -67,7 +66,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 ### HTTP response details
@@ -75,48 +74,46 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Successful Response |  -  |
-**201** | Data product created successfully |  -  |
-**400** | Invalid input |  -  |
-**422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **delete_data_product**
-> object delete_data_product(connector_id, data_product_id)
+# **get_dataproduct_chunk**
+> object get_dataproduct_chunk(interface_id, var_resource_path, range_header=range_header)
 
-Delete Data Product
+Get Data Product Chunk
 
-Delete a data product (delegated to the underlying Interface)
+Return a dataset chunk (partial CSV content).
 
 ### Example
 
 
 ```python
-import template_web_client
-from template_web_client.rest import ApiException
+import ds_connector_service
+from ds_connector_service.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = template_web_client.Configuration(
+configuration = ds_connector_service.Configuration(
     host = "http://localhost"
 )
 
 
 # Enter a context with an instance of the API client
-with template_web_client.ApiClient(configuration) as api_client:
+with ds_connector_service.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = template_web_client.DataProductsApi(api_client)
-    connector_id = 'connector_id_example' # str | 
-    data_product_id = 'data_product_id_example' # str | 
+    api_instance = ds_connector_service.DataProductsApi(api_client)
+    interface_id = 'interface_id_example' # str | 
+    var_resource_path = 'var_resource_path_example' # str | 
+    range_header = ds_connector_service.RangeHeader() # RangeHeader | HTTP Range header for partial content requests (optional)
 
     try:
-        # Delete Data Product
-        api_response = api_instance.delete_data_product(connector_id, data_product_id)
-        print("The response of DataProductsApi->delete_data_product:\n")
+        # Get Data Product Chunk
+        api_response = api_instance.get_dataproduct_chunk(interface_id, var_resource_path, range_header=range_header)
+        print("The response of DataProductsApi->get_dataproduct_chunk:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling DataProductsApi->delete_data_product: %s\n" % e)
+        print("Exception when calling DataProductsApi->get_dataproduct_chunk: %s\n" % e)
 ```
 
 
@@ -126,8 +123,9 @@ with template_web_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **connector_id** | **str**|  | 
- **data_product_id** | **str**|  | 
+ **interface_id** | **str**|  | 
+ **var_resource_path** | **str**|  | 
+ **range_header** | [**RangeHeader**](.md)| HTTP Range header for partial content requests | [optional] 
 
 ### Return type
 
@@ -140,124 +138,56 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/json, text/csv
 
 ### HTTP response details
 
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Data product deleted successfully |  -  |
+**200** | Full chunk when no range specified |  -  |
+**206** | Partial content chunk |  * Content-Range - Range of bytes returned <br>  |
 **404** | Data product not found |  -  |
+**416** | Range not satisfiable |  -  |
 **422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **get_data_product**
-> object get_data_product(connector_id, data_product_id)
-
-Get Data Product
-
-Return metadata for a specific data product
-
-### Example
-
-
-```python
-import template_web_client
-from template_web_client.rest import ApiException
-from pprint import pprint
-
-# Defining the host is optional and defaults to http://localhost
-# See configuration.py for a list of all supported configuration parameters.
-configuration = template_web_client.Configuration(
-    host = "http://localhost"
-)
-
-
-# Enter a context with an instance of the API client
-with template_web_client.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = template_web_client.DataProductsApi(api_client)
-    connector_id = 'connector_id_example' # str | 
-    data_product_id = 'data_product_id_example' # str | 
-
-    try:
-        # Get Data Product
-        api_response = api_instance.get_data_product(connector_id, data_product_id)
-        print("The response of DataProductsApi->get_data_product:\n")
-        pprint(api_response)
-    except Exception as e:
-        print("Exception when calling DataProductsApi->get_data_product: %s\n" % e)
-```
-
-
-
-### Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **connector_id** | **str**|  | 
- **data_product_id** | **str**|  | 
-
-### Return type
-
-**object**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Data product metadata |  -  |
-**422** | Validation Error |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **get_data_product_content**
-> object get_data_product_content(connector_id, data_product_id)
+# **get_dataproduct_content**
+> object get_dataproduct_content(interface_id, var_resource_path)
 
 Get Data Product Content
 
-Retrieve data product content wrapped in MMIO
+Return the full dataset content.
 
 ### Example
 
 
 ```python
-import template_web_client
-from template_web_client.rest import ApiException
+import ds_connector_service
+from ds_connector_service.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = template_web_client.Configuration(
+configuration = ds_connector_service.Configuration(
     host = "http://localhost"
 )
 
 
 # Enter a context with an instance of the API client
-with template_web_client.ApiClient(configuration) as api_client:
+with ds_connector_service.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = template_web_client.DataProductsApi(api_client)
-    connector_id = 'connector_id_example' # str | 
-    data_product_id = 'data_product_id_example' # str | 
+    api_instance = ds_connector_service.DataProductsApi(api_client)
+    interface_id = 'interface_id_example' # str | 
+    var_resource_path = 'var_resource_path_example' # str | 
 
     try:
         # Get Data Product Content
-        api_response = api_instance.get_data_product_content(connector_id, data_product_id)
-        print("The response of DataProductsApi->get_data_product_content:\n")
+        api_response = api_instance.get_dataproduct_content(interface_id, var_resource_path)
+        print("The response of DataProductsApi->get_dataproduct_content:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling DataProductsApi->get_data_product_content: %s\n" % e)
+        print("Exception when calling DataProductsApi->get_dataproduct_content: %s\n" % e)
 ```
 
 
@@ -267,8 +197,8 @@ with template_web_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **connector_id** | **str**|  | 
- **data_product_id** | **str**|  | 
+ **interface_id** | **str**|  | 
+ **var_resource_path** | **str**|  | 
 
 ### Return type
 
@@ -287,47 +217,47 @@ No authorization required
 
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | MMIO object with data product content |  -  |
+**200** | Successful Response |  -  |
 **422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **list_data_products**
-> object list_data_products(page=page, page_size=page_size)
+# **get_distribution_metadata**
+> object get_distribution_metadata(interface_id, var_resource_path)
 
-List Data Products
+Get Distribution Metadata
 
-Return paginated list of available data products
+Return Metadata for a distribution along with region.
 
 ### Example
 
 
 ```python
-import template_web_client
-from template_web_client.rest import ApiException
+import ds_connector_service
+from ds_connector_service.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = template_web_client.Configuration(
+configuration = ds_connector_service.Configuration(
     host = "http://localhost"
 )
 
 
 # Enter a context with an instance of the API client
-with template_web_client.ApiClient(configuration) as api_client:
+with ds_connector_service.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = template_web_client.DataProductsApi(api_client)
-    page = 1 # int |  (optional) (default to 1)
-    page_size = 100 # int |  (optional) (default to 100)
+    api_instance = ds_connector_service.DataProductsApi(api_client)
+    interface_id = 'interface_id_example' # str | 
+    var_resource_path = 'var_resource_path_example' # str | 
 
     try:
-        # List Data Products
-        api_response = api_instance.list_data_products(page=page, page_size=page_size)
-        print("The response of DataProductsApi->list_data_products:\n")
+        # Get Distribution Metadata
+        api_response = api_instance.get_distribution_metadata(interface_id, var_resource_path)
+        print("The response of DataProductsApi->get_distribution_metadata:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling DataProductsApi->list_data_products: %s\n" % e)
+        print("Exception when calling DataProductsApi->get_distribution_metadata: %s\n" % e)
 ```
 
 
@@ -337,8 +267,8 @@ with template_web_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **page** | **int**|  | [optional] [default to 1]
- **page_size** | **int**|  | [optional] [default to 100]
+ **interface_id** | **str**|  | 
+ **var_resource_path** | **str**|  | 
 
 ### Return type
 
@@ -357,7 +287,214 @@ No authorization required
 
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | List of data products |  -  |
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **health_check**
+> object health_check(interface_id)
+
+Health Check
+
+Perform health check on the specified interface.
+
+### Example
+
+
+```python
+import ds_connector_service
+from ds_connector_service.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ds_connector_service.Configuration(
+    host = "http://localhost"
+)
+
+
+# Enter a context with an instance of the API client
+with ds_connector_service.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = ds_connector_service.DataProductsApi(api_client)
+    interface_id = 'interface_id_example' # str | 
+
+    try:
+        # Health Check
+        api_response = api_instance.health_check(interface_id)
+        print("The response of DataProductsApi->health_check:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataProductsApi->health_check: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **interface_id** | **str**|  | 
+
+### Return type
+
+**object**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_dataproduct_distributions**
+> List[DataProductItem] list_dataproduct_distributions(interface_id, directory_resource_path)
+
+List Data Product Distributions
+
+Return a paginated list of data product distributions with region.
+
+### Example
+
+
+```python
+import ds_connector_service
+from ds_connector_service.models.data_product_item import DataProductItem
+from ds_connector_service.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ds_connector_service.Configuration(
+    host = "http://localhost"
+)
+
+
+# Enter a context with an instance of the API client
+with ds_connector_service.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = ds_connector_service.DataProductsApi(api_client)
+    interface_id = 'interface_id_example' # str | 
+    directory_resource_path = 'directory_resource_path_example' # str | 
+
+    try:
+        # List Data Product Distributions
+        api_response = api_instance.list_dataproduct_distributions(interface_id, directory_resource_path)
+        print("The response of DataProductsApi->list_dataproduct_distributions:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataProductsApi->list_dataproduct_distributions: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **interface_id** | **str**|  | 
+ **directory_resource_path** | **str**|  | 
+
+### Return type
+
+[**List[DataProductItem]**](DataProductItem.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_dataproducts**
+> List[str] list_dataproducts(interface_id)
+
+List Data Products
+
+List available data products from the base path.
+
+### Example
+
+
+```python
+import ds_connector_service
+from ds_connector_service.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ds_connector_service.Configuration(
+    host = "http://localhost"
+)
+
+
+# Enter a context with an instance of the API client
+with ds_connector_service.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = ds_connector_service.DataProductsApi(api_client)
+    interface_id = 'interface_id_example' # str | 
+
+    try:
+        # List Data Products
+        api_response = api_instance.list_dataproducts(interface_id)
+        print("The response of DataProductsApi->list_dataproducts:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataProductsApi->list_dataproducts: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **interface_id** | **str**|  | 
+
+### Return type
+
+**List[str]**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
 **422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
