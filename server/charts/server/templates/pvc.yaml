@@ -3,10 +3,14 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ include "app.fullname" . }}-data
   namespace: {{ .Values.namespace | default .Release.Namespace }}
+  annotations:
+    helm.sh/resource-policy: keep
 spec:
   accessModes:
-    - ReadWriteOnce
+    {{- toYaml .Values.persistence.accessModes | nindent 2 }}
   resources:
     requests:
-      storage: 10Gi
+      storage: {{ .Values.persistence.size | quote }}
+  {{- if .Values.persistence.storageClass }}
   storageClassName: {{ .Values.persistence.storageClass | quote }}
+  {{- end }}

@@ -75,8 +75,11 @@ resources:
     cpu: "500m"
 
 persistence:
-  storageClass: "standard"
+  storageClass: ""
   size: 10Gi
+  mountPath: /data
+  accessModes:
+  - ReadWriteOnce
 
 deploymentMode: deployment
 

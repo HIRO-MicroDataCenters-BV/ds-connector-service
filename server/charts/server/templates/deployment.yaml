@@ -56,7 +56,7 @@ spec:
             {{- end }}
           volumeMounts:
             - name: data
-              mountPath: /data
+              mountPath: {{ .Values.persistence.mountPath }}
       volumes:
         - name: data
           persistentVolumeClaim:
