@@ -28,6 +28,8 @@ def generate_openapi(
         "docker",
         "run",
         "--rm",
+        "--user",
+        f"{os.getuid()}:{os.getgid()}",
         "-v",
         f"{CLIENT_DIR}:/project",
         "-v",
