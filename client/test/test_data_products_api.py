@@ -15,7 +15,7 @@
 
 import unittest
 
-from template_web_client.api.data_products_api import DataProductsApi
+from ds_connector_service.api.data_products_api import DataProductsApi
 
 
 class TestDataProductsApi(unittest.TestCase):
@@ -27,36 +27,50 @@ class TestDataProductsApi(unittest.TestCase):
     def tearDown(self) -> None:
         pass
 
-    def test_create_data_product(self) -> None:
-        """Test case for create_data_product
+    def test_get_connector_metadata(self) -> None:
+        """Test case for get_connector_metadata
 
-        Create Data Product
+        Get Connector Metadata
         """
         pass
 
-    def test_delete_data_product(self) -> None:
-        """Test case for delete_data_product
+    def test_get_dataproduct_chunk(self) -> None:
+        """Test case for get_dataproduct_chunk
 
-        Delete Data Product
+        Get Data Product Chunk
         """
         pass
 
-    def test_get_data_product(self) -> None:
-        """Test case for get_data_product
-
-        Get Data Product
-        """
-        pass
-
-    def test_get_data_product_content(self) -> None:
-        """Test case for get_data_product_content
+    def test_get_dataproduct_content(self) -> None:
+        """Test case for get_dataproduct_content
 
         Get Data Product Content
         """
         pass
 
-    def test_list_data_products(self) -> None:
-        """Test case for list_data_products
+    def test_get_distribution_metadata(self) -> None:
+        """Test case for get_distribution_metadata
+
+        Get Distribution Metadata
+        """
+        pass
+
+    def test_health_check(self) -> None:
+        """Test case for health_check
+
+        Health Check
+        """
+        pass
+
+    def test_list_dataproduct_distributions(self) -> None:
+        """Test case for list_dataproduct_distributions
+
+        List Data Product Distributions
+        """
+        pass
+
+    def test_list_dataproducts(self) -> None:
+        """Test case for list_dataproducts
 
         List Data Products
         """
