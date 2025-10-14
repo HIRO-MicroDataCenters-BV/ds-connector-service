@@ -1,9 +1,9 @@
 # coding: utf-8
 
 """
-    Template web service
+    Connector Service API
 
-    This is a template of a web service
+    The Connector Service provides a unified API for accessing Data Products, validating Contracts, and logging Transactions in the NextGen node.
 
     The version of the OpenAPI document: 0.1.0
     Contact: all-hiro@hiro-microdatacenters.nl
@@ -15,7 +15,7 @@
 
 import unittest
 
-from template_web_client.api.default_api import DefaultApi
+from ds_connector_service.api.default_api import DefaultApi
 
 
 class TestDefaultApi(unittest.TestCase):
@@ -27,10 +27,10 @@ class TestDefaultApi(unittest.TestCase):
     def tearDown(self) -> None:
         pass
 
-    def test_example_get(self) -> None:
-        """Test case for example_get
+    def test_metrics_metrics_get(self) -> None:
+        """Test case for metrics_metrics_get
 
-        Example endpoint
+        Metrics
         """
         pass
 
