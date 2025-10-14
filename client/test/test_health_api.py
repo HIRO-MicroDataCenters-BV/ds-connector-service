@@ -15,7 +15,7 @@
 
 import unittest
 
-from template_web_client.api.health_api import HealthApi
+from ds_connector_service.api.health_api import HealthApi
 
 
 class TestHealthApi(unittest.TestCase):
@@ -27,10 +27,10 @@ class TestHealthApi(unittest.TestCase):
     def tearDown(self) -> None:
         pass
 
-    def test_health_check(self) -> None:
-        """Test case for health_check
+    def test_service_health_check(self) -> None:
+        """Test case for service_health_check
 
-        Health Check
+        Health check
         """
         pass
 

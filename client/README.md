@@ -83,31 +83,30 @@ Please follow the [installation procedure](#installation--usage) and then run th
 
 ```python
 
-import template_web_client
-from template_web_client.rest import ApiException
+import ds_connector_service
+from ds_connector_service.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = template_web_client.Configuration(
+configuration = ds_connector_service.Configuration(
     host = "http://localhost"
 )
 
 
 
 # Enter a context with an instance of the API client
-with template_web_client.ApiClient(configuration) as api_client:
+with ds_connector_service.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = template_web_client.ContractsApi(api_client)
-    body = None # object | 
+    api_instance = ds_connector_service.DataProductsApi(api_client)
 
     try:
-        # Validate Contract
-        api_response = api_instance.validate_contract(body)
-        print("The response of ContractsApi->validate_contract:\n")
+        # Get Connector Metadata
+        api_response = api_instance.get_connector_metadata()
+        print("The response of DataProductsApi->get_connector_metadata:\n")
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling ContractsApi->validate_contract: %s\n" % e)
+        print("Exception when calling DataProductsApi->get_connector_metadata: %s\n" % e)
 
 ```
 
@@ -117,20 +116,43 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*ContractsApi* | [**validate_contract**](docs/ContractsApi.md#validate_contract) | **POST** /contracts/validate | Validate Contract
-*DataProductsApi* | [**create_data_product**](docs/DataProductsApi.md#create_data_product) | **POST** /data-products/ | Create Data Product
-*DataProductsApi* | [**delete_data_product**](docs/DataProductsApi.md#delete_data_product) | **DELETE** /data-products/{connector_id}/{data_product_id}/ | Delete Data Product
-*DataProductsApi* | [**get_data_product**](docs/DataProductsApi.md#get_data_product) | **GET** /data-products/{connector_id}/{data_product_id}/ | Get Data Product
-*DataProductsApi* | [**get_data_product_content**](docs/DataProductsApi.md#get_data_product_content) | **GET** /data-products/{connector_id}/{data_product_id}/content | Get Data Product Content
-*DataProductsApi* | [**list_data_products**](docs/DataProductsApi.md#list_data_products) | **GET** /data-products/ | List Data Products
-*HealthApi* | [**health_check**](docs/HealthApi.md#health_check) | **GET** /health-check/ | Health Check
-*MonitoringApi* | [**get_metrics**](docs/MonitoringApi.md#get_metrics) | **GET** /metrics | Metrics
-*TransactionsApi* | [**log_transaction**](docs/TransactionsApi.md#log_transaction) | **POST** /transactions/ | Log Transaction
+*DataProductsApi* | [**get_connector_metadata**](docs/DataProductsApi.md#get_connector_metadata) | **GET** /connector-metadata | Get Connector Metadata
+*DataProductsApi* | [**get_dataproduct_chunk**](docs/DataProductsApi.md#get_dataproduct_chunk) | **GET** /distribution-content/{interface_id}/{resource_path}/chunk | Get Data Product Chunk
+*DataProductsApi* | [**get_dataproduct_content**](docs/DataProductsApi.md#get_dataproduct_content) | **GET** /distribution-content/{interface_id}/{resource_path} | Get Data Product Content
+*DataProductsApi* | [**get_distribution_metadata**](docs/DataProductsApi.md#get_distribution_metadata) | **GET** /distribution-metadata/{interface_id}/{resource_path} | Get Distribution Metadata
+*DataProductsApi* | [**health_check**](docs/DataProductsApi.md#health_check) | **GET** /interface-health/{interface_id} | Health Check
+*DataProductsApi* | [**list_dataproduct_distributions**](docs/DataProductsApi.md#list_dataproduct_distributions) | **GET** /dataproduct-distributions/{interface_id}/{directory_resource_path} | List Data Product Distributions
+*DataProductsApi* | [**list_dataproducts**](docs/DataProductsApi.md#list_dataproducts) | **GET** /dataproducts/{interface_id} | List Data Products
+*HealthApi* | [**service_health_check**](docs/HealthApi.md#service_health_check) | **GET** /health-check | Health check
+*DefaultApi* | [**metrics_metrics_get**](docs/DefaultApi.md#metrics_metrics_get) | **GET** /metrics | Metrics
 
 
 ## Documentation For Models
 
+ - [AccessRights](docs/AccessRights.md)
+ - [AccessService](docs/AccessService.md)
+ - [AccessUrl](docs/AccessUrl.md)
+ - [ByteSize](docs/ByteSize.md)
+ - [Checksum](docs/Checksum.md)
+ - [CompressFormat](docs/CompressFormat.md)
+ - [ConformsTo](docs/ConformsTo.md)
+ - [ConnectorMetadata](docs/ConnectorMetadata.md)
+ - [DataProductDistribution](docs/DataProductDistribution.md)
+ - [DataProductItem](docs/DataProductItem.md)
+ - [Description](docs/Description.md)
+ - [DownloadUrl](docs/DownloadUrl.md)
+ - [Format](docs/Format.md)
  - [HTTPValidationError](docs/HTTPValidationError.md)
+ - [HasPolicy](docs/HasPolicy.md)
+ - [HealthCheck](docs/HealthCheck.md)
+ - [Issued](docs/Issued.md)
+ - [License](docs/License.md)
+ - [MediaType](docs/MediaType.md)
+ - [Modified](docs/Modified.md)
+ - [PackageFormat](docs/PackageFormat.md)
+ - [RangeHeader](docs/RangeHeader.md)
+ - [Rights](docs/Rights.md)
+ - [Title](docs/Title.md)
  - [ValidationError](docs/ValidationError.md)
  - [ValidationErrorLocInner](docs/ValidationErrorLocInner.md)
 

@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from template_web_client.models.http_validation_error import HTTPValidationError
+from ds_connector_service.models.http_validation_error import HTTPValidationError
 
 # TODO update the JSON string below
 json = "{}"
