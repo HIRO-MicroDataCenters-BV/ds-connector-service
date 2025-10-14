@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
 from pydantic import Field, StrictStr
-from typing import Any, Optional
+from typing import Any, List, Optional
 from typing_extensions import Annotated
 from ds_connector_service.models.connector_metadata import ConnectorMetadata
 from ds_connector_service.models.data_product_item import DataProductItem
@@ -243,7 +243,7 @@ class DataProductsApi:
         _query_params: List[Tuple[str, str]] = []
         _header_params: Dict[str, Optional[str]] = _headers or {}
         _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
+        _files: Dict[str, Union[str, bytes]] = {}
         _body_params: Optional[bytes] = None
 
         # process the path parameters
@@ -254,11 +254,12 @@ class DataProductsApi:
 
 
         # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting
@@ -288,7 +289,7 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        range_header: Annotated[Optional[Any], Field(description="HTTP Range header for partial content requests")] = None,
+        range_header: Annotated[Optional[StrictStr], Field(description="HTTP Range header for partial content requests")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -311,7 +312,7 @@ class DataProductsApi:
         :param var_resource_path: (required)
         :type var_resource_path: str
         :param range_header: HTTP Range header for partial content requests
-        :type range_header: RangeHeader
+        :type range_header: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -367,7 +368,7 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        range_header: Annotated[Optional[Any], Field(description="HTTP Range header for partial content requests")] = None,
+        range_header: Annotated[Optional[StrictStr], Field(description="HTTP Range header for partial content requests")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -390,7 +391,7 @@ class DataProductsApi:
         :param var_resource_path: (required)
         :type var_resource_path: str
         :param range_header: HTTP Range header for partial content requests
-        :type range_header: RangeHeader
+        :type range_header: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -446,7 +447,7 @@ class DataProductsApi:
         self,
         interface_id: StrictStr,
         var_resource_path: StrictStr,
-        range_header: Annotated[Optional[Any], Field(description="HTTP Range header for partial content requests")] = None,
+        range_header: Annotated[Optional[StrictStr], Field(description="HTTP Range header for partial content requests")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -469,7 +470,7 @@ class DataProductsApi:
         :param var_resource_path: (required)
         :type var_resource_path: str
         :param range_header: HTTP Range header for partial content requests
-        :type range_header: RangeHeader
+        :type range_header: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -536,7 +537,7 @@ class DataProductsApi:
         _query_params: List[Tuple[str, str]] = []
         _header_params: Dict[str, Optional[str]] = _headers or {}
         _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
+        _files: Dict[str, Union[str, bytes]] = {}
         _body_params: Optional[bytes] = None
 
         # process the path parameters
@@ -555,12 +556,13 @@ class DataProductsApi:
 
 
         # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json', 
-                'text/csv'
-            ]
-        )
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json', 
+                    'text/csv'
+                ]
+            )
 
 
         # authentication setting
@@ -816,7 +818,7 @@ class DataProductsApi:
         _query_params: List[Tuple[str, str]] = []
         _header_params: Dict[str, Optional[str]] = _headers or {}
         _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
+        _files: Dict[str, Union[str, bytes]] = {}
         _body_params: Optional[bytes] = None
 
         # process the path parameters
@@ -831,11 +833,12 @@ class DataProductsApi:
 
 
         # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting
@@ -1091,7 +1094,7 @@ class DataProductsApi:
         _query_params: List[Tuple[str, str]] = []
         _header_params: Dict[str, Optional[str]] = _headers or {}
         _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
+        _files: Dict[str, Union[str, bytes]] = {}
         _body_params: Optional[bytes] = None
 
         # process the path parameters
@@ -1106,11 +1109,12 @@ class DataProductsApi:
 
 
         # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting
@@ -1353,7 +1357,7 @@ class DataProductsApi:
         _query_params: List[Tuple[str, str]] = []
         _header_params: Dict[str, Optional[str]] = _headers or {}
         _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
+        _files: Dict[str, Union[str, bytes]] = {}
         _body_params: Optional[bytes] = None
 
         # process the path parameters
@@ -1366,11 +1370,12 @@ class DataProductsApi:
 
 
         # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting
@@ -1626,7 +1631,7 @@ class DataProductsApi:
         _query_params: List[Tuple[str, str]] = []
         _header_params: Dict[str, Optional[str]] = _headers or {}
         _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
+        _files: Dict[str, Union[str, bytes]] = {}
         _body_params: Optional[bytes] = None
 
         # process the path parameters
@@ -1641,11 +1646,12 @@ class DataProductsApi:
 
 
         # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting
@@ -1686,7 +1692,7 @@ class DataProductsApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> List[str]:
+    ) -> List[Optional[str]]:
         """List Data Products
 
         List available data products from the base path.
@@ -1724,7 +1730,7 @@ class DataProductsApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[str]",
+            '200': "List[Optional[str]]",
             '422': "HTTPValidationError",
         }
         response_data = self.api_client.call_api(
@@ -1754,7 +1760,7 @@ class DataProductsApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[List[str]]:
+    ) -> ApiResponse[List[Optional[str]]]:
         """List Data Products
 
         List available data products from the base path.
@@ -1792,7 +1798,7 @@ class DataProductsApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[str]",
+            '200': "List[Optional[str]]",
             '422': "HTTPValidationError",
         }
         response_data = self.api_client.call_api(
@@ -1860,7 +1866,7 @@ class DataProductsApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[str]",
+            '200': "List[Optional[str]]",
             '422': "HTTPValidationError",
         }
         response_data = self.api_client.call_api(
@@ -1888,7 +1894,7 @@ class DataProductsApi:
         _query_params: List[Tuple[str, str]] = []
         _header_params: Dict[str, Optional[str]] = _headers or {}
         _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
+        _files: Dict[str, Union[str, bytes]] = {}
         _body_params: Optional[bytes] = None
 
         # process the path parameters
@@ -1901,11 +1907,12 @@ class DataProductsApi:
 
 
         # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting

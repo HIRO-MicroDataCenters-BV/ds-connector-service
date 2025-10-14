@@ -18,26 +18,8 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from ds_connector_service.models.access_rights import AccessRights
-from ds_connector_service.models.access_service import AccessService
-from ds_connector_service.models.access_url import AccessUrl
-from ds_connector_service.models.byte_size import ByteSize
-from ds_connector_service.models.checksum import Checksum
-from ds_connector_service.models.compress_format import CompressFormat
-from ds_connector_service.models.conforms_to import ConformsTo
-from ds_connector_service.models.description import Description
-from ds_connector_service.models.download_url import DownloadUrl
-from ds_connector_service.models.format import Format
-from ds_connector_service.models.has_policy import HasPolicy
-from ds_connector_service.models.issued import Issued
-from ds_connector_service.models.license import License
-from ds_connector_service.models.media_type import MediaType
-from ds_connector_service.models.modified import Modified
-from ds_connector_service.models.package_format import PackageFormat
-from ds_connector_service.models.rights import Rights
-from ds_connector_service.models.title import Title
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -45,31 +27,31 @@ class DataProductDistribution(BaseModel):
     """
     Standardized metadata for resources across different sources
     """ # noqa: E501
-    access_service: Optional[AccessService] = None
-    access_url: Optional[AccessUrl] = None
-    byte_size: Optional[ByteSize] = None
-    compress_format: Optional[CompressFormat] = None
-    download_url: Optional[DownloadUrl] = None
-    media_type: Optional[MediaType] = None
-    package_format: Optional[PackageFormat] = None
-    access_rights: Optional[AccessRights] = None
-    conforms_to: Optional[ConformsTo] = None
-    description: Optional[Description] = None
-    format: Optional[Format] = None
-    issued: Optional[Issued] = None
-    license: Optional[License] = None
-    modified: Optional[Modified] = None
-    rights: Optional[Rights] = None
-    title: Optional[Title] = None
-    has_policy: Optional[HasPolicy] = None
-    checksum: Optional[Checksum] = None
+    access_service: Optional[StrictStr] = None
+    access_url: Optional[StrictStr] = None
+    byte_size: Optional[StrictInt] = None
+    compress_format: Optional[StrictStr] = None
+    download_url: Optional[StrictStr] = None
+    media_type: Optional[StrictStr] = None
+    package_format: Optional[StrictStr] = None
+    access_rights: Optional[StrictStr] = None
+    conforms_to: Optional[StrictStr] = None
+    description: Optional[StrictStr] = None
+    format: Optional[StrictStr] = None
+    issued: Optional[StrictStr] = None
+    license: Optional[StrictStr] = None
+    modified: Optional[StrictStr] = None
+    rights: Optional[StrictStr] = None
+    title: Optional[StrictStr] = None
+    has_policy: Optional[StrictStr] = None
+    checksum: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = ["access_service", "access_url", "byte_size", "compress_format", "download_url", "media_type", "package_format", "access_rights", "conforms_to", "description", "format", "issued", "license", "modified", "rights", "title", "has_policy", "checksum"]
 
-    model_config = {
-        "populate_by_name": True,
-        "validate_assignment": True,
-        "protected_namespaces": (),
-    }
+    model_config = ConfigDict(
+        populate_by_name=True,
+        validate_assignment=True,
+        protected_namespaces=(),
+    )
 
 
     def to_str(self) -> str:
@@ -104,60 +86,96 @@ class DataProductDistribution(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of access_service
-        if self.access_service:
-            _dict['access_service'] = self.access_service.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of access_url
-        if self.access_url:
-            _dict['access_url'] = self.access_url.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of byte_size
-        if self.byte_size:
-            _dict['byte_size'] = self.byte_size.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of compress_format
-        if self.compress_format:
-            _dict['compress_format'] = self.compress_format.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of download_url
-        if self.download_url:
-            _dict['download_url'] = self.download_url.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of media_type
-        if self.media_type:
-            _dict['media_type'] = self.media_type.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of package_format
-        if self.package_format:
-            _dict['package_format'] = self.package_format.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of access_rights
-        if self.access_rights:
-            _dict['access_rights'] = self.access_rights.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of conforms_to
-        if self.conforms_to:
-            _dict['conforms_to'] = self.conforms_to.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of description
-        if self.description:
-            _dict['description'] = self.description.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of format
-        if self.format:
-            _dict['format'] = self.format.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of issued
-        if self.issued:
-            _dict['issued'] = self.issued.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of license
-        if self.license:
-            _dict['license'] = self.license.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of modified
-        if self.modified:
-            _dict['modified'] = self.modified.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of rights
-        if self.rights:
-            _dict['rights'] = self.rights.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of title
-        if self.title:
-            _dict['title'] = self.title.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of has_policy
-        if self.has_policy:
-            _dict['has_policy'] = self.has_policy.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of checksum
-        if self.checksum:
-            _dict['checksum'] = self.checksum.to_dict()
+        # set to None if access_service (nullable) is None
+        # and model_fields_set contains the field
+        if self.access_service is None and "access_service" in self.model_fields_set:
+            _dict['access_service'] = None
+
+        # set to None if access_url (nullable) is None
+        # and model_fields_set contains the field
+        if self.access_url is None and "access_url" in self.model_fields_set:
+            _dict['access_url'] = None
+
+        # set to None if byte_size (nullable) is None
+        # and model_fields_set contains the field
+        if self.byte_size is None and "byte_size" in self.model_fields_set:
+            _dict['byte_size'] = None
+
+        # set to None if compress_format (nullable) is None
+        # and model_fields_set contains the field
+        if self.compress_format is None and "compress_format" in self.model_fields_set:
+            _dict['compress_format'] = None
+
+        # set to None if download_url (nullable) is None
+        # and model_fields_set contains the field
+        if self.download_url is None and "download_url" in self.model_fields_set:
+            _dict['download_url'] = None
+
+        # set to None if media_type (nullable) is None
+        # and model_fields_set contains the field
+        if self.media_type is None and "media_type" in self.model_fields_set:
+            _dict['media_type'] = None
+
+        # set to None if package_format (nullable) is None
+        # and model_fields_set contains the field
+        if self.package_format is None and "package_format" in self.model_fields_set:
+            _dict['package_format'] = None
+
+        # set to None if access_rights (nullable) is None
+        # and model_fields_set contains the field
+        if self.access_rights is None and "access_rights" in self.model_fields_set:
+            _dict['access_rights'] = None
+
+        # set to None if conforms_to (nullable) is None
+        # and model_fields_set contains the field
+        if self.conforms_to is None and "conforms_to" in self.model_fields_set:
+            _dict['conforms_to'] = None
+
+        # set to None if description (nullable) is None
+        # and model_fields_set contains the field
+        if self.description is None and "description" in self.model_fields_set:
+            _dict['description'] = None
+
+        # set to None if format (nullable) is None
+        # and model_fields_set contains the field
+        if self.format is None and "format" in self.model_fields_set:
+            _dict['format'] = None
+
+        # set to None if issued (nullable) is None
+        # and model_fields_set contains the field
+        if self.issued is None and "issued" in self.model_fields_set:
+            _dict['issued'] = None
+
+        # set to None if license (nullable) is None
+        # and model_fields_set contains the field
+        if self.license is None and "license" in self.model_fields_set:
+            _dict['license'] = None
+
+        # set to None if modified (nullable) is None
+        # and model_fields_set contains the field
+        if self.modified is None and "modified" in self.model_fields_set:
+            _dict['modified'] = None
+
+        # set to None if rights (nullable) is None
+        # and model_fields_set contains the field
+        if self.rights is None and "rights" in self.model_fields_set:
+            _dict['rights'] = None
+
+        # set to None if title (nullable) is None
+        # and model_fields_set contains the field
+        if self.title is None and "title" in self.model_fields_set:
+            _dict['title'] = None
+
+        # set to None if has_policy (nullable) is None
+        # and model_fields_set contains the field
+        if self.has_policy is None and "has_policy" in self.model_fields_set:
+            _dict['has_policy'] = None
+
+        # set to None if checksum (nullable) is None
+        # and model_fields_set contains the field
+        if self.checksum is None and "checksum" in self.model_fields_set:
+            _dict['checksum'] = None
+
         return _dict
 
     @classmethod
@@ -170,24 +188,24 @@ class DataProductDistribution(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "access_service": AccessService.from_dict(obj["access_service"]) if obj.get("access_service") is not None else None,
-            "access_url": AccessUrl.from_dict(obj["access_url"]) if obj.get("access_url") is not None else None,
-            "byte_size": ByteSize.from_dict(obj["byte_size"]) if obj.get("byte_size") is not None else None,
-            "compress_format": CompressFormat.from_dict(obj["compress_format"]) if obj.get("compress_format") is not None else None,
-            "download_url": DownloadUrl.from_dict(obj["download_url"]) if obj.get("download_url") is not None else None,
-            "media_type": MediaType.from_dict(obj["media_type"]) if obj.get("media_type") is not None else None,
-            "package_format": PackageFormat.from_dict(obj["package_format"]) if obj.get("package_format") is not None else None,
-            "access_rights": AccessRights.from_dict(obj["access_rights"]) if obj.get("access_rights") is not None else None,
-            "conforms_to": ConformsTo.from_dict(obj["conforms_to"]) if obj.get("conforms_to") is not None else None,
-            "description": Description.from_dict(obj["description"]) if obj.get("description") is not None else None,
-            "format": Format.from_dict(obj["format"]) if obj.get("format") is not None else None,
-            "issued": Issued.from_dict(obj["issued"]) if obj.get("issued") is not None else None,
-            "license": License.from_dict(obj["license"]) if obj.get("license") is not None else None,
-            "modified": Modified.from_dict(obj["modified"]) if obj.get("modified") is not None else None,
-            "rights": Rights.from_dict(obj["rights"]) if obj.get("rights") is not None else None,
-            "title": Title.from_dict(obj["title"]) if obj.get("title") is not None else None,
-            "has_policy": HasPolicy.from_dict(obj["has_policy"]) if obj.get("has_policy") is not None else None,
-            "checksum": Checksum.from_dict(obj["checksum"]) if obj.get("checksum") is not None else None
+            "access_service": obj.get("access_service"),
+            "access_url": obj.get("access_url"),
+            "byte_size": obj.get("byte_size"),
+            "compress_format": obj.get("compress_format"),
+            "download_url": obj.get("download_url"),
+            "media_type": obj.get("media_type"),
+            "package_format": obj.get("package_format"),
+            "access_rights": obj.get("access_rights"),
+            "conforms_to": obj.get("conforms_to"),
+            "description": obj.get("description"),
+            "format": obj.get("format"),
+            "issued": obj.get("issued"),
+            "license": obj.get("license"),
+            "modified": obj.get("modified"),
+            "rights": obj.get("rights"),
+            "title": obj.get("title"),
+            "has_policy": obj.get("has_policy"),
+            "checksum": obj.get("checksum")
         })
         return _obj
 

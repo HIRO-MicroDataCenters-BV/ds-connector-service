@@ -105,7 +105,7 @@ with ds_connector_service.ApiClient(configuration) as api_client:
     api_instance = ds_connector_service.DataProductsApi(api_client)
     interface_id = 'interface_id_example' # str | 
     var_resource_path = 'var_resource_path_example' # str | 
-    range_header = ds_connector_service.RangeHeader() # RangeHeader | HTTP Range header for partial content requests (optional)
+    range_header = 'bytes=0-1023' # str | HTTP Range header for partial content requests (optional)
 
     try:
         # Get Data Product Chunk
@@ -125,7 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **interface_id** | **str**|  | 
  **var_resource_path** | **str**|  | 
- **range_header** | [**RangeHeader**](.md)| HTTP Range header for partial content requests | [optional] 
+ **range_header** | **str**| HTTP Range header for partial content requests | [optional] 
 
 ### Return type
 
@@ -432,7 +432,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_dataproducts**
-> List[str] list_dataproducts(interface_id)
+> List[Optional[str]] list_dataproducts(interface_id)
 
 List Data Products
 
@@ -479,7 +479,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**List[str]**
+**List[Optional[str]]**
 
 ### Authorization
 
