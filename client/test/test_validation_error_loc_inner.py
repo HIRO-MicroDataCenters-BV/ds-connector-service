@@ -1,9 +1,9 @@
 # coding: utf-8
 
 """
-    Template web service
+    Connector Service API
 
-    This is a template of a web service
+    The Connector Service provides a unified API for accessing Data Products, validating Contracts, and logging Transactions in the NextGen node.
 
     The version of the OpenAPI document: 0.1.0
     Contact: all-hiro@hiro-microdatacenters.nl
@@ -15,7 +15,7 @@
 
 import unittest
 
-from template_web_client.models.validation_error_loc_inner import ValidationErrorLocInner
+from ds_connector_service.models.validation_error_loc_inner import ValidationErrorLocInner
 
 class TestValidationErrorLocInner(unittest.TestCase):
     """ValidationErrorLocInner unit test stubs"""

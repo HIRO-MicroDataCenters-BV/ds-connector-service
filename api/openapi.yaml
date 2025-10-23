@@ -8,256 +8,405 @@ info:
     email: all-hiro@hiro-microdatacenters.nl
   license:
     name: MIT
-    url: https://github.com/HIRO-MicroDataCenters-BV/ds-connector/blob/main/LICENSE
+    url: https://github.com/HIRO-MicroDataCenters-BV/ds-connector-service/blob/main/LICENSE
   version: 0.1.0
 paths:
   /metrics:
     get:
-      tags:
-      - Monitoring
       summary: Metrics
-      description: Return Prometheus metrics
-      operationId: get_metrics
-      responses:
-        '200':
-          description: Prometheus metrics
-          content:
-            application/json:
-              schema: {}
-  /data-products/:
-    post:
-      tags:
-      - Data Products
-      summary: Create Data Product
-      description: Register a new data product (metadata only)
-      operationId: create_data_product
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              title: Data Product
+      description: Endpoint that serves Prometheus metrics.
+      operationId: metrics_metrics_get
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema: {}
-        '201':
-          description: Data product created successfully
-        '400':
-          description: Invalid input
+  /connector-metadata:
+    get:
+      tags:
+      - Data Products
+      summary: Get Connector Metadata
+      description: 'partial(func, *args, **keywords) - new function with partial application
+
+        of the given arguments and keywords.'
+      operationId: get_connector_metadata
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectorMetadata'
+  /distribution-metadata/{interface_id}/{resource_path}:
+    get:
+      tags:
+      - Data Products
+      summary: Get Distribution Metadata
+      description: Return Metadata for a distribution along with region.
+      operationId: get_distribution_metadata
+      parameters:
+      - name: interface_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interface Id
+      - name: resource_path
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /distribution-content/{interface_id}/{resource_path}/chunk:
     get:
       tags:
       - Data Products
-      summary: List Data Products
-      description: Return paginated list of available data products
-      operationId: list_data_products
+      summary: Get Data Product Chunk
+      description: Return a dataset chunk (partial CSV content).
+      operationId: get_dataproduct_chunk
       parameters:
-      - name: page
+      - name: interface_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interface Id
+      - name: resource_path
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Path
+      - name: range_header
         in: query
         required: false
         schema:
-          type: integer
-          minimum: 1
-          default: 1
-          title: Page
-      - name: page_size
-        in: query
-        required: false
-        schema:
-          type: integer
-          maximum: 1000
-          minimum: 1
-          default: 100
-          title: Page Size
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: HTTP Range header for partial content requests
+          title: Range Header
+        description: HTTP Range header for partial content requests
+        example: bytes=0-1023
       responses:
         '200':
-          description: List of data products
+          description: Full chunk when no range specified
           content:
             application/json:
               schema: {}
-        '422':
-          description: Validation Error
+        '206':
+          description: Partial content chunk
           content:
-            application/json:
+            text/csv:
+              example: 'partial,data
+
+                '
+          headers:
+            Content-Range:
+              description: Range of bytes returned
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /health-check/:
-    get:
-      tags:
-      - Health
-      summary: Health Check
-      description: Check if the Connector service is running
-      operationId: health_check
-      responses:
-        '200':
-          description: Service is healthy
-          content:
-            application/json:
-              schema: {}
-  /data-products/{connector_id}/{data_product_id}/:
-    get:
-      tags:
-      - Data Products
-      summary: Get Data Product
-      description: Return metadata for a specific data product
-      operationId: get_data_product
-      parameters:
-      - name: connector_id
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Connector Id
-      - name: data_product_id
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Data Product Id
-      responses:
-        '200':
-          description: Data product metadata
-          content:
-            application/json:
-              schema: {}
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    delete:
-      tags:
-      - Data Products
-      summary: Delete Data Product
-      description: Delete a data product (delegated to the underlying Interface)
-      operationId: delete_data_product
-      parameters:
-      - name: connector_id
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Connector Id
-      - name: data_product_id
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Data Product Id
-      responses:
-        '200':
-          description: Data product deleted successfully
-          content:
-            application/json:
-              schema: {}
+                type: string
+                example: bytes=0-1023
         '404':
           description: Data product not found
+        '416':
+          description: Range not satisfiable
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /data-products/{connector_id}/{data_product_id}/content:
+  /distribution-content/{interface_id}/{resource_path}:
     get:
       tags:
       - Data Products
       summary: Get Data Product Content
-      description: Retrieve data product content wrapped in MMIO
-      operationId: get_data_product_content
+      description: Return the full dataset content.
+      operationId: get_dataproduct_content
       parameters:
-      - name: connector_id
+      - name: interface_id
         in: path
         required: true
         schema:
           type: string
-          title: Connector Id
-      - name: data_product_id
+          title: Interface Id
+      - name: resource_path
         in: path
         required: true
         schema:
           type: string
-          title: Data Product Id
-      responses:
-        '200':
-          description: MMIO object with data product content
-          content:
-            application/json:
-              schema: {}
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /contracts/validate:
-    post:
-      tags:
-      - Contracts
-      summary: Validate Contract
-      description: Validate a contract before allowing access to data
-      operationId: validate_contract
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              title: Contract
-        required: true
-      responses:
-        '200':
-          description: Contract is valid
-          content:
-            application/json:
-              schema: {}
-        '403':
-          description: Invalid contract
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /transactions/:
-    post:
-      tags:
-      - Transactions
-      summary: Log Transaction
-      description: Record a transaction in the Clearing House
-      operationId: log_transaction
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              title: Transaction
-        required: true
+          title: Resource Path
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema: {}
-        '201':
-          description: Transaction recorded
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /dataproduct-distributions/{interface_id}/{directory_resource_path}:
+    get:
+      tags:
+      - Data Products
+      summary: List Data Product Distributions
+      description: Return a paginated list of data product distributions with region.
+      operationId: list_dataproduct_distributions
+      parameters:
+      - name: interface_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interface Id
+      - name: directory_resource_path
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Directory Resource Path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataProductItem'
+                title: Response List Dataproduct Distributions
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /dataproducts/{interface_id}:
+    get:
+      tags:
+      - Data Products
+      summary: List Data Products
+      description: List available data products from the base path.
+      operationId: list_dataproducts
+      parameters:
+      - name: interface_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interface Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                title: Response List Dataproducts
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /interface-health/{interface_id}:
+    get:
+      tags:
+      - Data Products
+      summary: Health Check
+      description: Perform health check on the specified interface.
+      operationId: health_check
+      parameters:
+      - name: interface_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interface Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /health-check:
+    get:
+      tags:
+      - Health
+      summary: Health check
+      description: Returns a 200 status code if the service is up and running
+      operationId: service_health_check
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
 components:
   schemas:
+    ConnectorMetadata:
+      properties:
+        connector_id:
+          type: string
+          title: Connector Id
+        region:
+          type: string
+          title: Region
+        supported_interfaces:
+          items:
+            type: string
+          type: array
+          title: Supported Interfaces
+        status:
+          type: string
+          title: Status
+        version:
+          type: string
+          title: Version
+      type: object
+      required:
+      - connector_id
+      - region
+      - supported_interfaces
+      - status
+      - version
+      title: ConnectorMetadata
+    DataProductDistribution:
+      properties:
+        access_service:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Service
+        access_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Url
+        byte_size:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Byte Size
+        compress_format:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Compress Format
+        download_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Download Url
+        media_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Media Type
+        package_format:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Package Format
+        access_rights:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Access Rights
+        conforms_to:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Conforms To
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        format:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Format
+        issued:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Issued
+        license:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: License
+        modified:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Modified
+        rights:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rights
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+        has_policy:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Has Policy
+        checksum:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Checksum
+      type: object
+      title: DataProductDistribution
+      description: Standardized metadata for resources across different sources
+    DataProductItem:
+      properties:
+        distribution:
+          items:
+            $ref: '#/components/schemas/DataProductDistribution'
+          type: array
+          title: Distribution
+        region:
+          type: string
+          title: Region
+          default: ''
+      type: object
+      required:
+      - distribution
+      title: DataProductItem
     HTTPValidationError:
       properties:
         detail:
@@ -267,6 +416,17 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    HealthCheck:
+      properties:
+        status:
+          type: string
+          title: Status
+          examples:
+          - OK
+      type: object
+      required:
+      - status
+      title: HealthCheck
     ValidationError:
       properties:
         loc:

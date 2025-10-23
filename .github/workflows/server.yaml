@@ -15,7 +15,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  DOCKER_IMAGE_NAME: hiro-microdatacenters-bv/ds-connector
+  DOCKER_IMAGE_NAME: hiro-microdatacenters-bv/ds-connector-service
 
 jobs:
   test_server:
@@ -99,7 +99,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ github.token }}
 
       - name: Extract Docker metadata
         id: meta

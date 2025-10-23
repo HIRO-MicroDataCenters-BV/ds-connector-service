@@ -1,11 +1,25 @@
 from typing import List, Optional
 
+import logging
+
 from classy_fastapi import Routable, get
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from app.schemas import connector as schemas
+from app.core import usecases
+from app.core.clients.base import BaseReadDataClient
+from app.core.clients.factory_instance import client_factory
 from app.tags import Tags
+
+from ..serializers import ConnectorMetadata, DataProductItem
+
+logger = logging.getLogger(__name__)
+
+
+def get_usecases(interface_id: str) -> usecases.DataproductUseCase:
+    # In real implementation, this would fetch a client from ClientFactory
+    client: BaseReadDataClient = client_factory.get_client_by_name(interface_id)
+    return usecases.DataproductUseCase(client)
 
 
 class ConnectorRoutes(Routable):
@@ -13,18 +27,18 @@ class ConnectorRoutes(Routable):
         super().__init__()
 
     @get(
-        "/metadata/connector",
+        "/connector-metadata",
         operation_id="get_connector_metadata",
         name="Get Connector Metadata",
         tags=[Tags.Data_products],
-        response_model=schemas.ConnectorMetadata,
+        response_model=ConnectorMetadata,
     )
     async def get_connector_metadata(self) -> JSONResponse:
         return JSONResponse(
             content={
                 "connector_id": "ds-connector-service",
                 "region": "eu-central-1",
-                "supported_interfaces": ["s3", "rest", "sql"],
+                "supported_interfaces": ["s3", "rest", "file"],
                 "status": "healthy",
                 "version": "0.1.0",
             },
@@ -32,56 +46,32 @@ class ConnectorRoutes(Routable):
         )
 
     @get(
-        "/metadata/{interface_id}/{resource_path:path}/{resource_name}",
-        operation_id="get_dataproduct_metadata",
-        name="Get Data Product Distribution",
+        "/distribution-metadata/{interface_id}/{resource_path:path}",
+        operation_id="get_distribution_metadata",
+        name="Get Distribution Metadata",
         tags=[Tags.Data_products],
     )
-    async def get_dataproduct_metadata(
-        self, interface_id: str, resource_path: str, resource_name: str
+    async def get_distribution_metadata(
+        self,
+        interface_id: str,
+        resource_path: str,
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> JSONResponse:
-        """Return DCAT distribution metadata for a data product along with region."""
-        distribution = [
-            schemas.DataProductDistribution(
-                title=f"Distribution of {resource_name}",
-                description=f"Distribution for {resource_name}",
-                access_url=f"http://connector-service/content/dataproducts/"
-                f"{interface_id}/{resource_path}/{resource_name}",
-                download_url=f"http://connector-service/content/dataproducts/"
-                f"{interface_id}/{resource_path}/{resource_name}/download",
-                media_type="text/csv",
-                byte_size=123456,
-                format="CSV",
-                license="https://example.com/license/xyz",
-                access_rights="public",
-                release_date="2025-03-13",
-                packaging_format="zip",
-            )
-        ]
+        """Return Metadata for a distribution along with region."""
+        logger.info(
+            f"Getting metadata for a single distribution for interface: {interface_id}"
+        )
+
+        distribution_metadata = await usecases.get_distribution_metadata(
+            resource_path=resource_path
+        )
         return JSONResponse(
-            content={"region": "ki", "distribution": [d.dict() for d in distribution]},
+            content={"region": "ki", "distribution": distribution_metadata.dict()},
             status_code=status.HTTP_200_OK,
         )
 
     @get(
-        "/content/{interface_id}/{resource_path:path}/{resource_name}",
-        operation_id="get_dataproduct_content",
-        name="Get Data Product Content",
-        tags=[Tags.Data_products],
-    )
-    async def get_dataproduct_content(
-        self, interface_id: str, resource_path: str, resource_name: str
-    ) -> StreamingResponse:
-        """Return the full dataset content (CSV)."""
-        return StreamingResponse(
-            iter([b"full,object,content\n1,2,3,4\n"] * 10),
-            media_type="text/csv",
-            headers={"Content-Disposition": f'attachment; filename="{resource_name}"'},
-            status_code=status.HTTP_200_OK,
-        )
-
-    @get(
-        "/content/{interface_id}/{resource_path:path}/{resource_name}/chunk",
+        "/distribution-content/{interface_id}/" "{resource_path:path}/chunk",
         operation_id="get_dataproduct_chunk",
         name="Get Data Product Chunk",
         tags=[Tags.Data_products],
@@ -105,78 +95,136 @@ class ConnectorRoutes(Routable):
         self,
         interface_id: str,
         resource_path: str,
-        resource_name: str,
-        start: Optional[int] = Query(None, description="Start byte position"),
-        end: Optional[int] = Query(None, description="End byte position"),
+        range_header: Optional[str] = Query(
+            None,
+            description="HTTP Range header for partial content requests",
+            example="bytes=0-1023",
+        ),
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> StreamingResponse:
         """Return a dataset chunk (partial CSV content)."""
+
+        # Get metadata to determine correct media type
+        metadata = await usecases.get_distribution_metadata(resource_path=resource_path)
+
+        # Stream content with range support
+        content_generator = usecases.stream_dataproduct_distribution_content(
+            resource_path=resource_path, range_header=range_header
+        )
+
+        # Determine response headers and status
+        headers = {}
+        status_code = status.HTTP_200_OK
+
+        if range_header:
+            # For range requests, we should return 206 Partial Content
+            headers["Content-Range"] = f"{range_header}/*"
+            status_code = status.HTTP_206_PARTIAL_CONTENT
+        else:
+            # Full file streaming - show download link in Swagger
+            headers["Content-Disposition"] = f'attachment; filename="{metadata.title}"'
+
         return StreamingResponse(
-            iter([b"partial,data\n"]),
-            media_type="text/csv",
-            headers={
-                "Content-Range": f"bytes={start}-{end}"
-                if start is not None and end is not None
-                else "bytes */*"
-            },
-            status_code=(
-                status.HTTP_206_PARTIAL_CONTENT
-                if start is not None and end is not None
-                else status.HTTP_200_OK
-            ),
+            content_generator,
+            media_type=metadata.media_type or "application/octet-stream",
+            headers=headers,
+            status_code=status_code,
         )
 
     @get(
-        "/metadata/dataproducts",
-        operation_id="list_dataproducts",
-        name="List Data Products",
+        "/distribution-content/{interface_id}/{resource_path:path}",
+        operation_id="get_dataproduct_content",
+        name="Get Data Product Content",
         tags=[Tags.Data_products],
-        response_model=List[schemas.DataProductItem],
     )
-    async def list_dataproducts(
+    async def get_dataproduct_content(
         self,
-        page: int = Query(1, ge=1, description="Page number"),
-        page_size: int = Query(
-            10, ge=1, le=100, description="Number of items per page"
-        ),
+        interface_id: str,
+        resource_path: str,
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+    ) -> StreamingResponse:
+        """Return the full dataset content."""
+        logger.info("Getting full data product content as a single response")
+        # Get metadata to determine correct media type
+        metadata = await usecases.get_distribution_metadata(resource_path=resource_path)
+
+        full_content = await usecases.read_dataproduct_distribution_content(
+            resource_path=resource_path
+        )
+
+        return StreamingResponse(
+            iter([full_content]),
+            media_type=metadata.media_type or "application/octet-stream",
+            headers={"Content-Disposition": f'attachment; filename="{metadata.title}"'},
+            status_code=status.HTTP_200_OK,
+        )
+
+    @get(
+        "/dataproduct-distributions/{interface_id}/{directory_resource_path:path}",
+        operation_id="list_dataproduct_distributions",
+        name="List Data Product Distributions",
+        tags=[Tags.Data_products],
+        response_model=List[DataProductItem],
+    )
+    async def list_dataproduct_distributions(
+        self,
+        interface_id: str,
+        directory_resource_path: str,
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
     ) -> JSONResponse:
         """Return a paginated list of data product distributions with region."""
+        logger.info(f"Listing data products for interface: {interface_id}")
+        all_dataproducts_metadata = await usecases.list_dataproduct_distributions(
+            directory_resource_path
+        )
 
-        all_data_products = [
-            schemas.DataProductItem(
-                distribution=[
-                    schemas.DataProductDistribution(
-                        title=f"Distribution {i}",
-                        description=f"Distribution for data product {i}",
-                        access_url=f"http://connector-service/content/dataproducts"
-                        f"/{i}/data_{i}.csv",
-                        download_url=f"http://connector-service/content/dataproducts"
-                        f"/{i}/data_{i}.csv/download",
-                        media_type="text/csv",
-                        byte_size=123456,
-                        format="CSV",
-                        license="https://example.com/license/xyz",
-                        access_rights="public",
-                        release_date="2025-03-13",
-                        packaging_format="zip",
-                    )
-                ],
-            )
-            for i in range(1, 51)
-        ]
-
-        start_index = (page - 1) * page_size
-        end_index = start_index + page_size
-        paginated_data_products = all_data_products[start_index:end_index]
-
+        # TODO Implement pagination logic here if needed
         return JSONResponse(
             content={
-                "page": page,
-                "page_size": page_size,
-                "total": len(all_data_products),
-                "data_products": [d.dict() for d in paginated_data_products],
+                "region": "ki",
+                "data_products": [d.dict() for d in all_dataproducts_metadata],
             },
             status_code=status.HTTP_200_OK,
         )
+
+    @get(
+        "/dataproducts/{interface_id}",
+        operation_id="list_dataproducts",
+        name="List Data Products",
+        tags=[Tags.Data_products],
+        response_model=List[str],
+    )
+    async def list_dataproducts(
+        self,
+        interface_id: str,
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+    ) -> JSONResponse:
+        """List available data products from the base path."""
+        logger.info(f"Listing data products for interface: {interface_id}")
+        dataproducts = await usecases.list_dataproducts()
+        return JSONResponse(
+            content={"dataproducts": dataproducts},
+            status_code=status.HTTP_200_OK,
+        )
+
+    @get(
+        "/interface-health/{interface_id}",
+        operation_id="health_check",
+        name="Health Check",
+        tags=[Tags.Data_products],
+    )
+    async def health_check(
+        self,
+        interface_id: str,
+        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+    ) -> JSONResponse:
+        """Perform health check on the specified interface."""
+        logger.info(f"Performing health check for interface: {interface_id}")
+        try:
+            health = await usecases.health_check()
+            return JSONResponse(content=health, status_code=status.HTTP_200_OK)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
 
 
 router = APIRouter()
