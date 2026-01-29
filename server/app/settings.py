@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,6 +10,15 @@ class Settings(BaseSettings):
         10  # Limit for number of files to list in directory listings
     )
     FS_BASE_PATH: str = "./data"  # Base path for file system operations
+
+    # S3-Compatible Storage Settings (AWS S3, MinIO, etc.)
+    S3_ACCESS_KEY_ID: Optional[str] = None
+    S3_SECRET_ACCESS_KEY: Optional[str] = None
+    S3_SESSION_TOKEN: Optional[str] = None
+    S3_REGION: str = "us-east-1"
+    S3_BUCKET_NAME: Optional[str] = None
+    S3_PREFIX: str = ""
+    S3_ENDPOINT_URL: Optional[str] = None
 
     model_config = SettingsConfigDict(
         env_file=".env",
