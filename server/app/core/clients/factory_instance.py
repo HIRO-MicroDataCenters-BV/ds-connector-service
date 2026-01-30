@@ -10,6 +10,7 @@ settings = get_settings()
 # Initialize client factory
 client_factory = ClientFactory()
 
+# TODO: update the factory client to send the env to it like the other clients
 # Register filesystem client (always available)
 client_factory.register_client(
     SourceType.FILE, FileSystemDataClient()  # Uses settings/env variables

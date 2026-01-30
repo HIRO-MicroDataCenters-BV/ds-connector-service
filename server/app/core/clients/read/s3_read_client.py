@@ -250,11 +250,11 @@ class S3DataClient(BaseReadDataClient):
                     response = await s3_client.get_object(**get_params)
 
                     total_bytes = 0
-                    async with response["Body"] as stream:
-                        while True:
-                            chunk = await stream.read(CHUNK_SIZE)
-                            if not chunk:
-                                break
+                    stream = response["Body"]
+
+                    # Use iter_chunks for proper streaming with controlled chunk size
+                    async for chunk in stream.iter_chunks(chunk_size=CHUNK_SIZE):
+                        if chunk:
                             total_bytes += len(chunk)
                             yield chunk
 
