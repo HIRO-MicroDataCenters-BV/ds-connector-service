@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   ds-connector:
   - apiVersion: v2
+    appVersion: 0.1.0-dev.138.s3-client-integr.e49024bd
+    created: "2026-01-30T13:27:31.261137458Z"
+    description: Web server
+    digest: bca7819f79d6640aafeef6ee79dc669059c5036656a3dfdedc67c5675ef70c9e
+    name: ds-connector
+    type: application
+    urls:
+    - https://HIRO-MicroDataCenters-BV.github.io/ds-connector-service/helm-charts/ds-connector-0.1.0-dev.138.s3-client-integr.e49024bd.tgz
+    version: 0.1.0-dev.138.s3-client-integr.e49024bd
+  - apiVersion: v2
     appVersion: 0.1.0-dev.137.s3-client-integr.becdf802
     created: "2026-01-29T14:51:46.702645823Z"
     description: Web server
@@ -332,4 +342,4 @@ entries:
     urls:
     - https://HIRO-MicroDataCenters-BV.github.io/ds-connector-service/helm-charts/server-0.1.0-dev.74.methods-signatur.b4f0a05c.tgz
     version: 0.1.0-dev.74.methods-signatur.b4f0a05c
-generated: "2026-01-29T14:51:46.702042366Z"
+generated: "2026-01-30T13:27:31.260497295Z"
