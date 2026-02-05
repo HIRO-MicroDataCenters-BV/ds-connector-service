@@ -54,6 +54,17 @@ spec:
             - name: {{ .name }}
               value: {{ .value | quote }}
             {{- end }}
+            - name: S3_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app.secretName }}
+                  key: {{ .Values.app.s3AccessKeyIdKey }}
+
+            - name: S3_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app.secretName }}
+                  key: {{ .Values.app.s3SecretAccessKeyKey }}
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
