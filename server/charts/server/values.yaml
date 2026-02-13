@@ -13,6 +13,12 @@ namespace: uva
 nameOverride: "ds-connector"
 fullnameOverride: "ds-connector"
 
+app:
+  secretName: connector-s3-dev-secrets
+  s3AccessKeyIdKey: access_key_id
+  s3SecretAccessKeyKey: secret_access_key
+
+
 serviceAccount:
   create: true
   automount: true
@@ -65,6 +71,15 @@ env:
     value: "/data" # Base path for file system operations
   - name : LOG_LEVEL
     value: "INFO"
+  - name: S3_BUCKET_NAME
+    value: "connector-testing-data"
+  - name: S3_REGION
+    value: "us-east-1"
+  - name: S3_PREFIX
+    value: "data/"
+  - name: S3_ENDPOINT_URL
+    value: "http://mlflow-minio.kubeflow.svc.cluster.local:9000"
+
 
 resources:
   requests:
