@@ -21,7 +21,12 @@ from pydantic import Field, StrictStr
 from typing import Any, Optional
 from typing_extensions import Annotated
 from ds_connector_service.models.connector_metadata import ConnectorMetadata
+from ds_connector_service.models.content_type import ContentType
 from ds_connector_service.models.data_product_item import DataProductItem
+from ds_connector_service.models.file import File
+from ds_connector_service.models.file1 import File1
+from ds_connector_service.models.tags import Tags
+from ds_connector_service.models.tags1 import Tags1
 
 from ds_connector_service.api_client import ApiClient, RequestSerialized
 from ds_connector_service.api_response import ApiResponse
@@ -1915,6 +1920,672 @@ class DataProductsApi:
         return self.api_client.param_serialize(
             method='GET',
             resource_path='/dataproducts/{interface_id}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def stream_upload_dataproduct(
+        self,
+        interface_id: StrictStr,
+        var_resource_path: StrictStr,
+        file: Optional[File] = None,
+        content_type: Optional[ContentType] = None,
+        tags: Optional[Tags] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> Dict[str, object]:
+        """Stream Upload Data Product
+
+        Upload a data product using streaming (memory-efficient for large files/data)  Supports two streaming methods: 1. Multipart file streaming: Stream file chunks 2. Direct content streaming: Stream JSON/text data from request body  Args:     request: FastAPI request object     interface_id: Storage interface (file, s3)     resource_path: Path where to store the data     file: File to stream upload (for multipart uploads only)     content_type: Optional content type override (for multipart uploads)     tags: Optional tags     usecases: Write use case dependency  Returns:     Upload result information
+
+        :param interface_id: (required)
+        :type interface_id: str
+        :param var_resource_path: (required)
+        :type var_resource_path: str
+        :param file:
+        :type file: File
+        :param content_type:
+        :type content_type: ContentType
+        :param tags:
+        :type tags: Tags
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._stream_upload_dataproduct_serialize(
+            interface_id=interface_id,
+            var_resource_path=var_resource_path,
+            file=file,
+            content_type=content_type,
+            tags=tags,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "Dict[str, object]",
+            '422': "HTTPValidationError",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def stream_upload_dataproduct_with_http_info(
+        self,
+        interface_id: StrictStr,
+        var_resource_path: StrictStr,
+        file: Optional[File] = None,
+        content_type: Optional[ContentType] = None,
+        tags: Optional[Tags] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[Dict[str, object]]:
+        """Stream Upload Data Product
+
+        Upload a data product using streaming (memory-efficient for large files/data)  Supports two streaming methods: 1. Multipart file streaming: Stream file chunks 2. Direct content streaming: Stream JSON/text data from request body  Args:     request: FastAPI request object     interface_id: Storage interface (file, s3)     resource_path: Path where to store the data     file: File to stream upload (for multipart uploads only)     content_type: Optional content type override (for multipart uploads)     tags: Optional tags     usecases: Write use case dependency  Returns:     Upload result information
+
+        :param interface_id: (required)
+        :type interface_id: str
+        :param var_resource_path: (required)
+        :type var_resource_path: str
+        :param file:
+        :type file: File
+        :param content_type:
+        :type content_type: ContentType
+        :param tags:
+        :type tags: Tags
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._stream_upload_dataproduct_serialize(
+            interface_id=interface_id,
+            var_resource_path=var_resource_path,
+            file=file,
+            content_type=content_type,
+            tags=tags,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "Dict[str, object]",
+            '422': "HTTPValidationError",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def stream_upload_dataproduct_without_preload_content(
+        self,
+        interface_id: StrictStr,
+        var_resource_path: StrictStr,
+        file: Optional[File] = None,
+        content_type: Optional[ContentType] = None,
+        tags: Optional[Tags] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Stream Upload Data Product
+
+        Upload a data product using streaming (memory-efficient for large files/data)  Supports two streaming methods: 1. Multipart file streaming: Stream file chunks 2. Direct content streaming: Stream JSON/text data from request body  Args:     request: FastAPI request object     interface_id: Storage interface (file, s3)     resource_path: Path where to store the data     file: File to stream upload (for multipart uploads only)     content_type: Optional content type override (for multipart uploads)     tags: Optional tags     usecases: Write use case dependency  Returns:     Upload result information
+
+        :param interface_id: (required)
+        :type interface_id: str
+        :param var_resource_path: (required)
+        :type var_resource_path: str
+        :param file:
+        :type file: File
+        :param content_type:
+        :type content_type: ContentType
+        :param tags:
+        :type tags: Tags
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._stream_upload_dataproduct_serialize(
+            interface_id=interface_id,
+            var_resource_path=var_resource_path,
+            file=file,
+            content_type=content_type,
+            tags=tags,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "Dict[str, object]",
+            '422': "HTTPValidationError",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _stream_upload_dataproduct_serialize(
+        self,
+        interface_id,
+        var_resource_path,
+        file,
+        content_type,
+        tags,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if interface_id is not None:
+            _path_params['interface_id'] = interface_id
+        if var_resource_path is not None:
+            _path_params['resource_path'] = var_resource_path
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        if file is not None:
+            _form_params.append(('file', file))
+        if content_type is not None:
+            _form_params.append(('content_type', content_type))
+        if tags is not None:
+            _form_params.append(('tags', tags))
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'multipart/form-data'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/distribution-stream-upload/{interface_id}/{resource_path}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def upload_dataproduct(
+        self,
+        interface_id: StrictStr,
+        var_resource_path: StrictStr,
+        file: Optional[File1] = None,
+        content_type: Optional[ContentType] = None,
+        tags: Optional[Tags1] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> Dict[str, object]:
+        """Upload Data Product
+
+        Upload a complete data product file or JSON data  Supports two upload methods: 1. Multipart file upload: Use form-data with file field 2. Direct JSON/data upload: Send JSON/text directly in request body  Args:     request: FastAPI request object     interface_id: Storage interface (file, s3)     resource_path: Path where to store the data     file: File to upload (for multipart uploads only)     content_type: Optional content type override (for multipart uploads)     tags: Optional tags in format \"key=value,key2=value2\"     usecases: Write use case dependency  Returns:     Upload result information
+
+        :param interface_id: (required)
+        :type interface_id: str
+        :param var_resource_path: (required)
+        :type var_resource_path: str
+        :param file:
+        :type file: File1
+        :param content_type:
+        :type content_type: ContentType
+        :param tags:
+        :type tags: Tags1
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._upload_dataproduct_serialize(
+            interface_id=interface_id,
+            var_resource_path=var_resource_path,
+            file=file,
+            content_type=content_type,
+            tags=tags,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "Dict[str, object]",
+            '422': "HTTPValidationError",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def upload_dataproduct_with_http_info(
+        self,
+        interface_id: StrictStr,
+        var_resource_path: StrictStr,
+        file: Optional[File1] = None,
+        content_type: Optional[ContentType] = None,
+        tags: Optional[Tags1] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[Dict[str, object]]:
+        """Upload Data Product
+
+        Upload a complete data product file or JSON data  Supports two upload methods: 1. Multipart file upload: Use form-data with file field 2. Direct JSON/data upload: Send JSON/text directly in request body  Args:     request: FastAPI request object     interface_id: Storage interface (file, s3)     resource_path: Path where to store the data     file: File to upload (for multipart uploads only)     content_type: Optional content type override (for multipart uploads)     tags: Optional tags in format \"key=value,key2=value2\"     usecases: Write use case dependency  Returns:     Upload result information
+
+        :param interface_id: (required)
+        :type interface_id: str
+        :param var_resource_path: (required)
+        :type var_resource_path: str
+        :param file:
+        :type file: File1
+        :param content_type:
+        :type content_type: ContentType
+        :param tags:
+        :type tags: Tags1
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._upload_dataproduct_serialize(
+            interface_id=interface_id,
+            var_resource_path=var_resource_path,
+            file=file,
+            content_type=content_type,
+            tags=tags,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "Dict[str, object]",
+            '422': "HTTPValidationError",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def upload_dataproduct_without_preload_content(
+        self,
+        interface_id: StrictStr,
+        var_resource_path: StrictStr,
+        file: Optional[File1] = None,
+        content_type: Optional[ContentType] = None,
+        tags: Optional[Tags1] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Upload Data Product
+
+        Upload a complete data product file or JSON data  Supports two upload methods: 1. Multipart file upload: Use form-data with file field 2. Direct JSON/data upload: Send JSON/text directly in request body  Args:     request: FastAPI request object     interface_id: Storage interface (file, s3)     resource_path: Path where to store the data     file: File to upload (for multipart uploads only)     content_type: Optional content type override (for multipart uploads)     tags: Optional tags in format \"key=value,key2=value2\"     usecases: Write use case dependency  Returns:     Upload result information
+
+        :param interface_id: (required)
+        :type interface_id: str
+        :param var_resource_path: (required)
+        :type var_resource_path: str
+        :param file:
+        :type file: File1
+        :param content_type:
+        :type content_type: ContentType
+        :param tags:
+        :type tags: Tags1
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._upload_dataproduct_serialize(
+            interface_id=interface_id,
+            var_resource_path=var_resource_path,
+            file=file,
+            content_type=content_type,
+            tags=tags,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "Dict[str, object]",
+            '422': "HTTPValidationError",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _upload_dataproduct_serialize(
+        self,
+        interface_id,
+        var_resource_path,
+        file,
+        content_type,
+        tags,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if interface_id is not None:
+            _path_params['interface_id'] = interface_id
+        if var_resource_path is not None:
+            _path_params['resource_path'] = var_resource_path
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        if file is not None:
+            _form_params.append(('file', file))
+        if content_type is not None:
+            _form_params.append(('content_type', content_type))
+        if tags is not None:
+            _form_params.append(('tags', tags))
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'multipart/form-data'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/distribution-upload/{interface_id}/{resource_path}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

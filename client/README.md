@@ -123,7 +123,10 @@ Class | Method | HTTP request | Description
 *DataProductsApi* | [**health_check**](docs/DataProductsApi.md#health_check) | **GET** /interface-health/{interface_id} | Health Check
 *DataProductsApi* | [**list_dataproduct_distributions**](docs/DataProductsApi.md#list_dataproduct_distributions) | **GET** /dataproduct-distributions/{interface_id}/{directory_resource_path} | List Data Product Distributions
 *DataProductsApi* | [**list_dataproducts**](docs/DataProductsApi.md#list_dataproducts) | **GET** /dataproducts/{interface_id} | List Data Products
+*DataProductsApi* | [**stream_upload_dataproduct**](docs/DataProductsApi.md#stream_upload_dataproduct) | **POST** /distribution-stream-upload/{interface_id}/{resource_path} | Stream Upload Data Product
+*DataProductsApi* | [**upload_dataproduct**](docs/DataProductsApi.md#upload_dataproduct) | **POST** /distribution-upload/{interface_id}/{resource_path} | Upload Data Product
 *HealthApi* | [**service_health_check**](docs/HealthApi.md#service_health_check) | **GET** /health-check | Health check
+*MonitoringApi* | [**health_check_write**](docs/MonitoringApi.md#health_check_write) | **POST** /interface-health-write/{interface_id} | Write Health Check
 *DefaultApi* | [**metrics_metrics_get**](docs/DefaultApi.md#metrics_metrics_get) | **GET** /metrics | Metrics
 
 
@@ -137,10 +140,13 @@ Class | Method | HTTP request | Description
  - [CompressFormat](docs/CompressFormat.md)
  - [ConformsTo](docs/ConformsTo.md)
  - [ConnectorMetadata](docs/ConnectorMetadata.md)
+ - [ContentType](docs/ContentType.md)
  - [DataProductDistribution](docs/DataProductDistribution.md)
  - [DataProductItem](docs/DataProductItem.md)
  - [Description](docs/Description.md)
  - [DownloadUrl](docs/DownloadUrl.md)
+ - [File](docs/File.md)
+ - [File1](docs/File1.md)
  - [Format](docs/Format.md)
  - [HTTPValidationError](docs/HTTPValidationError.md)
  - [HasPolicy](docs/HasPolicy.md)
@@ -152,6 +158,8 @@ Class | Method | HTTP request | Description
  - [PackageFormat](docs/PackageFormat.md)
  - [RangeHeader](docs/RangeHeader.md)
  - [Rights](docs/Rights.md)
+ - [Tags](docs/Tags.md)
+ - [Tags1](docs/Tags1.md)
  - [Title](docs/Title.md)
  - [ValidationError](docs/ValidationError.md)
  - [ValidationErrorLocInner](docs/ValidationErrorLocInner.md)

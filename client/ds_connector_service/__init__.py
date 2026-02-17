@@ -20,6 +20,7 @@ __version__ = "1.0.0"
 # import apis into sdk package
 from ds_connector_service.api.data_products_api import DataProductsApi
 from ds_connector_service.api.health_api import HealthApi
+from ds_connector_service.api.monitoring_api import MonitoringApi
 from ds_connector_service.api.default_api import DefaultApi
 
 # import ApiClient
@@ -42,10 +43,13 @@ from ds_connector_service.models.checksum import Checksum
 from ds_connector_service.models.compress_format import CompressFormat
 from ds_connector_service.models.conforms_to import ConformsTo
 from ds_connector_service.models.connector_metadata import ConnectorMetadata
+from ds_connector_service.models.content_type import ContentType
 from ds_connector_service.models.data_product_distribution import DataProductDistribution
 from ds_connector_service.models.data_product_item import DataProductItem
 from ds_connector_service.models.description import Description
 from ds_connector_service.models.download_url import DownloadUrl
+from ds_connector_service.models.file import File
+from ds_connector_service.models.file1 import File1
 from ds_connector_service.models.format import Format
 from ds_connector_service.models.http_validation_error import HTTPValidationError
 from ds_connector_service.models.has_policy import HasPolicy
@@ -57,6 +61,8 @@ from ds_connector_service.models.modified import Modified
 from ds_connector_service.models.package_format import PackageFormat
 from ds_connector_service.models.range_header import RangeHeader
 from ds_connector_service.models.rights import Rights
+from ds_connector_service.models.tags import Tags
+from ds_connector_service.models.tags1 import Tags1
 from ds_connector_service.models.title import Title
 from ds_connector_service.models.validation_error import ValidationError
 from ds_connector_service.models.validation_error_loc_inner import ValidationErrorLocInner

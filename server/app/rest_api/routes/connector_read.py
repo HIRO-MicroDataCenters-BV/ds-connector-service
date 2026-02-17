@@ -16,13 +16,26 @@ from ..serializers import ConnectorMetadata, DataProductItem
 logger = logging.getLogger(__name__)
 
 
-def get_usecases(interface_id: str) -> usecases.DataproductUseCase:
-    # In real implementation, this would fetch a client from ClientFactory
-    client: BaseReadDataClient = client_factory.get_client_by_name(interface_id)
-    return usecases.DataproductUseCase(client)
+def get_read_usecases(interface_id: str) -> usecases.DataProductReadUseCase:
+    """
+    Get read use cases for the specified interface
+
+    Args:
+        interface_id: Interface identifier (s3, file, etc.)
+
+    Returns:
+        DataProductWriteUseCase instance
+
+    Raises:
+        HTTPException: If interface is not supported
+    """
+    client: BaseReadDataClient = client_factory.get_read_client_by_name(interface_id)
+    return usecases.DataProductReadUseCase(client)
 
 
-class ConnectorRoutes(Routable):
+class ConnectorReadRoutes(Routable):
+    """Routes for data product read operations"""
+
     def __init__(self):
         super().__init__()
 
@@ -55,7 +68,7 @@ class ConnectorRoutes(Routable):
         self,
         interface_id: str,
         resource_path: str,
-        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+        usecases: usecases.DataProductReadUseCase = Depends(get_read_usecases),
     ) -> JSONResponse:
         """Return Metadata for a distribution along with region."""
         logger.info(
@@ -100,7 +113,7 @@ class ConnectorRoutes(Routable):
             description="HTTP Range header for partial content requests",
             example="bytes=0-1023",
         ),
-        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+        usecases: usecases.DataProductReadUseCase = Depends(get_read_usecases),
     ) -> StreamingResponse:
         """Return a dataset chunk (partial CSV content)."""
 
@@ -141,7 +154,7 @@ class ConnectorRoutes(Routable):
         self,
         interface_id: str,
         resource_path: str,
-        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+        usecases: usecases.DataProductReadUseCase = Depends(get_read_usecases),
     ) -> StreamingResponse:
         """Return the full dataset content."""
         logger.info("Getting full data product content as a single response")
@@ -170,7 +183,7 @@ class ConnectorRoutes(Routable):
         self,
         interface_id: str,
         directory_resource_path: str,
-        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+        usecases: usecases.DataProductReadUseCase = Depends(get_read_usecases),
     ) -> JSONResponse:
         """Return a paginated list of data product distributions with region."""
         logger.info(f"Listing data products for interface: {interface_id}")
@@ -197,7 +210,7 @@ class ConnectorRoutes(Routable):
     async def list_dataproducts(
         self,
         interface_id: str,
-        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+        usecases: usecases.DataProductReadUseCase = Depends(get_read_usecases),
     ) -> JSONResponse:
         """List available data products from the base path."""
         logger.info(f"Listing data products for interface: {interface_id}")
@@ -216,7 +229,7 @@ class ConnectorRoutes(Routable):
     async def health_check(
         self,
         interface_id: str,
-        usecases: usecases.DataproductUseCase = Depends(get_usecases),
+        usecases: usecases.DataProductReadUseCase = Depends(get_read_usecases),
     ) -> JSONResponse:
         """Perform health check on the specified interface."""
         logger.info(f"Performing health check for interface: {interface_id}")
@@ -227,6 +240,7 @@ class ConnectorRoutes(Routable):
             raise HTTPException(status_code=500, detail=str(e))
 
 
-router = APIRouter()
-connector_routes = ConnectorRoutes()
-router.include_router(connector_routes.router)
+# Create the router
+read_router = APIRouter()
+connector_read_routes = ConnectorReadRoutes()
+read_router.include_router(connector_read_routes.router)
