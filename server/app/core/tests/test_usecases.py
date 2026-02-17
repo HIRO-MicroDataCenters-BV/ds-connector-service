@@ -1,15 +1,15 @@
-"""Unit tests for DataproductUseCase."""
+"""Unit tests for DataProductReadUseCase."""
 
 from unittest.mock import AsyncMock
 
 import pytest
 
-from app.core.usecases import DataproductUseCase
+from app.core.usecases import DataProductReadUseCase
 from app.rest_api.serializers import DataProductDistribution
 
 
-class TestDataproductUseCase:
-    """Test cases for DataproductUseCase class."""
+class TestDataProductReadUseCase:
+    """Test cases for DataProductReadUseCase class."""
 
     @pytest.fixture
     def mock_client(self):
@@ -25,8 +25,8 @@ class TestDataproductUseCase:
 
     @pytest.fixture
     def usecase(self, mock_client):
-        """Create a DataproductUseCase instance for testing."""
-        return DataproductUseCase(mock_client)
+        """Create a DataProductReadUseCase instance for testing."""
+        return DataProductReadUseCase(mock_client)
 
     @pytest.fixture
     def sample_distribution(self):
@@ -179,7 +179,7 @@ class TestDataproductUseCase:
     @pytest.mark.asyncio
     async def test_client_dependency_injection(self, mock_client):
         """Test that the client is properly injected."""
-        usecase = DataproductUseCase(mock_client)
+        usecase = DataProductReadUseCase(mock_client)
         assert usecase.client == mock_client
 
     @pytest.mark.asyncio
@@ -248,10 +248,10 @@ class TestDataproductUseCase:
         assert chunks == []
 
     def test_usecase_inheritance(self, usecase):
-        """Test that DataproductUseCase inherits from Iusecases correctly."""
-        from app.core.usecases import Iusecases
+        """Test that DataProductReadUseCase inherits from IReadUseCases correctly."""
+        from app.core.usecases import IReadUseCases
 
-        assert isinstance(usecase, Iusecases)
+        assert isinstance(usecase, IReadUseCases)
         assert hasattr(usecase, "client")
 
     @pytest.mark.asyncio

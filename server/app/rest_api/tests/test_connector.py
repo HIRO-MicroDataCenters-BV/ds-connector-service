@@ -6,9 +6,9 @@ import pytest
 from fastapi import HTTPException, status
 from fastapi.testclient import TestClient
 
-from app.core.usecases import DataproductUseCase
+from app.core.usecases import DataProductReadUseCase
 from app.main import app
-from app.rest_api.routes.connector import get_usecases
+from app.rest_api.routes.connector_read import get_read_usecases
 from app.rest_api.serializers import DataProductDistribution
 
 
@@ -36,7 +36,7 @@ class TestConnectorRoutes:
     @pytest.fixture
     def mock_usecases(self):
         """Create mock usecases."""
-        return AsyncMock(spec=DataproductUseCase)
+        return AsyncMock(spec=DataProductReadUseCase)
 
     @pytest.fixture(autouse=True)
     def setup_and_cleanup_dependencies(self):
@@ -46,8 +46,8 @@ class TestConnectorRoutes:
         app.dependency_overrides.clear()
 
     def override_usecases_dependency(self, mock_usecases):
-        """Helper method to override the get_usecases dependency."""
-        app.dependency_overrides[get_usecases] = lambda interface_id: mock_usecases
+        """Helper method to override the get_read_usecases dependency."""
+        app.dependency_overrides[get_read_usecases] = lambda interface_id: mock_usecases
 
     def test_get_connector_metadata_success(self, client):
         """Test getting connector metadata (no mocking needed for static data)."""
@@ -165,7 +165,7 @@ class TestConnectorRoutes:
         self.override_usecases_dependency(mock_usecases)
 
         # Make request
-        response = client.get("/interface-health/interface1")
+        response = client.get("/interface-health-read/interface1")
 
         # Verify
         assert response.status_code == status.HTTP_200_OK
@@ -187,7 +187,7 @@ class TestConnectorRoutes:
         self.override_usecases_dependency(mock_usecases)
 
         # Make request
-        response = client.get("/interface-health/interface1")
+        response = client.get("/interface-health-read/interface1")
 
         # Verify
         assert response.status_code == status.HTTP_200_OK
