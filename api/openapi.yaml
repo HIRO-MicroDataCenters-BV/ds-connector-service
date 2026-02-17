@@ -228,13 +228,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /interface-health/{interface_id}:
+  /interface-health-read/{interface_id}:
     get:
       tags:
-      - Data Products
-      summary: Health Check
+      - Health
+      summary: Read Health Check
       description: Perform health check on the specified interface.
-      operationId: health_check
+      operationId: health_check_read
       parameters:
       - name: interface_id
         in: path
@@ -293,9 +293,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: true
-                title: Response Upload Dataproduct
+                $ref: '#/components/schemas/UploadResponse'
         '422':
           description: Validation Error
           content:
@@ -341,9 +339,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: true
-                title: Response Stream Upload Dataproduct
+                $ref: '#/components/schemas/UploadResponse'
         '422':
           description: Validation Error
           content:
@@ -351,9 +347,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
   /interface-health-write/{interface_id}:
-    post:
+    get:
       tags:
-      - Monitoring
+      - Health
       summary: Write Health Check
       description: "Perform health check on the write capabilities of the specified\
         \ interface\n\nArgs:\n    interface_id: Storage interface to test\n    usecases:\
@@ -372,9 +368,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: true
-                title: Response Health Check Write
+                $ref: '#/components/schemas/HealthCheck'
         '422':
           description: Validation Error
           content:
@@ -600,6 +594,24 @@ components:
       required:
       - status
       title: HealthCheck
+    UploadResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+          description: Upload status message
+        result:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Result
+          description: Upload result details
+      type: object
+      required:
+      - message
+      title: UploadResponse
+      description: Response model for upload operations
     ValidationError:
       properties:
         loc:

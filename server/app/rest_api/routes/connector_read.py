@@ -221,10 +221,10 @@ class ConnectorReadRoutes(Routable):
         )
 
     @get(
-        "/interface-health/{interface_id}",
-        operation_id="health_check",
-        name="Health Check",
-        tags=[Tags.Data_products],
+        "/interface-health-read/{interface_id}",
+        operation_id="health_check_read",
+        name="Read Health Check",
+        tags=[Tags.Health],
     )
     async def health_check(
         self,

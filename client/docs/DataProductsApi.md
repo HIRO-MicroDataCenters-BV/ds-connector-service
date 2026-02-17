@@ -8,7 +8,6 @@ Method | HTTP request | Description
 [**get_dataproduct_chunk**](DataProductsApi.md#get_dataproduct_chunk) | **GET** /distribution-content/{interface_id}/{resource_path}/chunk | Get Data Product Chunk
 [**get_dataproduct_content**](DataProductsApi.md#get_dataproduct_content) | **GET** /distribution-content/{interface_id}/{resource_path} | Get Data Product Content
 [**get_distribution_metadata**](DataProductsApi.md#get_distribution_metadata) | **GET** /distribution-metadata/{interface_id}/{resource_path} | Get Distribution Metadata
-[**health_check**](DataProductsApi.md#health_check) | **GET** /interface-health/{interface_id} | Health Check
 [**list_dataproduct_distributions**](DataProductsApi.md#list_dataproduct_distributions) | **GET** /dataproduct-distributions/{interface_id}/{directory_resource_path} | List Data Product Distributions
 [**list_dataproducts**](DataProductsApi.md#list_dataproducts) | **GET** /dataproducts/{interface_id} | List Data Products
 [**stream_upload_dataproduct**](DataProductsApi.md#stream_upload_dataproduct) | **POST** /distribution-stream-upload/{interface_id}/{resource_path} | Stream Upload Data Product
@@ -294,74 +293,6 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **health_check**
-> object health_check(interface_id)
-
-Health Check
-
-Perform health check on the specified interface.
-
-### Example
-
-
-```python
-import ds_connector_service
-from ds_connector_service.rest import ApiException
-from pprint import pprint
-
-# Defining the host is optional and defaults to http://localhost
-# See configuration.py for a list of all supported configuration parameters.
-configuration = ds_connector_service.Configuration(
-    host = "http://localhost"
-)
-
-
-# Enter a context with an instance of the API client
-with ds_connector_service.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = ds_connector_service.DataProductsApi(api_client)
-    interface_id = 'interface_id_example' # str | 
-
-    try:
-        # Health Check
-        api_response = api_instance.health_check(interface_id)
-        print("The response of DataProductsApi->health_check:\n")
-        pprint(api_response)
-    except Exception as e:
-        print("Exception when calling DataProductsApi->health_check: %s\n" % e)
-```
-
-
-
-### Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **interface_id** | **str**|  | 
-
-### Return type
-
-**object**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Successful Response |  -  |
-**422** | Validation Error |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
 # **list_dataproduct_distributions**
 > List[DataProductItem] list_dataproduct_distributions(interface_id, directory_resource_path)
 
@@ -502,7 +433,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **stream_upload_dataproduct**
-> Dict[str, object] stream_upload_dataproduct(interface_id, var_resource_path, file=file, content_type=content_type, tags=tags)
+> UploadResponse stream_upload_dataproduct(interface_id, var_resource_path, file=file, content_type=content_type, tags=tags)
 
 Stream Upload Data Product
 
@@ -516,6 +447,7 @@ import ds_connector_service
 from ds_connector_service.models.content_type import ContentType
 from ds_connector_service.models.file import File
 from ds_connector_service.models.tags import Tags
+from ds_connector_service.models.upload_response import UploadResponse
 from ds_connector_service.rest import ApiException
 from pprint import pprint
 
@@ -560,7 +492,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**Dict[str, object]**
+[**UploadResponse**](UploadResponse.md)
 
 ### Authorization
 
@@ -581,7 +513,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **upload_dataproduct**
-> Dict[str, object] upload_dataproduct(interface_id, var_resource_path, file=file, content_type=content_type, tags=tags)
+> UploadResponse upload_dataproduct(interface_id, var_resource_path, file=file, content_type=content_type, tags=tags)
 
 Upload Data Product
 
@@ -595,6 +527,7 @@ import ds_connector_service
 from ds_connector_service.models.content_type import ContentType
 from ds_connector_service.models.file1 import File1
 from ds_connector_service.models.tags1 import Tags1
+from ds_connector_service.models.upload_response import UploadResponse
 from ds_connector_service.rest import ApiException
 from pprint import pprint
 
@@ -639,7 +572,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**Dict[str, object]**
+[**UploadResponse**](UploadResponse.md)
 
 ### Authorization
 

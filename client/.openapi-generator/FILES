@@ -25,13 +25,14 @@ docs/Issued.md
 docs/License.md
 docs/MediaType.md
 docs/Modified.md
-docs/MonitoringApi.md
 docs/PackageFormat.md
 docs/RangeHeader.md
+docs/Result.md
 docs/Rights.md
 docs/Tags.md
 docs/Tags1.md
 docs/Title.md
+docs/UploadResponse.md
 docs/ValidationError.md
 docs/ValidationErrorLocInner.md
 ds_connector_service/__init__.py
@@ -39,7 +40,6 @@ ds_connector_service/api/__init__.py
 ds_connector_service/api/data_products_api.py
 ds_connector_service/api/default_api.py
 ds_connector_service/api/health_api.py
-ds_connector_service/api/monitoring_api.py
 ds_connector_service/api_client.py
 ds_connector_service/api_response.py
 ds_connector_service/configuration.py
@@ -70,10 +70,12 @@ ds_connector_service/models/media_type.py
 ds_connector_service/models/modified.py
 ds_connector_service/models/package_format.py
 ds_connector_service/models/range_header.py
+ds_connector_service/models/result.py
 ds_connector_service/models/rights.py
 ds_connector_service/models/tags.py
 ds_connector_service/models/tags1.py
 ds_connector_service/models/title.py
+ds_connector_service/models/upload_response.py
 ds_connector_service/models/validation_error.py
 ds_connector_service/models/validation_error_loc_inner.py
 ds_connector_service/py.typed

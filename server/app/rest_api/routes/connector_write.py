@@ -2,7 +2,7 @@ from typing import Any, Dict, Optional
 
 import logging
 
-from classy_fastapi import Routable, post
+from classy_fastapi import Routable, get, post
 from fastapi import (
     APIRouter,
     Depends,
@@ -20,6 +20,8 @@ from app.core.clients.base import BaseWriteDataClient
 from app.core.clients.factory_instance import client_factory
 from app.settings import get_settings
 from app.tags import Tags
+
+from ..serializers import HealthCheck, UploadResponse
 
 logger = logging.getLogger(__name__)
 
@@ -129,19 +131,20 @@ async def _detect_content_type_and_extract(
 
     Args:
         request: FastAPI Request instance
-        file: Optional UploadFile for multipart uploads
+        file: Optional UploadFile for multipart uploads (may be None for direct uploads)
 
     Returns:
         Tuple of (content_bytes, detected_content_type)
     """
     content_type = request.headers.get("content-type", "")
 
-    if content_type.startswith("multipart/form-data") and file:
+    # Check if this is a real file upload or no file (direct content)
+    if content_type.startswith("multipart/form-data") and file and file.filename:
         # File upload
         content = await file.read()
         detected_type = "multipart"
     else:
-        # Direct content upload (JSON, text, etc.)
+        # Direct content upload (JSON, text, etc.) - no file provided
         content = await request.body()
         detected_type = "direct"
 
@@ -177,7 +180,7 @@ class ConnectorWriteRoutes(Routable):
         operation_id="upload_dataproduct",
         name="Upload Data Product",
         tags=[Tags.Data_products],
-        response_model=Dict[str, Any],
+        response_model=UploadResponse,
     )
     async def upload_dataproduct(
         self,
@@ -225,7 +228,7 @@ class ConnectorWriteRoutes(Routable):
                 request, file
             )
 
-            if detected_type == "multipart" and file is not None:
+            if detected_type == "multipart" and file and file.filename:
                 # File upload - use existing metadata preparation
                 metadata = _prepare_metadata(file, content_type, tags, "rest_api")
             else:
@@ -265,7 +268,7 @@ class ConnectorWriteRoutes(Routable):
         operation_id="stream_upload_dataproduct",
         name="Stream Upload Data Product",
         tags=[Tags.Data_products],
-        response_model=Dict[str, Any],
+        response_model=UploadResponse,
     )
     async def stream_upload_dataproduct(
         self,
@@ -309,7 +312,11 @@ class ConnectorWriteRoutes(Routable):
             # Detect content type
             request_content_type = request.headers.get("content-type", "")
 
-            if request_content_type.startswith("multipart/form-data") and file:
+            if (
+                request_content_type.startswith("multipart/form-data")
+                and file
+                and file.filename
+            ):
                 # File streaming upload
                 metadata = _prepare_metadata(
                     file, content_type, tags, "rest_api_stream"
@@ -367,12 +374,12 @@ class ConnectorWriteRoutes(Routable):
                 status_code=500, detail=f"Stream upload failed: {str(e)}"
             )
 
-    @post(
+    @get(
         "/interface-health-write/{interface_id}",
         operation_id="health_check_write",
         name="Write Health Check",
-        tags=[Tags.Monitoring],
-        response_model=Dict[str, Any],
+        tags=[Tags.Health],
+        response_model=HealthCheck,
     )
     async def health_check_write(
         self,
