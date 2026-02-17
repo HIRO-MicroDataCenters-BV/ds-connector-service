@@ -11,6 +11,11 @@ class Settings(BaseSettings):
     )
     FS_BASE_PATH: str = "./data"  # Base path for file system operations
 
+    # S3 Multipart Upload Settings
+    S3_MIN_PART_SIZE: int = (
+        5 * 1024 * 1024
+    )  # 5MB minimum part size for S3 multipart upload
+
     # S3-Compatible Storage Settings (AWS S3, MinIO, etc.)
     S3_ACCESS_KEY_ID: Optional[str] = None
     S3_SECRET_ACCESS_KEY: Optional[str] = None

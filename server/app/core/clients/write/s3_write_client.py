@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 settings = get_settings()
 CHUNK_SIZE = settings.CHUNK_SIZE
 MAX_FILE_SIZE = settings.MAX_FILE_SIZE
-MIN_PART_SIZE = 5 * 1024 * 1024  # 5MB minimum part size for S3 multipart upload
+MIN_PART_SIZE = settings.S3_MIN_PART_SIZE
 
 
 class S3WriteClient(BaseWriteDataClient):
