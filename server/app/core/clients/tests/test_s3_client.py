@@ -440,7 +440,7 @@ class TestS3DataClient:
         assert result.checksum == "abc123"
         assert result.format == "txt"
         assert result.issued is not None and "2023-01-01" in result.issued
-        assert "s3://test-bucket/data/test.txt" == result.access_url
+        assert "s3://test.txt" == result.access_url
 
     @patch("app.core.clients.read.s3_read_client.aioboto3.Session")
     @pytest.mark.asyncio
