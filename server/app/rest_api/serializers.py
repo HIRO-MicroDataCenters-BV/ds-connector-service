@@ -1,12 +1,21 @@
 """Schemas for data connector and data product metadata."""
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
 
 class HealthCheck(BaseModel):
     status: str = Field(examples=["OK"])
+
+
+class UploadResponse(BaseModel):
+    """Response model for upload operations"""
+
+    message: str = Field(description="Upload status message")
+    result: Optional[Dict[str, Any]] = Field(
+        description="Upload result details", default=None
+    )
 
 
 class ConnectorMetadata(BaseModel):

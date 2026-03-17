@@ -79,7 +79,8 @@ env:
     value: "data/"
   - name: S3_ENDPOINT_URL
     value: "http://mlflow-minio.kubeflow.svc.cluster.local:9000"
-
+  - name: S3_MIN_PART_SIZE
+    value: "5242880"  # 5MB minimum part size for S3 multipart upload
 
 resources:
   requests:

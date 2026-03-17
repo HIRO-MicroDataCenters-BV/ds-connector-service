@@ -228,13 +228,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /interface-health/{interface_id}:
+  /interface-health-read/{interface_id}:
     get:
       tags:
-      - Data Products
-      summary: Health Check
+      - Health
+      summary: Read Health Check
       description: Perform health check on the specified interface.
-      operationId: health_check
+      operationId: health_check_read
       parameters:
       - name: interface_id
         in: path
@@ -248,6 +248,127 @@ paths:
           content:
             application/json:
               schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /distribution-upload/{interface_id}/{resource_path}:
+    post:
+      tags:
+      - Data Products
+      summary: Upload Data Product
+      description: "Upload a complete data product file or JSON data\n\nSupports two\
+        \ upload methods:\n1. Multipart file upload: Use form-data with file field\n\
+        2. Direct JSON/data upload: Send JSON/text directly in request body\n\nArgs:\n\
+        \    request: FastAPI request object\n    interface_id: Storage interface\
+        \ (file, s3)\n    resource_path: Path where to store the data\n    file: File\
+        \ to upload (for multipart uploads only)\n    content_type: Optional content\
+        \ type override (for multipart uploads)\n    tags: Optional tags in format\
+        \ \"key=value,key2=value2\"\n    usecases: Write use case dependency\n\nReturns:\n\
+        \    Upload result information"
+      operationId: upload_dataproduct
+      parameters:
+      - name: interface_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interface Id
+      - name: resource_path
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Path
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload_dataproduct'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /distribution-stream-upload/{interface_id}/{resource_path}:
+    post:
+      tags:
+      - Data Products
+      summary: Stream Upload Data Product
+      description: "Upload a data product using streaming (memory-efficient for large\
+        \ files/data)\n\nSupports two streaming methods:\n1. Multipart file streaming:\
+        \ Stream file chunks\n2. Direct content streaming: Stream JSON/text data from\
+        \ request body\n\nArgs:\n    request: FastAPI request object\n    interface_id:\
+        \ Storage interface (file, s3)\n    resource_path: Path where to store the\
+        \ data\n    file: File to stream upload (for multipart uploads only)\n   \
+        \ content_type: Optional content type override (for multipart uploads)\n \
+        \   tags: Optional tags\n    usecases: Write use case dependency\n\nReturns:\n\
+        \    Upload result information"
+      operationId: stream_upload_dataproduct
+      parameters:
+      - name: interface_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interface Id
+      - name: resource_path
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Resource Path
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_stream_upload_dataproduct'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /interface-health-write/{interface_id}:
+    get:
+      tags:
+      - Health
+      summary: Write Health Check
+      description: "Perform health check on the write capabilities of the specified\
+        \ interface\n\nArgs:\n    interface_id: Storage interface to test\n    usecases:\
+        \ Write use case dependency\n\nReturns:\n    Health check result"
+      operationId: health_check_write
+      parameters:
+      - name: interface_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Interface Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
         '422':
           description: Validation Error
           content:
@@ -270,6 +391,52 @@ paths:
                 $ref: '#/components/schemas/HealthCheck'
 components:
   schemas:
+    Body_stream_upload_dataproduct:
+      properties:
+        file:
+          anyOf:
+          - type: string
+            format: binary
+          - type: 'null'
+          title: File
+          description: File to stream upload (for multipart uploads)
+        content_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content Type
+          description: Content type override (for multipart uploads)
+        tags:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tags
+          description: Comma-separated tags
+      type: object
+      title: Body_stream_upload_dataproduct
+    Body_upload_dataproduct:
+      properties:
+        file:
+          anyOf:
+          - type: string
+            format: binary
+          - type: 'null'
+          title: File
+          description: File to upload (for multipart uploads)
+        content_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content Type
+          description: Content type override (for multipart uploads)
+        tags:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tags
+          description: Comma-separated tags (key=value,key2=value2)
+      type: object
+      title: Body_upload_dataproduct
     ConnectorMetadata:
       properties:
         connector_id:
@@ -427,6 +594,24 @@ components:
       required:
       - status
       title: HealthCheck
+    UploadResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+          description: Upload status message
+        result:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Result
+          description: Upload result details
+      type: object
+      required:
+      - message
+      title: UploadResponse
+      description: Response model for upload operations
     ValidationError:
       properties:
         loc:

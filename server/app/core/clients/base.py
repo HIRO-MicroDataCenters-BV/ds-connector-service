@@ -105,3 +105,67 @@ class BaseReadDataClient(ABC):
             HTTPException: On client-specific errors
         """
         ...
+
+
+# Abstract Base Write Client
+class BaseWriteDataClient(ABC):
+    """Abstract base class for all data writing clients"""
+
+    @abstractmethod
+    async def write_file_content(
+        self,
+        resource_path: str,
+        content: bytes,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Write entire file content at once (memory-loaded approach)
+
+        Args:
+            resource_path: Full path where to write the resource
+            content: Complete file content as bytes
+            metadata: Optional metadata to associate with the file
+
+        Returns:
+            Dict containing write result information (checksum, size, etc.)
+
+        Raises:
+            HTTPException: On client-specific errors
+        """
+        ...
+
+    @abstractmethod
+    async def write_stream(
+        self,
+        resource_path: str,
+        content_stream: AsyncGenerator[bytes, None],
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Write file content from an async stream (memory-efficient approach)
+
+        Args:
+            resource_path: Full path where to write the resource
+            content_stream: Async generator yielding content chunks
+            metadata: Optional metadata to associate with the file
+
+        Returns:
+            Dict containing write result information (checksum, size, etc.)
+
+        Raises:
+            HTTPException: On client-specific errors
+        """
+        ...
+
+    @abstractmethod
+    async def health_check(self) -> Dict[str, Any]:
+        """
+        Check write client health and connectivity
+
+        Returns:
+            Dict containing health status information
+
+        Raises:
+            HTTPException: On client-specific errors
+        """
+        ...

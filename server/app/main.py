@@ -10,7 +10,8 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from app.core.clients.factory_instance import client_factory
 from app.logging_config import setup_logging
 
-from .rest_api.routes.connector import router as connector_router
+from .rest_api.routes.connector_read import read_router as connector_read_router
+from .rest_api.routes.connector_write import write_router as connector_write_router
 from .rest_api.routes.health_check import router as health_router
 
 
@@ -73,5 +74,6 @@ app.add_middleware(
 client_factory.list_registered_clients()  # Initialize and log registered clients
 
 Instrumentator().instrument(app).expose(app)
-app.include_router(connector_router)
+app.include_router(connector_read_router)
+app.include_router(connector_write_router)
 app.include_router(health_router)

@@ -379,7 +379,7 @@ class S3DataClient(BaseReadDataClient):
                     metadata = DataProductDistribution(
                         title=object_name,
                         description=f"S3 object {object_name}",
-                        access_url=f"s3://{self.bucket_name}/{s3_key}",
+                        access_url=f"s3://{resource_path}",
                         byte_size=object_size,
                         media_type=content_type,
                         checksum=checksum,

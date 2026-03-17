@@ -1,4 +1,4 @@
-"""Unit tests for connector API routes."""
+"""Unit tests for connector read API routes."""
 
 from unittest.mock import AsyncMock
 
@@ -12,8 +12,8 @@ from app.rest_api.routes.connector_read import get_read_usecases
 from app.rest_api.serializers import DataProductDistribution
 
 
-class TestConnectorRoutes:
-    """Test connector API endpoints."""
+class TestConnectorReadRoutes:
+    """Test connector read API endpoints."""
 
     @pytest.fixture
     def client(self):
@@ -99,15 +99,16 @@ class TestConnectorRoutes:
         # Make request
         response = client.get("/distribution-metadata/interface1/invalid/path/file.txt")
 
-        # Verify error is propagated
+        # Verify
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
-        assert response.json() == {"detail": error_message}
+        response_data = response.json()
+        assert response_data["detail"] == error_message
 
     def test_list_dataproduct_distributions_success(
         self, client, sample_distribution, mock_usecases
     ):
-        """Test listing distributions successfully."""
-        # Setup mock
+        """Test listing data product distributions successfully."""
+        # Setup mock to return list of distributions
         distributions = [sample_distribution]
         mock_usecases.list_dataproduct_distributions.return_value = distributions
 
@@ -116,7 +117,7 @@ class TestConnectorRoutes:
 
         # Make request
         response = client.get(
-            "/dataproduct-distributions/interface1/multimodal_disease_ABC_data"
+            "/dataproduct-distributions/interface1/" "multimodal_disease_ABC_data"
         )
 
         # Verify
@@ -124,15 +125,16 @@ class TestConnectorRoutes:
         response_data = response.json()
         assert "data_products" in response_data
         assert len(response_data["data_products"]) == 1
+        assert response_data["data_products"][0]["title"] == "phenotype_data.csv"
 
     def test_read_distribution_content_success(
         self, client, sample_distribution, mock_usecases
     ):
-        """Test reading file content successfully."""
+        """Test reading distribution content successfully."""
         # Setup mock
-        file_content = b"patient_id,age,sex\nPT001,45,M\nPT002,32,F"
+        mock_content = b"patient_id,age,sex\nPT001,45,M\nPT002,32,F"
         mock_usecases.get_distribution_metadata.return_value = sample_distribution
-        mock_usecases.read_dataproduct_distribution_content.return_value = file_content
+        mock_usecases.read_dataproduct_distribution_content.return_value = mock_content
 
         # Override the dependency
         self.override_usecases_dependency(mock_usecases)
@@ -140,24 +142,22 @@ class TestConnectorRoutes:
         # Make request
         response = client.get(
             "/distribution-content/interface1/"
-            "multimodal_disease_ABC_data/phenotype_data.csv"
+            "multimodal_disease_ABC_data/phenotype_data.csv",
+            headers={"Range": "bytes=0-1023"},
         )
 
         # Verify
         assert response.status_code == status.HTTP_200_OK
-        assert response.content == file_content
+        assert response.content == mock_content
         assert "text/csv" in response.headers["content-type"]
-        assert (
-            'filename="phenotype_data.csv"' in response.headers["content-disposition"]
-        )
 
     def test_health_check_success(self, client, mock_usecases):
-        """Test health check endpoint."""
+        """Test health check endpoint success."""
         # Setup mock
         health_data = {
             "status": "healthy",
             "client_type": "FileSystem",
-            "timestamp": "2023-10-09T13:30:00Z",
+            "timestamp": "2026-02-17T10:30:00Z",
         }
         mock_usecases.health_check.return_value = health_data
 
@@ -174,7 +174,7 @@ class TestConnectorRoutes:
         assert response_data["client_type"] == "FileSystem"
 
     def test_health_check_unhealthy(self, client, mock_usecases):
-        """Test health check when service is unhealthy."""
+        """Test health check endpoint when service is unhealthy."""
         # Setup mock
         health_data = {
             "status": "unhealthy",

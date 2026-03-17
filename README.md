@@ -9,13 +9,14 @@ pip install pre-commit
 pre-commit install
 ```
 
-## Working on a server
-Go to the `/server` folder to install dependencies and work on the server application.  
-Documentation on setting up the virtual environment, installing dependencies, and working with the server can be found [here](./server/README.md).
+## Documentation
 
-## Working on a client
-Go to the `/client` folder to install dependencies and work on the client application.  
-Documentation on setting up the virtual environment, installing dependencies, and working with the client can be found [here](./client/README.md).
+### Development Setup
+- **Server**: Go to the `/server` folder to install dependencies and work on the server application. Documentation on setting up the virtual environment, installing dependencies, and working with the server can be found [here](./server/README.md).
+- **Client**: Go to the `/client` folder to install dependencies and work on the client application. Documentation on setting up the virtual environment, installing dependencies, and working with the client can be found [here](./client/README.md).
+
+### Service Usage
+- **Clients and API Guide**: Comprehensive documentation on read/write clients, API endpoints, and service interaction can be found [here](./CLIENTS_AND_API_GUIDE.md).
 
 ## Release
 The application version is specified in the VERSION file. The version should follow the format a.a.a, where 'a' is a number.  
